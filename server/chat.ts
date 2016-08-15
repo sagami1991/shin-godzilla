@@ -64,7 +64,7 @@ export class Chat {
 	private intervalCount: number = 0;
 	private static INTERVAL_SEC = {
 		NORMAL: 1,
-		BEFORE_ATK: 0.4,
+		BEFORE_ATK: 0.6,
 		ATK: 1.6,
 	};
 	private decidedTarget:boolean;
