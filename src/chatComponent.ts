@@ -53,10 +53,10 @@ export class ChatComponent {
 			const log = <ChatLog>value;
 			this.logs.push(log);
 			if (this.logs.length > ChatComponent.MAX_LINE) this.logs.shift();
-			if (!ChatComponent.IS_TABLET && log.personId !== this.wsService.personId) {
-				Notification.requestPermission();
-				new Notification("", {body: log.msg});
-			} ;
+			// if (!ChatComponent.IS_TABLET && log.personId !== this.wsService.personId) {
+			// 	Notification.requestPermission();
+			// 	new Notification("", {body: log.msg});
+			// }
 
 			this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
 		});

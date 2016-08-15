@@ -8,6 +8,6 @@ export class Notify {
 		humane.spawn({addnCls: "humane-warning", timeout: 5000})(msg);
 	};
 	public static success(msg: string) {
-		humane.spawn({addnCls: "humane-success", timeout: 5000})(msg);
+		humane.spawn({addnCls: "humane-success", timeout: 500})(msg);
 	};
 }

@@ -1015,7 +1015,7 @@
 	    };
 	    ;
 	    Notify.success = function (msg) {
-	        humane.spawn({ addnCls: "humane-success", timeout: 5000 })(msg);
+	        humane.spawn({ addnCls: "humane-success", timeout: 500 })(msg);
 	    };
 	    ;
 	    return Notify;
@@ -1199,7 +1199,7 @@
 	                this.atk();
 	            }
 	            if (this.gozzila.inBeam(this.x, this.x + evil_1.SimpleEbiruai.WIDTH, this.y, this.y + evil_1.SimpleEbiruai.HEIGHT)) {
-	                this.hp -= 1;
+	                this.hp -= 1.5;
 	            }
 	            if (this.gozzila.sessyoku(this.x, this.y)) {
 	                this.hp -= 10;
@@ -1350,11 +1350,10 @@
 	            _this.logs.push(log);
 	            if (_this.logs.length > ChatComponent.MAX_LINE)
 	                _this.logs.shift();
-	            if (!ChatComponent.IS_TABLET && log.personId !== _this.wsService.personId) {
-	                Notification.requestPermission();
-	                new Notification("", { body: log.msg });
-	            }
-	            ;
+	            // if (!ChatComponent.IS_TABLET && log.personId !== this.wsService.personId) {
+	            // 	Notification.requestPermission();
+	            // 	new Notification("", {body: log.msg});
+	            // }
 	            _this.logElem.innerHTML = ChatComponent.logsTmpl({ logs: _this.logs });
 	        });
 	        this.wsService.addOnOpenListener(function () { return _this.onOpen(); });

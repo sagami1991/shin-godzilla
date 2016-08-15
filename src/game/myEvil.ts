@@ -48,7 +48,7 @@ export class Ebiruai extends SimpleEbiruai {
 				this.atk();
 			}
 			if (this.gozzila.inBeam(this.x, this.x + SimpleEbiruai.WIDTH, this.y, this.y + SimpleEbiruai.HEIGHT)) {
-				this.hp -= 1;
+				this.hp -= 1.5;
 			}
 			if (this.gozzila.sessyoku(this.x, this.y)) {
 				this.hp -= 10;
