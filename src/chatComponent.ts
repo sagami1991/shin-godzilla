@@ -93,10 +93,11 @@ export class ChatComponent {
 
 	private send() {
 		const value = this.inputElem.value;
-		if (value && !this.wsService.isClose && this.isSended) {
+		if (value && !this.wsService.isClose && !this.isSended) {
 			this.wsService.send(WSDataType.log, value);
 			this.inputElem.value = "";
 			this.inputElem.disabled = true;
+			this.isSended = true;
 			setTimeout(() => {
 				if (!this.wsService.isClose) {
 					this.inputElem.disabled = false;

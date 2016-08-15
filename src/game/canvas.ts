@@ -150,7 +150,7 @@ export class MainCanvas {
 		// {keycode: [87, 38], eventName: "ue"},
 		// {keycode: [83, 40], eventName: "sita"},
 		{keycode: [65, 37], eventName: "hidari"},
-		{keycode: [32], eventName: "jump"},
+		{keycode: [32, 87], eventName: "jump"},
 		{keycode: [88], eventName: "atk"}
 	];
 

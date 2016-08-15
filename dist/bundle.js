@@ -899,7 +899,7 @@
 	        // {keycode: [87, 38], eventName: "ue"},
 	        // {keycode: [83, 40], eventName: "sita"},
 	        { keycode: [65, 37], eventName: "hidari" },
-	        { keycode: [32], eventName: "jump" },
+	        { keycode: [32, 87], eventName: "jump" },
 	        { keycode: [88], eventName: "atk" }
 	    ];
 	    return MainCanvas;
@@ -1385,10 +1385,11 @@
 	    ChatComponent.prototype.send = function () {
 	        var _this = this;
 	        var value = this.inputElem.value;
-	        if (value && !this.wsService.isClose && this.isSended) {
+	        if (value && !this.wsService.isClose && !this.isSended) {
 	            this.wsService.send(WebSocketService_1.WSDataType.log, value);
 	            this.inputElem.value = "";
 	            this.inputElem.disabled = true;
+	            this.isSended = true;
 	            setTimeout(function () {
 	                if (!_this.wsService.isClose) {
 	                    _this.inputElem.disabled = false;
