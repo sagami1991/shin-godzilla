@@ -14,7 +14,7 @@ export class Gozzila extends BaseMonster {
 	/** ビームが発射される座標*/
 	public begin: {x: number, y: number};
 	public isDamege: boolean;
-	public target: {x: number, y: number};
+	public target: {x: number, y: number};//[];
 	public mode: number;
 	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
 		super(ctx, zahyou);
@@ -80,6 +80,7 @@ export class Gozzila extends BaseMonster {
 	}
 
 	protected atk() {
+		// this.target.forEach(target => {
 		const endX = 0;
 		const endY = (this.target.y - this.begin.y) * (endX - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
 		this.ctx.strokeStyle = "#317cff";
@@ -91,5 +92,6 @@ export class Gozzila extends BaseMonster {
 		this.ctx.closePath();
 		this.ctx.stroke();
 		this.ctx.shadowBlur = 0;
+		// })
 	}
 }

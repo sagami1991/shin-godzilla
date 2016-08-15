@@ -9,17 +9,34 @@ export class Ebiruai extends SimpleEbiruai {
 	private isJump: boolean;
 	public atksita: boolean;
 	private gozzila: Gozzila;
+	private hukkatuButton: HTMLElement;
 	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
 		super(ctx, zahyou);
 		this.maxHp = 100;
 		this.hp = 100;
 		this.gozzila = zahyou.gozzila;
+		this.hukkatuButton = <HTMLElement>document.querySelector(".hukkatu");
+		this.hukkatuButton.style.display = "none"
+		this.hukkatuButton.addEventListener("click",()=> {
+			this.hp = 100;
+			this.isDead = false;
+			this.isDeadOnceJikkou = false;
+			this.hukkatuButton.style.display = "none"
+		});
+	}
+	private isDeadOnceJikkou:boolean;
+	private isDeadOnce() {
+		if(!this.isDeadOnceJikkou){
+		this.hukkatuButton.style.display = "block"
+		this.isDeadOnceJikkou = true;
+		}
 	}
 	protected action() {
 		if (this.isDead) {
 			this.ctx.fillStyle = "black";
 			this.ctx.font = "36px 'ＭＳ Ｐゴシック'";
 			this.ctx.fillText("死にました", 300, 200);
+			this.isDeadOnce();
 		} else {
 			if (MainCanvas.KeyEvent.hidari) {
 				this.x -= 5;
@@ -48,10 +65,10 @@ export class Ebiruai extends SimpleEbiruai {
 				this.atk();
 			}
 			if (this.gozzila.inBeam(this.x, this.x + SimpleEbiruai.WIDTH, this.y, this.y + SimpleEbiruai.HEIGHT)) {
-				this.hp -= 1.5;
+				this.hp -= 1.8;
 			}
 			if (this.gozzila.sessyoku(this.x, this.y)) {
-				this.hp -= 10;
+				this.hp -= 12;
 			}
 			if (this.hp <= 0) {
 				this.hp = 0;

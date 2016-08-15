@@ -144,6 +144,10 @@ ul.chat-logs {
 		top: 100px;
 		left: 20px + $width * 3;
 	}
+		&.hukkatu {
+		top: 100px;
+		left: 20px + $width * 4;
+	}
 }
 
 #canvas {

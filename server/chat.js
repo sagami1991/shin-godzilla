@@ -213,7 +213,7 @@ var Chat = (function () {
     Chat.INTERVAL_SEC = {
         NORMAL: 1,
         BEFORE_ATK: 0.4,
-        ATK: 2,
+        ATK: 1.6,
     };
     return Chat;
 }());
