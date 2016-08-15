@@ -2,20 +2,19 @@
 require("expose?humane!humane-js");
 require("!style!css!humane-js/themes/libnotify.css");
 require("./main.scss");
-import {MapleCanvas} from "./canvas";
+import {MainCanvas} from "./game/canvas";
 import {ChatComponent} from "./chatComponent";
 import {WSService} from "./WebSocketService";
 import 'core-js/es6/array';
 import 'core-js/es6/promise';
 
-
 class MainComponent {
-	private canvas: MapleCanvas;
+	private canvas: MainCanvas;
 	private chat: ChatComponent;
 	constructor() {
 		const wsService = new WSService();
 		wsService.init();
-		this.canvas = new MapleCanvas(wsService);
+		this.canvas = new MainCanvas(wsService);
 		this.chat = new ChatComponent(wsService);
 
 	}

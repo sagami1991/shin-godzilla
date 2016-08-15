@@ -9,7 +9,7 @@ module.exports = {
 	path:"./dist",
     filename: "bundle.js",
   },
-//   devtool: "source-map",
+  devtool: "source-map",
   resolve: {
     extensions: ["", ".ts", ".js"],
 	alias: {
