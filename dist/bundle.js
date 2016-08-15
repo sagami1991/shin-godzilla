@@ -772,11 +772,19 @@
 	        this.ctx.clearRect(0, 0, MapleCanvas.width, MapleCanvas.height);
 	        this.myEvil.draw();
 	        this.simpleEbiruais.forEach(function (evil) { return evil.draw(); });
-	        this.ws.send(WebSocketService_1.sendType.zahyou, {
+	        var sendData = {
 	            isMigiMuki: this.myEvil.isMigiMuki,
 	            x: this.myEvil.x,
 	            y: this.myEvil.y
-	        });
+	        };
+	        if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
+	            this.ws.send(WebSocketService_1.sendType.zahyou, sendData);
+	        }
+	        this.befSendData = {
+	            isMigiMuki: this.myEvil.isMigiMuki,
+	            x: this.myEvil.x,
+	            y: this.myEvil.y
+	        };
 	    };
 	    MapleCanvas.prototype.keyset = function () {
 	        window.addEventListener("keydown", function (e) {

@@ -41,6 +41,7 @@ export class Chat {
 	private wss: WebSocket.Server;
 	private collection: Collection;
 	private zahyous: Zahyou[] = [];
+	private befZahyous: Zahyou[] = [];
 	constructor(wss: WebSocket.Server,
 				collection: Collection) {
 		this.wss = wss;
@@ -50,10 +51,15 @@ export class Chat {
 	public init() {
 		setInterval(
 			() => {
-				this.sendAll({
-					type: WSResType.zahyou,
-					value: this.zahyous
-				});
+				if (JSON.stringify(this.befZahyous) !== JSON.stringify(this.zahyous)) {
+					console.log(this.befZahyous);
+					console.log(this.zahyous)
+					this.sendAll({
+						type: WSResType.zahyou,
+						value: this.zahyous
+					});
+				}
+				this.befZahyous = JSON.parse(JSON.stringify(this.zahyous));
 			}, 1000 / 30
 		);
 		this.wss.on('connection', (ws) => {

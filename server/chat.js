@@ -13,16 +13,22 @@ var WSResType = exports.WSResType;
 var Chat = (function () {
     function Chat(wss, collection) {
         this.zahyous = [];
+        this.befZahyous = [];
         this.wss = wss;
         this.collection = collection;
     }
     Chat.prototype.init = function () {
         var _this = this;
         setInterval(function () {
-            _this.sendAll({
-                type: WSResType.zahyou,
-                value: _this.zahyous
-            });
+            if (JSON.stringify(_this.befZahyous) !== JSON.stringify(_this.zahyous)) {
+                console.log(_this.befZahyous);
+                console.log(_this.zahyous);
+                _this.sendAll({
+                    type: WSResType.zahyou,
+                    value: _this.zahyous
+                });
+            }
+            _this.befZahyous = JSON.parse(JSON.stringify(_this.zahyous));
         }, 1000 / 30);
         this.wss.on('connection', function (ws) {
             _this.sendLog10(ws);

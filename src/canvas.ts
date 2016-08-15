@@ -1,7 +1,7 @@
 import {WSService, sendType} from "./WebSocketService";
 
 interface Zahyou {
-	personId: string;
+	personId?: string;
 	isMigiMuki: boolean;
 	x: number;
 	y: number;
@@ -22,6 +22,7 @@ export class MapleCanvas {
 	private timer: number;
 	private myEvil: Ebiruai;
 	private simpleEbiruais: SimpleEbiruai[] = [];
+	private befSendData: Zahyou;
 	public static KeyEvent = {
 		ue: false,
 		migi: false,
@@ -76,11 +77,19 @@ export class MapleCanvas {
 		this.ctx.clearRect(0, 0, MapleCanvas.width, MapleCanvas.height);
 		this.myEvil.draw();
 		this.simpleEbiruais.forEach(evil => evil.draw());
-		this.ws.send(sendType.zahyou, {
+		const sendData = {
 			isMigiMuki: this.myEvil.isMigiMuki,
 			x: this.myEvil.x,
 			y: this.myEvil.y
-		});
+		};
+		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)){
+			this.ws.send(sendType.zahyou, sendData);
+		}
+		this.befSendData = {
+			isMigiMuki: this.myEvil.isMigiMuki,
+			x: this.myEvil.x,
+			y: this.myEvil.y
+		};
 	}
 
 	private keyset() {
