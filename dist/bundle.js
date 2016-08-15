@@ -798,8 +798,8 @@
 	    /** 描写 */
 	    MainCanvas.prototype.draw = function () {
 	        this.ctx.clearRect(0, 0, MainCanvas.WIDTH, MainCanvas.HEIGHT);
-	        this.simpleEbiruais.forEach(function (evil) { return evil.draw(); });
 	        this.gozzila.draw();
+	        this.simpleEbiruais.forEach(function (evil) { return evil.draw(); });
 	        this.myEvil.draw();
 	        this.sendServer();
 	    };
@@ -899,7 +899,7 @@
 	        // {keycode: [87, 38], eventName: "ue"},
 	        // {keycode: [83, 40], eventName: "sita"},
 	        { keycode: [65, 37], eventName: "hidari" },
-	        { keycode: [32, 87], eventName: "jump" },
+	        { keycode: [32, 87, 67], eventName: "jump" },
 	        { keycode: [88], eventName: "atk" }
 	    ];
 	    return MainCanvas;
@@ -1015,7 +1015,7 @@
 	    };
 	    ;
 	    Notify.success = function (msg) {
-	        humane.spawn({ addnCls: "humane-success", timeout: 500 })(msg);
+	        humane.spawn({ addnCls: "humane-success", timeout: 1000 })(msg);
 	    };
 	    ;
 	    return Notify;
@@ -1205,7 +1205,7 @@
 	        if (this.isDead) {
 	            this.ctx.fillStyle = "black";
 	            this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
-	            this.ctx.fillText("死にました,8秒後に復活ボタンが表示されます", 100, 200);
+	            this.ctx.fillText("死にました。8秒後に復活ボタンが表示されます", 100, 200);
 	            this.isDeadOnce();
 	        }
 	        else {
@@ -1305,6 +1305,9 @@
 	        this.ctx.fillRect(x + 1, y + 1, width, height);
 	        this.ctx.fillStyle = "#4f1ae8";
 	        this.ctx.fillRect(x + 1, y + 1, width * this.hp / this.maxHp, height);
+	        this.ctx.fillStyle = "black";
+	        this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
+	        this.ctx.fillText(this.hp + " / " + this.maxHp, this.x + 30, 40);
 	    };
 	    Gozzila.prototype.action = function () {
 	        switch (this.mode) {

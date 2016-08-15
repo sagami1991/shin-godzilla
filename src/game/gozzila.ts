@@ -49,6 +49,9 @@ export class Gozzila extends BaseMonster {
 		this.ctx.fillRect(x + 1, y + 1, width, height);
 		this.ctx.fillStyle = "#4f1ae8";
 		this.ctx.fillRect(x + 1, y + 1, width * this.hp / this.maxHp , height);
+		this.ctx.fillStyle = "black";
+		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
+		this.ctx.fillText(`${this.hp} / ${this.maxHp}`, this.x + 30, 40);
 	}
 
 	private action() {

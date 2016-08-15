@@ -111,17 +111,21 @@ export class Chat {
 	}
 	private decideTarget() {
 		if (this.decidedTarget) return;
-		const targets = this.zahyous.filter(evil => !evil.isDead);
-		const target1 = targets ? targets[Math.floor(Math.random() * targets.length)] :
-							   this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
-		const target2 = targets ? targets[Math.floor(Math.random() * targets.length)] :
-							   this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
-		if(target1 && target2) {
-			let sendTargets = [target1, target2].map((target) => {return {x: target.x, y: target.y}});
-				if (sendTargets) {
-					this.gozzila.target = sendTargets;
-					this.decidedTarget = true;
-				}
+		try{
+			const targets = this.zahyous.filter(evil => !evil.isDead);
+			const target1 = targets ? targets[Math.floor(Math.random() * targets.length)] :
+								this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
+			const target2 = targets ? targets[Math.floor(Math.random() * targets.length)] :
+								this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
+			if(target1 && target2) {
+				let sendTargets = [target1, target2].map((target) => {return {x: target.x, y: target.y}});
+					if (sendTargets) {
+						this.gozzila.target = sendTargets;
+						this.decidedTarget = true;
+					}
+			}
+		} catch(e) {
+
 		}
 	}
 	private sendGameData() {

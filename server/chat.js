@@ -71,17 +71,21 @@ var Chat = (function () {
     Chat.prototype.decideTarget = function () {
         if (this.decidedTarget)
             return;
-        var targets = this.zahyous.filter(function (evil) { return !evil.isDead; });
-        var target1 = targets ? targets[Math.floor(Math.random() * targets.length)] :
-            this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
-        var target2 = targets ? targets[Math.floor(Math.random() * targets.length)] :
-            this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
-        if (target1 && target2) {
-            var sendTargets = [target1, target2].map(function (target) { return { x: target.x, y: target.y }; });
-            if (sendTargets) {
-                this.gozzila.target = sendTargets;
-                this.decidedTarget = true;
+        try {
+            var targets = this.zahyous.filter(function (evil) { return !evil.isDead; });
+            var target1 = targets ? targets[Math.floor(Math.random() * targets.length)] :
+                this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
+            var target2 = targets ? targets[Math.floor(Math.random() * targets.length)] :
+                this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
+            if (target1 && target2) {
+                var sendTargets = [target1, target2].map(function (target) { return { x: target.x, y: target.y }; });
+                if (sendTargets) {
+                    this.gozzila.target = sendTargets;
+                    this.decidedTarget = true;
+                }
             }
+        }
+        catch (e) {
         }
     };
     Chat.prototype.sendGameData = function () {

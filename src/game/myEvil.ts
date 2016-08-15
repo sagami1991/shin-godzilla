@@ -22,7 +22,7 @@ export class Ebiruai extends SimpleEbiruai {
 			this.hukkatuButton.style.display = "none";
 		});
 	}
-	private isDeadOnceJikkou:boolean;
+	private isDeadOnceJikkou: boolean;
 	private isDeadOnce() {
 		if (!this.isDeadOnceJikkou) {
 			setTimeout(() => {
@@ -35,7 +35,7 @@ export class Ebiruai extends SimpleEbiruai {
 		if (this.isDead) {
 			this.ctx.fillStyle = "black";
 			this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
-			this.ctx.fillText("死にました,8秒後に復活ボタンが表示されます", 100, 200);
+			this.ctx.fillText("死にました。8秒後に復活ボタンが表示されます", 100, 200);
 			this.isDeadOnce();
 		} else {
 			if (MainCanvas.KeyEvent.hidari) {

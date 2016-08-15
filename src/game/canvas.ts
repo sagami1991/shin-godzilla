@@ -120,8 +120,8 @@ export class MainCanvas {
 	/** 描写 */
 	private draw() {
 		this.ctx.clearRect(0, 0, MainCanvas.WIDTH, MainCanvas.HEIGHT);
-		this.simpleEbiruais.forEach(evil => evil.draw());
 		this.gozzila.draw();
+		this.simpleEbiruais.forEach(evil => evil.draw());
 		this.myEvil.draw();
 		this.sendServer();
 	}
@@ -150,7 +150,7 @@ export class MainCanvas {
 		// {keycode: [87, 38], eventName: "ue"},
 		// {keycode: [83, 40], eventName: "sita"},
 		{keycode: [65, 37], eventName: "hidari"},
-		{keycode: [32, 87], eventName: "jump"},
+		{keycode: [32, 87, 67], eventName: "jump"},
 		{keycode: [88], eventName: "atk"}
 	];
 
