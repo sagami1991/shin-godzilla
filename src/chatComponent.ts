@@ -28,7 +28,11 @@ export class ChatComponent {
 		this.logElem = <HTMLElement> document.querySelector(".chat-logs");
 		this.inputElem = <HTMLTextAreaElement> document.querySelector("#chat");
 		this.sendElem = <HTMLElement> document.querySelector(".chat-send");
-
+		document.addEventListener("keydown", (e) => {
+			if (e.keyCode === 13) {
+				this.inputElem.focus();
+			}
+		});
 		this.wsService.addOnReceiveMsgListener((type, value) => this.onReceiveInitLog(type, value));
 		this.wsService.addOnReceiveMsgListener((type, value) => {
 			if (type !== sendType.log) return;
@@ -58,6 +62,7 @@ export class ChatComponent {
 			if (e.keyCode === 13 && !e.shiftKey) {
 				this.send();
 				e.preventDefault();
+				e.stopPropagation();
 			}
 		});
 
@@ -73,7 +78,7 @@ export class ChatComponent {
 
 	private send() {
 		const value = this.inputElem.value;
-		if (value && this.wsService.isClose) {
+		if (value && !this.wsService.isClose) {
 			this.wsService.send(sendType.log, value);
 			this.inputElem.value = "";
 		}

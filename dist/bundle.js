@@ -3155,6 +3155,11 @@
 	        this.logElem = document.querySelector(".chat-logs");
 	        this.inputElem = document.querySelector("#chat");
 	        this.sendElem = document.querySelector(".chat-send");
+	        document.addEventListener("keydown", function (e) {
+	            if (e.keyCode === 13) {
+	                _this.inputElem.focus();
+	            }
+	        });
 	        this.wsService.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveInitLog(type, value); });
 	        this.wsService.addOnReceiveMsgListener(function (type, value) {
 	            if (type !== WebSocketService_1.sendType.log)
@@ -3185,6 +3190,7 @@
 	            if (e.keyCode === 13 && !e.shiftKey) {
 	                _this.send();
 	                e.preventDefault();
+	                e.stopPropagation();
 	            }
 	        });
 	        this.sendElem.addEventListener("click", function (e) {
@@ -3197,7 +3203,7 @@
 	    };
 	    ChatComponent.prototype.send = function () {
 	        var value = this.inputElem.value;
-	        if (value && this.wsService.isClose) {
+	        if (value && !this.wsService.isClose) {
 	            this.wsService.send(WebSocketService_1.sendType.log, value);
 	            this.inputElem.value = "";
 	        }
