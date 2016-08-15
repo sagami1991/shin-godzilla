@@ -131,15 +131,18 @@ var Chat = (function () {
      * DBから新しい順に10行分のログ取り出して送信
      */
     Chat.prototype.sendLog10 = function (ws) {
-        this.collection.find().limit(7).sort({ $natural: -1 })
-            .toArray(function (err, arr) {
-            if (err)
-                console.log(err);
-            ws.send(JSON.stringify({
-                type: WSResType.initlog,
-                value: arr ? arr.reverse() : []
-            }));
-        });
+        try {
+            this.collection.find().limit(7).sort({ $natural: -1 })
+                .toArray(function (err, arr) {
+                if (err)
+                    console.log(err);
+                ws.send(JSON.stringify({
+                    type: WSResType.initlog,
+                    value: arr ? arr.reverse() : []
+                }));
+            });
+        }
+        catch (e) { }
     };
     /**
      * でーた受け取り時
@@ -176,7 +179,10 @@ var Chat = (function () {
             msg: resData.value,
             personId: this.getPersonId(nowWs),
         };
-        this.collection.insert(log);
+        try {
+            this.collection.insert(log);
+        }
+        catch (e) { }
         this.sendAll({ type: WSResType.log, value: log });
     };
     /** バイナリか80文字以上ははじく */
@@ -207,7 +213,7 @@ var Chat = (function () {
     Chat.INTERVAL_SEC = {
         NORMAL: 1,
         BEFORE_ATK: 0.4,
-        ATK: 2.6,
+        ATK: 2,
     };
     return Chat;
 }());

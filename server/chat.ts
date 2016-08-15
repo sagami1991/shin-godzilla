@@ -65,7 +65,7 @@ export class Chat {
 	private static INTERVAL_SEC = {
 		NORMAL: 1,
 		BEFORE_ATK: 0.4,
-		ATK: 2.6,
+		ATK: 2,
 	};
 	private decidedTarget:boolean;
 	public init() {
@@ -169,6 +169,7 @@ export class Chat {
 	 * DBから新しい順に10行分のログ取り出して送信
 	 */
 	private sendLog10(ws: WebSocket) {
+		try {
 		this.collection.find().limit(7).sort({ $natural: -1 })
 		.toArray((err, arr) => {
 			if (err) console.log(err);
@@ -177,6 +178,7 @@ export class Chat {
 				value: arr ? arr.reverse() : []
 			}));
 		});
+		}catch(e){}
 	}
 	/**
 	 * でーた受け取り時
@@ -213,7 +215,9 @@ export class Chat {
 			personId: this.getPersonId(nowWs),
 			//date: dateFormat(new Date(), "m/dd HH:MM")
 		};
+		try {
 		this.collection.insert(log);
+		}catch(e){}
 		this.sendAll({type: WSResType.log, value: log});
 
 	}
