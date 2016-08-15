@@ -99,11 +99,11 @@ var Chat = (function () {
         var _this = this;
         var targetIdx = this.zahyous.findIndex(function (zahyou) { return zahyou.personId === _this.getPersonId(closeWs); });
         this.zahyous.splice(targetIdx, 1);
-        this.sendAll({
-            myWs: closeWs,
-            type: WSResType.infolog,
-            value: "\u8AB0\u304B\u304C\u5207\u65AD\u3057\u307E\u3057\u305F\u3000\u63A5\u7D9A\u6570: " + (this.zahyous.length + 1)
-        });
+        // this.sendAll({
+        // 	myWs: closeWs,
+        // 	type: WSResType.infolog,
+        // 	value: `誰かが切断しました　接続数: ${this.zahyous.length + 1}`
+        // });
         this.sendAll({
             type: WSResType.closePerson,
             value: this.getPersonId(closeWs)

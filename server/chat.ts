@@ -138,11 +138,11 @@ export class Chat {
 	private onClose(closeWs: WebSocket) {
 		const targetIdx = this.zahyous.findIndex(zahyou => zahyou.personId === this.getPersonId(closeWs));
 		this.zahyous.splice(targetIdx, 1);
-		this.sendAll({
-			myWs: closeWs,
-			type: WSResType.infolog,
-			value: `誰かが切断しました　接続数: ${this.zahyous.length + 1}`
-		});
+		// this.sendAll({
+		// 	myWs: closeWs,
+		// 	type: WSResType.infolog,
+		// 	value: `誰かが切断しました　接続数: ${this.zahyous.length + 1}`
+		// });
 		this.sendAll({
 			type: WSResType.closePerson,
 			value: this.getPersonId(closeWs)
