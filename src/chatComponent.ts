@@ -1,4 +1,4 @@
-import {WSService, sendType} from "./WebSocketService";
+import {WSService, WSDataType} from "./WebSocketService";
 import * as Handlebars from "handlebars";
 
 interface ChatLog {
@@ -7,6 +7,22 @@ interface ChatLog {
 	date: string;
 }
 export class ChatComponent {
+	private static IS_TABLET = (u => {
+		return (u.indexOf("windows") !== -1 && u.indexOf("touch") !== -1 && u.indexOf("tablet pc") == -1)
+			|| u.indexOf("ipad") !== -1
+			|| (u.indexOf("android") !== -1 && u.indexOf("mobile") === -1)
+			|| (u.indexOf("firefox") !== -1 && u.indexOf("tablet") !== -1)
+			|| u.indexOf("kindle") !== -1
+			|| u.indexOf("silk") !== -1
+			|| u.indexOf("playbook") !== -1
+			|| (u.indexOf("windows") !== -1 && u.indexOf("phone") !== -1)
+			|| u.indexOf("iphone") !== -1
+			|| u.indexOf("ipod") !== -1
+			|| (u.indexOf("android") !== -1 && u.indexOf("mobile") !== -1)
+			|| (u.indexOf("firefox") !== -1 && u.indexOf("mobile") !== -1)
+			|| u.indexOf("blackberry") !== -1;
+	})(window.navigator.userAgent.toLowerCase());
+
 	private static MAX_LINE = 7;
 	private wsService: WSService;
 	private logs: ChatLog[] = [];
@@ -33,11 +49,11 @@ export class ChatComponent {
 		});
 		this.wsService.addOnReceiveMsgListener((type, value) => this.onReceiveInitLog(type, value));
 		this.wsService.addOnReceiveMsgListener((type, value) => {
-			if (type !== sendType.log) return;
+			if (type !== WSDataType.log) return;
 			const log = <ChatLog>value;
 			this.logs.push(log);
 			if (this.logs.length > ChatComponent.MAX_LINE) this.logs.shift();
-			if (log.personId !== this.wsService.personId) {
+			if (!ChatComponent.IS_TABLET && log.personId !== this.wsService.personId) {
 				Notification.requestPermission();
 				new Notification("", {body: log.msg});
 			} ;
@@ -50,7 +66,7 @@ export class ChatComponent {
 	}
 
 	private onReceiveInitLog(type: number, value: any) {
-		if (type !== sendType.initlog) return;
+		if (type !== WSDataType.initlog) return;
 		this.logs = <ChatLog[]> value;
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
 	}
@@ -77,7 +93,7 @@ export class ChatComponent {
 	private send() {
 		const value = this.inputElem.value;
 		if (value && !this.wsService.isClose) {
-			this.wsService.send(sendType.log, value);
+			this.wsService.send(WSDataType.log, value);
 			this.inputElem.value = "";
 		}
 	}

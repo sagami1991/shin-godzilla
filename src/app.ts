@@ -7,6 +7,7 @@ import {ChatComponent} from "./chatComponent";
 import {WSService} from "./WebSocketService";
 import 'core-js/es6/array';
 import 'core-js/es6/promise';
+import 'core-js/es6/object';
 
 class MainComponent {
 	private canvas: MainCanvas;

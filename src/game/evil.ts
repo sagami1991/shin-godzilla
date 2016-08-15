@@ -15,12 +15,14 @@ export class SimpleEbiruai extends BaseMonster {
 	}
 	public draw() {
 		this.action();
-		this.image = this.isMigiMuki ? MainCanvas.images.evilmigi : MainCanvas.images.evilHidari;
-		this.ctx.drawImage(this.image , this.x, MainCanvas.convY(this.y + SimpleEbiruai.HEIGHT));
+		this.image = this.isDead ? 		MainCanvas.images.evilSinda :
+					 this.isMigiMuki ? 	MainCanvas.images.evilmigi :
+										MainCanvas.images.evilHidari;
+		this.ctx.drawImage(this.image , this.x, MainCanvas.convY(this.y, SimpleEbiruai.HEIGHT));
 		this.trainDraw();
 	}
 
-	protected trainDraw() {
+	private trainDraw() {
 		this.myTrains = this.myTrains.filter(train => !train.isDead);
 		this.myTrains.forEach(train => train.draw());
 	}

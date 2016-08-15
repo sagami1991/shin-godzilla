@@ -1,6 +1,6 @@
 "use strict";
-var dateFormat = require('dateformat');
 /** 送信する情報のタイプ */
+var WSResType;
 (function (WSResType) {
     WSResType[WSResType["error"] = 0] = "error";
     WSResType[WSResType["initlog"] = 1] = "initlog";
@@ -9,29 +9,50 @@ var dateFormat = require('dateformat');
     WSResType[WSResType["zahyou"] = 4] = "zahyou";
     WSResType[WSResType["personId"] = 5] = "personId";
     WSResType[WSResType["closePerson"] = 6] = "closePerson";
-})(exports.WSResType || (exports.WSResType = {}));
-var WSResType = exports.WSResType;
+    WSResType[WSResType["gozzilaDamege"] = 7] = "gozzilaDamege";
+})(WSResType || (WSResType = {}));
+var GozzilaMode;
+(function (GozzilaMode) {
+    GozzilaMode[GozzilaMode["init"] = 0] = "init";
+    GozzilaMode[GozzilaMode["beforeAtk"] = 1] = "beforeAtk";
+    GozzilaMode[GozzilaMode["atk"] = 2] = "atk";
+    GozzilaMode[GozzilaMode["dead"] = 3] = "dead";
+})(GozzilaMode || (GozzilaMode = {}));
 var Chat = (function () {
     function Chat(wss, collection) {
         this.zahyous = [];
-        this.befZahyous = [];
+        this.befSendData = [];
+        this.intervalCount = 0;
         this.wss = wss;
         this.collection = collection;
     }
     Chat.prototype.init = function () {
         var _this = this;
+        var normalF = Chat.INTERVAL_SEC.NORMAL * Chat.FRAME;
+        var beforeAtkF = (Chat.INTERVAL_SEC.NORMAL + Chat.INTERVAL_SEC.BEFORE_ATK) * Chat.FRAME;
+        var atkSecF = (Chat.INTERVAL_SEC.NORMAL + Chat.INTERVAL_SEC.BEFORE_ATK + Chat.INTERVAL_SEC.ATK) * Chat.FRAME;
         setInterval(function () {
-            if (JSON.stringify(_this.befZahyous) !== JSON.stringify(_this.zahyous)) {
-                _this.sendAll({
-                    type: WSResType.zahyou,
-                    value: _this.zahyous
-                });
+            _this.sendGameData();
+            if (_this.intervalCount < normalF) {
+                _this.gozzila.mode = GozzilaMode.init;
             }
-            _this.befZahyous = JSON.parse(JSON.stringify(_this.zahyous));
-        }, 1000 / 30);
+            else if (_this.intervalCount < beforeAtkF) {
+                _this.gozzila.mode = GozzilaMode.beforeAtk;
+                _this.decideTarget();
+            }
+            else if (_this.intervalCount < atkSecF) {
+                _this.gozzila.mode = GozzilaMode.atk;
+                _this.decideTarget();
+            }
+            else {
+                _this.decidedTarget = false;
+                _this.intervalCount = 0;
+            }
+            _this.intervalCount++;
+        }, 1000 / Chat.FRAME);
         this.wss.on('connection', function (ws) {
-            _this.sendLog10(ws);
             ws.send(JSON.stringify({ type: WSResType.personId, value: _this.getPersonId(ws) }));
+            _this.sendLog10(ws);
             _this.sendAll({
                 myWs: ws,
                 isSelfSend: false,
@@ -41,6 +62,35 @@ var Chat = (function () {
             ws.on('message', function (data, flags) { return _this.receiveData(ws, data, flags); });
             ws.on("close", function () { return _this.onClose(ws); });
         });
+        this.gozzila = {
+            hp: 4000,
+            mode: GozzilaMode.init,
+            target: null
+        };
+    };
+    Chat.prototype.decideTarget = function () {
+        if (this.decidedTarget)
+            return;
+        var targets = this.zahyous.filter(function (evil) { return !evil.isDead; });
+        var target = targets ? targets[Math.floor(Math.random() * targets.length)] :
+            this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
+        if (target) {
+            this.gozzila.target = { x: target.x, y: target.y };
+            this.decidedTarget = true;
+        }
+    };
+    Chat.prototype.sendGameData = function () {
+        var sendData = {
+            gozzila: this.gozzila,
+            evils: this.zahyous
+        };
+        if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
+            this.sendAll({
+                type: WSResType.zahyou,
+                value: sendData
+            });
+        }
+        this.befSendData = JSON.parse(JSON.stringify(sendData));
     };
     Chat.prototype.getPersonId = function (ws) {
         return ws.upgradeReq.headers["sec-websocket-key"];
@@ -106,25 +156,19 @@ var Chat = (function () {
             case WSResType.log:
                 this.receiveMsg(ws, resData);
                 break;
+            case WSResType.gozzilaDamege:
+                this.gozzila.hp -= 2;
+                break;
         }
     };
     Chat.prototype.receiveZahyou = function (nowWs, resData) {
-        var nowPersonId = nowWs.upgradeReq.headers["sec-websocket-key"];
-        var zahyou = this.zahyous.find(function (zahyou) { return zahyou.personId === nowPersonId; });
-        if (zahyou) {
-            zahyou.isMigiMuki = resData.value.isMigiMuki;
-            zahyou.isAtk = resData.value.isAtk;
-            zahyou.x = resData.value.x;
-            zahyou.y = resData.value.y;
+        var _this = this;
+        var evilInfo = this.zahyous.find(function (zahyou) { return zahyou.personId === _this.getPersonId(nowWs); });
+        if (evilInfo) {
+            Object.assign(evilInfo, resData.value);
         }
         else {
-            this.zahyous.push({
-                personId: nowPersonId,
-                isMigiMuki: resData.value.isMigiMuki,
-                x: resData.value.x,
-                y: resData.value.y,
-                isAtk: resData.value.isAtk
-            });
+            this.zahyous.push(Object.assign({ personId: this.getPersonId(nowWs) }, resData.value));
         }
     };
     Chat.prototype.receiveMsg = function (nowWs, resData) {
@@ -139,6 +183,9 @@ var Chat = (function () {
     Chat.prototype.validateMsg = function (data, isBinary) {
         if (!isBinary) {
             var resData = JSON.parse(data);
+            if (resData.type === WSResType.gozzilaDamege) {
+                return true;
+            }
             if (!resData.type || !resData.value) {
                 return false;
             }
@@ -155,6 +202,12 @@ var Chat = (function () {
             return false;
         }
         return true;
+    };
+    Chat.FRAME = 30;
+    Chat.INTERVAL_SEC = {
+        NORMAL: 2,
+        BEFORE_ATK: 1,
+        ATK: 3,
     };
     return Chat;
 }());

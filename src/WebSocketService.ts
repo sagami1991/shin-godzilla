@@ -2,7 +2,7 @@
 import {Notify} from "./util";
 // import * as shortid from 'shortid';
 
-export enum sendType {
+export enum WSDataType {
 	error,
 	initlog,
 	log,
@@ -46,11 +46,11 @@ export class WSService {
 		this.ws.onclose = () => this.onClose();
 		this.pingInterval();
 		this.addOnReceiveMsgListener((type, value) => {
-			if (type !== sendType.infolog) return;
+			if (type !== WSDataType.infolog) return;
 			Notify.success(<string> value);
 		});
 		this.addOnReceiveMsgListener((type, value) => {
-			if (type !== sendType.personId) return;
+			if (type !== WSDataType.personId) return;
 			this.personId = value;
 		});
 

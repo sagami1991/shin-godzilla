@@ -7,6 +7,7 @@ export class BaseMonster {
 	public isDead: boolean;
 	public x: number;
 	public y: number;
+	public maxHp: number;
 	public hp: number;
 	public isMigiMuki: boolean;
 	constructor(ctx: CanvasRenderingContext2D, option: Zahyou) {
