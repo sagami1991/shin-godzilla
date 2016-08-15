@@ -2,7 +2,7 @@ body, h1, h2, h3, p {
 	margin: 0;
 }
 body, textarea {
-	font-family: 'Roboto', "Yu Gothic", "游ゴシック", 'Meiryo UI','メイリオ';
+	// font-family: 'Roboto', "Yu Gothic", "游ゴシック", 'Meiryo UI','メイリオ';
 }
 body {
 	margin: 0;
@@ -58,7 +58,8 @@ ul.chat-logs {
 	li.chat-log {
 		color: white;
 		font-size: 12px;
-		margin: 0;
+		margin: 1px 0;
+
 	}
 }
 
@@ -78,7 +79,7 @@ ul.chat-logs {
 		resize: none;
 		padding: 5px;
 		font-size: 14px;
-		height: 24px;
+		height: 1em;
 		&:focus {
 			outline: 0;
 		}

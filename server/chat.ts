@@ -11,6 +11,7 @@ export enum WSResType {
 	infolog,  // 情報ログ
 	zahyou, // 座標
 	personId,
+	closePerson
 }
 
 interface ChatLog {
@@ -27,6 +28,7 @@ interface Zahyou {
 	isMigiMuki: boolean;
 	x: number;
 	y: number;
+	isAtk: boolean;
 }
 
 interface sendAllOpt {
@@ -52,8 +54,6 @@ export class Chat {
 		setInterval(
 			() => {
 				if (JSON.stringify(this.befZahyous) !== JSON.stringify(this.zahyous)) {
-					console.log(this.befZahyous);
-					console.log(this.zahyous)
 					this.sendAll({
 						type: WSResType.zahyou,
 						value: this.zahyous
@@ -69,7 +69,7 @@ export class Chat {
 				myWs: ws,
 				isSelfSend: false,
 				type: WSResType.infolog,
-				value: "誰かがアクセスしました"
+				value: `誰かがアクセスしました　接続数: ${this.zahyous.length + 1}`
 			});
 			ws.on('message', (data, flags) => this.receiveData(ws, data, flags));
 			ws.on("close", () => this.onClose(ws));
@@ -80,13 +80,16 @@ export class Chat {
 		return ws.upgradeReq.headers["sec-websocket-key"];
 	}
 	private onClose(closeWs: WebSocket) {
-		const targetIdx = this.zahyous.findIndex(zahyou => zahyou.personId === closeWs.upgradeReq.headers["sec-websocket-key"]);
+		const targetIdx = this.zahyous.findIndex(zahyou => zahyou.personId === this.getPersonId(closeWs));
 		this.zahyous.splice(targetIdx, 1);
 		this.sendAll({
 			myWs: closeWs,
-			isSelfSend: false,
 			type: WSResType.infolog,
-			value: "誰かが切断しました"
+			value: `誰かが切断しました　接続数: ${this.zahyous.length + 1}`
+		});
+		this.sendAll({
+			type: WSResType.closePerson,
+			value: this.getPersonId(closeWs)
 		});
 	}
 	/** 全員に送る */
@@ -142,6 +145,7 @@ export class Chat {
 		const zahyou = this.zahyous.find(zahyou => zahyou.personId === nowPersonId);
 		if (zahyou) {
 			zahyou.isMigiMuki = resData.value.isMigiMuki;
+			zahyou.isAtk = resData.value.isAtk;
 			zahyou.x = resData.value.x;
 			zahyou.y = resData.value.y;
 		} else {
@@ -149,7 +153,8 @@ export class Chat {
 				personId: nowPersonId,
 				isMigiMuki: resData.value.isMigiMuki,
 				x: resData.value.x,
-				y: resData.value.y
+				y: resData.value.y,
+				isAtk: resData.value.isAtk
 			});
 		}
 	}

@@ -15,9 +15,7 @@ export class ChatComponent {
 	private sendElem: HTMLElement;
 	private static logsTmpl = Handlebars.compile(`
 		{{#logs}}
-		<li class="chat-log">
-			{{msg}}
-		</li>
+			<li class="chat-log">{{msg}}</li>
 		{{/logs}}
 	`);
 	constructor(wsService: WSService) {
@@ -73,7 +71,7 @@ export class ChatComponent {
 
 	private onClose() {
 		this.inputElem.disabled = true;
-		this.inputElem.value = "チャットが切断されました。";
+		this.inputElem.value = "切断されました。";
 	}
 
 	private send() {

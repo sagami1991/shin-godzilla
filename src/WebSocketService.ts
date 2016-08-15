@@ -8,7 +8,8 @@ export enum sendType {
 	log,
 	infolog,
 	zahyou,
-	personId
+	personId,
+	closePerson
 }
 
 export interface ResData {

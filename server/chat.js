@@ -8,6 +8,7 @@ var dateFormat = require('dateformat');
     WSResType[WSResType["infolog"] = 3] = "infolog";
     WSResType[WSResType["zahyou"] = 4] = "zahyou";
     WSResType[WSResType["personId"] = 5] = "personId";
+    WSResType[WSResType["closePerson"] = 6] = "closePerson";
 })(exports.WSResType || (exports.WSResType = {}));
 var WSResType = exports.WSResType;
 var Chat = (function () {
@@ -21,8 +22,6 @@ var Chat = (function () {
         var _this = this;
         setInterval(function () {
             if (JSON.stringify(_this.befZahyous) !== JSON.stringify(_this.zahyous)) {
-                console.log(_this.befZahyous);
-                console.log(_this.zahyous);
                 _this.sendAll({
                     type: WSResType.zahyou,
                     value: _this.zahyous
@@ -37,7 +36,7 @@ var Chat = (function () {
                 myWs: ws,
                 isSelfSend: false,
                 type: WSResType.infolog,
-                value: "誰かがアクセスしました"
+                value: "\u8AB0\u304B\u304C\u30A2\u30AF\u30BB\u30B9\u3057\u307E\u3057\u305F\u3000\u63A5\u7D9A\u6570: " + (_this.zahyous.length + 1)
             });
             ws.on('message', function (data, flags) { return _this.receiveData(ws, data, flags); });
             ws.on("close", function () { return _this.onClose(ws); });
@@ -47,13 +46,17 @@ var Chat = (function () {
         return ws.upgradeReq.headers["sec-websocket-key"];
     };
     Chat.prototype.onClose = function (closeWs) {
-        var targetIdx = this.zahyous.findIndex(function (zahyou) { return zahyou.personId === closeWs.upgradeReq.headers["sec-websocket-key"]; });
+        var _this = this;
+        var targetIdx = this.zahyous.findIndex(function (zahyou) { return zahyou.personId === _this.getPersonId(closeWs); });
         this.zahyous.splice(targetIdx, 1);
         this.sendAll({
             myWs: closeWs,
-            isSelfSend: false,
             type: WSResType.infolog,
-            value: "誰かが切断しました"
+            value: "\u8AB0\u304B\u304C\u5207\u65AD\u3057\u307E\u3057\u305F\u3000\u63A5\u7D9A\u6570: " + (this.zahyous.length + 1)
+        });
+        this.sendAll({
+            type: WSResType.closePerson,
+            value: this.getPersonId(closeWs)
         });
     };
     /** 全員に送る */
@@ -110,6 +113,7 @@ var Chat = (function () {
         var zahyou = this.zahyous.find(function (zahyou) { return zahyou.personId === nowPersonId; });
         if (zahyou) {
             zahyou.isMigiMuki = resData.value.isMigiMuki;
+            zahyou.isAtk = resData.value.isAtk;
             zahyou.x = resData.value.x;
             zahyou.y = resData.value.y;
         }
@@ -118,7 +122,8 @@ var Chat = (function () {
                 personId: nowPersonId,
                 isMigiMuki: resData.value.isMigiMuki,
                 x: resData.value.x,
-                y: resData.value.y
+                y: resData.value.y,
+                isAtk: resData.value.isAtk
             });
         }
     };
