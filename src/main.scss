@@ -105,11 +105,12 @@ ul.chat-logs {
 }
 
 .key-pad {
-	position: relative;
+	padding: 100px 0 ;
+	display: flex;
 }
 .pad {
+	margin-right: 20px;
 	border: none;
-	position: absolute;
 	cursor: pointer;
 	box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
     border-radius: 50%;
@@ -127,29 +128,13 @@ ul.chat-logs {
 	&:hover {
 		background-color: #9c27b0;
 	}
-	$width: 160;
-	&.hidari {
-		top: 100px;
-		left: 20px + $width * 0;
-	}
-	&.migi {
-		top: 100px;
-		left: 20px + $width * 1;
-	}
-	&.jump {
-		top: 100px;
-		left: 20px + $width * 2;
-	}
-	&.atk {
-		top: 100px;
-		left: 20px + $width * 3;
-	}
-		&.hukkatu {
-		top: 100px;
-		left: 20px + $width * 4;
-	}
-}
 
+}
+.footer {
+	background-color: rgb(33, 33, 33);
+	padding: 30px;
+	color: rgba(255, 255, 255, 0.541176);
+}
 #canvas {
 	border: 1px solid black;
 }
