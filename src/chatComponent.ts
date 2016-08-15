@@ -103,7 +103,7 @@ export class ChatComponent {
 					this.inputElem.disabled = false;
 					this.isSended = false;
 				}
-			}, 3000);
+			}, 2000);
 		}
 	}
 }

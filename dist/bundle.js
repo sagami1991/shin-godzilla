@@ -1194,16 +1194,19 @@
 	        });
 	    }
 	    Ebiruai.prototype.isDeadOnce = function () {
+	        var _this = this;
 	        if (!this.isDeadOnceJikkou) {
-	            this.hukkatuButton.style.display = "block";
+	            setTimeout(function () {
+	                _this.hukkatuButton.style.display = "block";
+	            }, 8000);
 	            this.isDeadOnceJikkou = true;
 	        }
 	    };
 	    Ebiruai.prototype.action = function () {
 	        if (this.isDead) {
 	            this.ctx.fillStyle = "black";
-	            this.ctx.font = "36px 'ＭＳ Ｐゴシック'";
-	            this.ctx.fillText("死にました", 300, 200);
+	            this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
+	            this.ctx.fillText("死にました,8秒後に復活ボタンが表示されます", 100, 200);
 	            this.isDeadOnce();
 	        }
 	        else {
@@ -1432,7 +1435,7 @@
 	                    _this.inputElem.disabled = false;
 	                    _this.isSended = false;
 	                }
-	            }, 3000);
+	            }, 2000);
 	        }
 	    };
 	    ChatComponent.IS_TABLET = (function (u) {
