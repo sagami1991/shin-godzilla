@@ -21,7 +21,7 @@ export class Gozzila extends BaseMonster {
 		//34, 61
 		this.begin = [
 			{x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU},
-			{x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU}
+			{x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU},
 			];
 		this.maxHp = 4000;
 		this.hp = 4000;

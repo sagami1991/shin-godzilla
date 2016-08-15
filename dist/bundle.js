@@ -783,7 +783,6 @@
 	        this.gozzila.hp = gozzilaInfo.hp;
 	        this.gozzila.mode = gozzilaInfo.mode;
 	        this.gozzila.target = gozzilaInfo.target;
-	        console.log(gozzilaInfo);
 	        var evils = value.evils;
 	        evils.forEach(function (evil) {
 	            var existEvil = _this.simpleEbiruais.find(function (existEvil) { return existEvil.personId === evil.personId; });
@@ -1203,9 +1202,11 @@
 	    };
 	    Ebiruai.prototype.action = function () {
 	        if (this.isDead) {
+	            if (this.timecount >= 0)
+	                this.timecount--;
 	            this.ctx.fillStyle = "black";
 	            this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
-	            this.ctx.fillText("死にました。8秒後に復活ボタンが表示されます", 100, 200);
+	            this.ctx.fillText("\u6B7B\u306B\u307E\u3057\u305F\u3002" + Math.ceil(this.timecount / 30) + "\u79D2\u5F8C\u306B\u5FA9\u6D3B\u30DC\u30BF\u30F3\u304C\u8868\u793A\u3055\u308C\u307E\u3059", 100, 200);
 	            this.isDeadOnce();
 	        }
 	        else {
@@ -1243,6 +1244,7 @@
 	            if (this.hp <= 0) {
 	                this.hp = 0;
 	                this.isDead = true;
+	                this.timecount = canvas_1.MainCanvas.FRAME * 8;
 	            }
 	            canvas_1.MainCanvas.KeyEvent.atk = false;
 	        }
@@ -1284,7 +1286,7 @@
 	        //34, 61
 	        this.begin = [
 	            { x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU },
-	            { x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU }
+	            { x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU },
 	        ];
 	        this.maxHp = 4000;
 	        this.hp = 4000;

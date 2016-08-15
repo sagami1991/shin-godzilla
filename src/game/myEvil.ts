@@ -22,6 +22,7 @@ export class Ebiruai extends SimpleEbiruai {
 			this.hukkatuButton.style.display = "none";
 		});
 	}
+	private timecount: number;
 	private isDeadOnceJikkou: boolean;
 	private isDeadOnce() {
 		if (!this.isDeadOnceJikkou) {
@@ -33,9 +34,10 @@ export class Ebiruai extends SimpleEbiruai {
 	}
 	protected action() {
 		if (this.isDead) {
+			if (this.timecount >= 0) this.timecount--;
 			this.ctx.fillStyle = "black";
 			this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
-			this.ctx.fillText("死にました。8秒後に復活ボタンが表示されます", 100, 200);
+			this.ctx.fillText(`死にました。${Math.ceil(this.timecount / 30)}秒後に復活ボタンが表示されます`, 100, 200);
 			this.isDeadOnce();
 		} else {
 			if (MainCanvas.KeyEvent.hidari) {
@@ -72,6 +74,7 @@ export class Ebiruai extends SimpleEbiruai {
 			if (this.hp <= 0) {
 				this.hp = 0;
 				this.isDead = true;
+				this.timecount = MainCanvas.FRAME * 8;
 			}
 			MainCanvas.KeyEvent.atk = false;
 		}

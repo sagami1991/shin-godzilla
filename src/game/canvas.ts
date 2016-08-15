@@ -90,7 +90,7 @@ export class MainCanvas {
 			personId: this.ws.personId,
 			gozzila: this.gozzila
 		});
-		this.gozzila.target = [0,0].map( ()=> {return{x: this.myEvil.x, y: this.myEvil.y}});
+		this.gozzila.target = [0, 0].map( ()=> {return{x: this.myEvil.x, y: this.myEvil.y}});
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
 		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveGameData(type, value));
 		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveClosePerson(type, value));
@@ -105,7 +105,6 @@ export class MainCanvas {
 		this.gozzila.hp = gozzilaInfo.hp;
 		this.gozzila.mode = gozzilaInfo.mode;
 		this.gozzila.target = gozzilaInfo.target;
-		console.log(gozzilaInfo);
 		const evils = <Zahyou[]> value.evils;
 		evils.forEach(evil => {
 			const existEvil = this.simpleEbiruais.find(existEvil => existEvil.personId === evil.personId);

@@ -64,7 +64,7 @@ export class Chat {
 	private intervalCount: number = 0;
 	private static INTERVAL_SEC = {
 		NORMAL: 1,
-		BEFORE_ATK: 0.6,
+		BEFORE_ATK: 0.8,
 		ATK: 1.6,
 	};
 	private decidedTarget:boolean;
@@ -225,7 +225,7 @@ export class Chat {
 			//date: dateFormat(new Date(), "m/dd HH:MM")
 		};
 		try {
-		this.collection.insert(log);
+			this.collection.insert(log);
 		}catch(e){}
 		this.sendAll({type: WSResType.log, value: log});
 

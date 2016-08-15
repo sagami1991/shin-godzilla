@@ -221,7 +221,7 @@ var Chat = (function () {
     Chat.FRAME = 30;
     Chat.INTERVAL_SEC = {
         NORMAL: 1,
-        BEFORE_ATK: 0.6,
+        BEFORE_ATK: 0.8,
         ATK: 1.6,
     };
     return Chat;
