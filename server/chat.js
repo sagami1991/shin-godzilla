@@ -72,11 +72,16 @@ var Chat = (function () {
         if (this.decidedTarget)
             return;
         var targets = this.zahyous.filter(function (evil) { return !evil.isDead; });
-        var target = targets ? targets[Math.floor(Math.random() * targets.length)] :
+        var target1 = targets ? targets[Math.floor(Math.random() * targets.length)] :
             this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
-        if (target) {
-            this.gozzila.target = { x: target.x, y: target.y };
-            this.decidedTarget = true;
+        var target2 = targets ? targets[Math.floor(Math.random() * targets.length)] :
+            this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
+        if (target1 && target2) {
+            var sendTargets = [target1, target2].map(function (target) { return { x: target.x, y: target.y }; });
+            if (sendTargets) {
+                this.gozzila.target = sendTargets;
+                this.decidedTarget = true;
+            }
         }
     };
     Chat.prototype.sendGameData = function () {

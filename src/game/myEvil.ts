@@ -1,5 +1,3 @@
-/// <reference path="./evil.ts" />
-
 import {MainCanvas, Zahyou} from "./canvas";
 import {SimpleEbiruai} from "./evil";
 import {Gozzila} from "./gozzila";
@@ -66,9 +64,8 @@ export class Ebiruai extends SimpleEbiruai {
 				this.atksita = true;
 				this.atk();
 			}
-			if (this.gozzila.inBeam(this.x, this.x + SimpleEbiruai.WIDTH, this.y, this.y + SimpleEbiruai.HEIGHT)) {
-				this.hp -= 1.8;
-			}
+			const beamAtatteiruCount = this.gozzila.inBeam(this.x, this.x + SimpleEbiruai.WIDTH, this.y, this.y + SimpleEbiruai.HEIGHT);
+			this.hp -= 1.8 * beamAtatteiruCount;
 			if (this.gozzila.sessyoku(this.x, this.y)) {
 				this.hp -= 12;
 			}

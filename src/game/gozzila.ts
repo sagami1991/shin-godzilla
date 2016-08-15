@@ -12,14 +12,17 @@ export class Gozzila extends BaseMonster {
 	public static HEIGHT = 64;
 	public static BAIRITU = 5;
 	/** ビームが発射される座標*/
-	public begin: {x: number, y: number};
+	public begin: {x: number, y: number}[];
 	public isDamege: boolean;
-	public target: {x: number, y: number};//[];
+	public target: {x: number, y: number}[];
 	public mode: number;
 	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
 		super(ctx, zahyou);
 		//34, 61
-		this.begin = {x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU};
+		this.begin = [
+			{x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU},
+			{x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU}
+			];
 		this.maxHp = 4000;
 		this.hp = 4000;
 	}
@@ -64,14 +67,20 @@ export class Gozzila extends BaseMonster {
 			break;
 		}
 	}
-	/** ビームに当たっているか */
+	/** ビームに当たっている数 */
 	public inBeam(x0: number, x1: number,  y0: number, y1: number) {
-		if (this.mode !== GozzilaMode.atk) return false;
-		const ya = (this.target.y - this.begin.y) * (x0 - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
-		const yb = (this.target.y - this.begin.y) * (x1 - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
-		const xa = (this.target.x - this.begin.x) * (y0 - this.begin.y) / (this.target.y - this.begin.y) + this.begin.x;
-		const xb = (this.target.x - this.begin.x) * (y1 - this.begin.y) / (this.target.y - this.begin.y) + this.begin.x;
-		return (y0 <= ya && ya <= y1) || (y0 <= yb && yb <= y1) || (x0 <= xa && xa <= x1) || (x0 <= xb && xb <= x1) ;
+		if (this.mode !== GozzilaMode.atk) return 0;
+		let count = 0;
+		this.target.forEach((target, i) => {
+			const ya = (target.y - this.begin[i].y) * (x0 - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
+			const yb = (target.y - this.begin[i].y) * (x1 - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
+			const xa = (target.x - this.begin[i].x) * (y0 - this.begin[i].y) / (target.y - this.begin[i].y) + this.begin[i].x;
+			const xb = (target.x - this.begin[i].x) * (y1 - this.begin[i].y) / (target.y - this.begin[i].y) + this.begin[i].x;
+			if ((y0 <= ya && ya <= y1) || (y0 <= yb && yb <= y1) || (x0 <= xa && xa <= x1) || (x0 <= xb && xb <= x1)) {
+				count ++;
+			} ;
+		});
+		return count;
 	}
 	/** 接触しているか */
 	public sessyoku(x: number, y: number) {
@@ -80,18 +89,18 @@ export class Gozzila extends BaseMonster {
 	}
 
 	protected atk() {
-		// this.target.forEach(target => {
-		const endX = 0;
-		const endY = (this.target.y - this.begin.y) * (endX - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
-		this.ctx.strokeStyle = "#317cff";
-		this.ctx.shadowColor = "#317cff";
-		this.ctx.shadowBlur = 8;
-		this.ctx.beginPath();
-		this.ctx.moveTo(this.begin.x, MainCanvas.convY(this.begin.y, 0));
-		this.ctx.lineTo(endX, MainCanvas.convY(endY, 0));
-		this.ctx.closePath();
-		this.ctx.stroke();
-		this.ctx.shadowBlur = 0;
-		// })
+		this.target.forEach((target, i) => {
+			const endX = 0;
+			const endY = (target.y - this.begin[i].y) * (endX - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
+			this.ctx.strokeStyle = "#317cff";
+			this.ctx.shadowColor = "#317cff";
+			this.ctx.shadowBlur = 8;
+			this.ctx.beginPath();
+			this.ctx.moveTo(this.begin[i].x, MainCanvas.convY(this.begin[i].y, 0));
+			this.ctx.lineTo(endX, MainCanvas.convY(endY, 0));
+			this.ctx.closePath();
+			this.ctx.stroke();
+			this.ctx.shadowBlur = 0;
+		})
 	}
 }

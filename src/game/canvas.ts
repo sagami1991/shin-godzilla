@@ -17,7 +17,7 @@ export interface Zahyou {
 interface GozzilaInfo {
 	hp: number;
 	mode: number;
-	target: {x: number, y: number};
+	target: {x: number, y: number}[];
 }
 
 export class MainCanvas {
@@ -90,7 +90,7 @@ export class MainCanvas {
 			personId: this.ws.personId,
 			gozzila: this.gozzila
 		});
-		this.gozzila.target = {x: this.myEvil.x, y: this.myEvil.y};
+		this.gozzila.target = [0,0].map( ()=> {return{x: this.myEvil.x, y: this.myEvil.y}});
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
 		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveGameData(type, value));
 		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveClosePerson(type, value));

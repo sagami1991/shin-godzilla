@@ -765,7 +765,7 @@
 	            personId: this.ws.personId,
 	            gozzila: this.gozzila
 	        });
-	        this.gozzila.target = { x: this.myEvil.x, y: this.myEvil.y };
+	        this.gozzila.target = [0, 0].map(function () { return { x: _this.myEvil.x, y: _this.myEvil.y }; });
 	        this.timer = window.setInterval(function () { return _this.draw(); }, 1000 / MainCanvas.FRAME);
 	        this.ws.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveGameData(type, value); });
 	        this.ws.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveClosePerson(type, value); });
@@ -1167,7 +1167,6 @@
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path="./evil.ts" />
 	"use strict";
 	var __extends = (this && this.__extends) || function (d, b) {
 	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -1236,9 +1235,8 @@
 	                this.atksita = true;
 	                this.atk();
 	            }
-	            if (this.gozzila.inBeam(this.x, this.x + evil_1.SimpleEbiruai.WIDTH, this.y, this.y + evil_1.SimpleEbiruai.HEIGHT)) {
-	                this.hp -= 1.8;
-	            }
+	            var beamAtatteiruCount = this.gozzila.inBeam(this.x, this.x + evil_1.SimpleEbiruai.WIDTH, this.y, this.y + evil_1.SimpleEbiruai.HEIGHT);
+	            this.hp -= 1.8 * beamAtatteiruCount;
 	            if (this.gozzila.sessyoku(this.x, this.y)) {
 	                this.hp -= 12;
 	            }
@@ -1284,7 +1282,10 @@
 	    function Gozzila(ctx, zahyou) {
 	        _super.call(this, ctx, zahyou);
 	        //34, 61
-	        this.begin = { x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU };
+	        this.begin = [
+	            { x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU },
+	            { x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU }
+	        ];
 	        this.maxHp = 4000;
 	        this.hp = 4000;
 	    }
@@ -1321,15 +1322,23 @@
 	                break;
 	        }
 	    };
-	    /** ビームに当たっているか */
+	    /** ビームに当たっている数 */
 	    Gozzila.prototype.inBeam = function (x0, x1, y0, y1) {
+	        var _this = this;
 	        if (this.mode !== GozzilaMode.atk)
-	            return false;
-	        var ya = (this.target.y - this.begin.y) * (x0 - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
-	        var yb = (this.target.y - this.begin.y) * (x1 - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
-	        var xa = (this.target.x - this.begin.x) * (y0 - this.begin.y) / (this.target.y - this.begin.y) + this.begin.x;
-	        var xb = (this.target.x - this.begin.x) * (y1 - this.begin.y) / (this.target.y - this.begin.y) + this.begin.x;
-	        return (y0 <= ya && ya <= y1) || (y0 <= yb && yb <= y1) || (x0 <= xa && xa <= x1) || (x0 <= xb && xb <= x1);
+	            return 0;
+	        var count = 0;
+	        this.target.forEach(function (target, i) {
+	            var ya = (target.y - _this.begin[i].y) * (x0 - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
+	            var yb = (target.y - _this.begin[i].y) * (x1 - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
+	            var xa = (target.x - _this.begin[i].x) * (y0 - _this.begin[i].y) / (target.y - _this.begin[i].y) + _this.begin[i].x;
+	            var xb = (target.x - _this.begin[i].x) * (y1 - _this.begin[i].y) / (target.y - _this.begin[i].y) + _this.begin[i].x;
+	            if ((y0 <= ya && ya <= y1) || (y0 <= yb && yb <= y1) || (x0 <= xa && xa <= x1) || (x0 <= xb && xb <= x1)) {
+	                count++;
+	            }
+	            ;
+	        });
+	        return count;
 	    };
 	    /** 接触しているか */
 	    Gozzila.prototype.sessyoku = function (x, y) {
@@ -1338,19 +1347,20 @@
 	        return this.x + 5 <= x;
 	    };
 	    Gozzila.prototype.atk = function () {
-	        // this.target.forEach(target => {
-	        var endX = 0;
-	        var endY = (this.target.y - this.begin.y) * (endX - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
-	        this.ctx.strokeStyle = "#317cff";
-	        this.ctx.shadowColor = "#317cff";
-	        this.ctx.shadowBlur = 8;
-	        this.ctx.beginPath();
-	        this.ctx.moveTo(this.begin.x, canvas_1.MainCanvas.convY(this.begin.y, 0));
-	        this.ctx.lineTo(endX, canvas_1.MainCanvas.convY(endY, 0));
-	        this.ctx.closePath();
-	        this.ctx.stroke();
-	        this.ctx.shadowBlur = 0;
-	        // })
+	        var _this = this;
+	        this.target.forEach(function (target, i) {
+	            var endX = 0;
+	            var endY = (target.y - _this.begin[i].y) * (endX - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
+	            _this.ctx.strokeStyle = "#317cff";
+	            _this.ctx.shadowColor = "#317cff";
+	            _this.ctx.shadowBlur = 8;
+	            _this.ctx.beginPath();
+	            _this.ctx.moveTo(_this.begin[i].x, canvas_1.MainCanvas.convY(_this.begin[i].y, 0));
+	            _this.ctx.lineTo(endX, canvas_1.MainCanvas.convY(endY, 0));
+	            _this.ctx.closePath();
+	            _this.ctx.stroke();
+	            _this.ctx.shadowBlur = 0;
+	        });
 	    };
 	    Gozzila.WIDTH = 64;
 	    Gozzila.HEIGHT = 64;
