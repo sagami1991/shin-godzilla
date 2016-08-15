@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=800, initial-scale=1">
+	<title>Jupiter Story</title>
+	<link rel="shortcut icon" type="image/x-icon" href="./assets/favicon.ico">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+	<my-app></my-app>
+	<div class="canvas-wrapper">
+		<canvas id="canvas" width="800px" height="500px">
+		</canvas>
+		<div class="chat-area">
+			<ul class="chat-logs"></ul>
+			<div class="chat-input">
+				<textarea id="chat" maxlength="80"></textarea>
+				<div class="chat-send"><i class="material-icons">send</i></div>
+			</div>
+		</div>
+	</div>
+	<script src="./bundle.js"></script>
+</body>
+</html>
