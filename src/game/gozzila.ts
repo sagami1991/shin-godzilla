@@ -65,15 +65,18 @@ export class Gozzila extends BaseMonster {
 		}
 	}
 	/** ビームに当たっているか */
-	public inBeam(x: number, y0: number, y1: number) {
+	public inBeam(x0: number, x1: number,  y0: number, y1: number) {
 		if (this.mode !== GozzilaMode.atk) return false;
-		const y = (this.target.y - this.begin.y) * (x - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
-		return y0 + 8 <= y && y <= y1 - 14;
+		const ya = (this.target.y - this.begin.y) * (x0 - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
+		const yb = (this.target.y - this.begin.y) * (x1 - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
+		const xa = (this.target.x - this.begin.x) * (y0 - this.begin.y) / (this.target.y - this.begin.y) + this.begin.x;
+		const xb = (this.target.x - this.begin.x) * (y1 - this.begin.y) / (this.target.y - this.begin.y) + this.begin.x;
+		return (y0 <= ya && ya <= y1) || (y0 <= yb && yb <= y1) || (x0 <= xa && xa <= x1) || (x0 <= xb && xb <= x1) ;
 	}
 	/** 接触しているか */
 	public sessyoku(x: number, y: number) {
 		if (this.mode === GozzilaMode.dead) return false;
-		return this.x + 30 <= x;
+		return this.x + 5 <= x;
 	}
 
 	protected atk() {

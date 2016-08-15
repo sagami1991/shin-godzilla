@@ -17,7 +17,9 @@ export class Ebiruai extends SimpleEbiruai {
 	}
 	protected action() {
 		if (this.isDead) {
-
+			this.ctx.fillStyle = "black";
+			this.ctx.font = "36px 'ＭＳ Ｐゴシック'";
+			this.ctx.fillText("死にました", 300, 200);
 		} else {
 			if (MainCanvas.KeyEvent.hidari) {
 				this.x -= 5;
@@ -45,7 +47,7 @@ export class Ebiruai extends SimpleEbiruai {
 				this.atksita = true;
 				this.atk();
 			}
-			if (this.gozzila.inBeam(this.x, this.y - SimpleEbiruai.HEIGHT, this.y + SimpleEbiruai.HEIGHT)) {
+			if (this.gozzila.inBeam(this.x, this.x + SimpleEbiruai.WIDTH, this.y, this.y + SimpleEbiruai.HEIGHT)) {
 				this.hp -= 1;
 			}
 			if (this.gozzila.sessyoku(this.x, this.y)) {

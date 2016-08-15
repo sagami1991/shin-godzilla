@@ -1167,6 +1167,9 @@
 	    }
 	    Ebiruai.prototype.action = function () {
 	        if (this.isDead) {
+	            this.ctx.fillStyle = "black";
+	            this.ctx.font = "36px 'ＭＳ Ｐゴシック'";
+	            this.ctx.fillText("死にました", 300, 200);
 	        }
 	        else {
 	            if (canvas_1.MainCanvas.KeyEvent.hidari) {
@@ -1195,7 +1198,7 @@
 	                this.atksita = true;
 	                this.atk();
 	            }
-	            if (this.gozzila.inBeam(this.x, this.y - evil_1.SimpleEbiruai.HEIGHT, this.y + evil_1.SimpleEbiruai.HEIGHT)) {
+	            if (this.gozzila.inBeam(this.x, this.x + evil_1.SimpleEbiruai.WIDTH, this.y, this.y + evil_1.SimpleEbiruai.HEIGHT)) {
 	                this.hp -= 1;
 	            }
 	            if (this.gozzila.sessyoku(this.x, this.y)) {
@@ -1281,17 +1284,20 @@
 	        }
 	    };
 	    /** ビームに当たっているか */
-	    Gozzila.prototype.inBeam = function (x, y0, y1) {
+	    Gozzila.prototype.inBeam = function (x0, x1, y0, y1) {
 	        if (this.mode !== GozzilaMode.atk)
 	            return false;
-	        var y = (this.target.y - this.begin.y) * (x - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
-	        return y0 + 8 <= y && y <= y1 - 14;
+	        var ya = (this.target.y - this.begin.y) * (x0 - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
+	        var yb = (this.target.y - this.begin.y) * (x1 - this.begin.x) / (this.target.x - this.begin.x) + this.begin.y;
+	        var xa = (this.target.x - this.begin.x) * (y0 - this.begin.y) / (this.target.y - this.begin.y) + this.begin.x;
+	        var xb = (this.target.x - this.begin.x) * (y1 - this.begin.y) / (this.target.y - this.begin.y) + this.begin.x;
+	        return (y0 <= ya && ya <= y1) || (y0 <= yb && yb <= y1) || (x0 <= xa && xa <= x1) || (x0 <= xb && xb <= x1);
 	    };
 	    /** 接触しているか */
 	    Gozzila.prototype.sessyoku = function (x, y) {
 	        if (this.mode === GozzilaMode.dead)
 	            return false;
-	        return this.x + 30 <= x;
+	        return this.x + 5 <= x;
 	    };
 	    Gozzila.prototype.atk = function () {
 	        var endX = 0;
