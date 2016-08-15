@@ -800,7 +800,13 @@
 	        this.gozzila.draw();
 	        this.simpleEbiruais.forEach(function (evil) { return evil.draw(); });
 	        this.myEvil.draw();
+	        this.drawNowPersonCount();
 	        this.sendServer();
+	    };
+	    MainCanvas.prototype.drawNowPersonCount = function () {
+	        this.ctx.fillStyle = "black";
+	        this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
+	        this.ctx.fillText("\u63A5\u7D9A\u6570:" + (this.simpleEbiruais.length + 1), 736, 18);
 	    };
 	    MainCanvas.prototype.sendServer = function () {
 	        var sendData = {
@@ -828,6 +834,9 @@
 	            window.addEventListener("keydown", function (e) {
 	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
 	                    MainCanvas.KeyEvent[keyset.eventName] = true;
+	                    if (e.keyCode === 32 && document.activeElement === document.body) {
+	                        e.preventDefault();
+	                    }
 	                }
 	            });
 	            window.addEventListener("keyup", function (e) {
@@ -1006,7 +1015,7 @@
 	    function Notify() {
 	    }
 	    Notify.error = function (msg) {
-	        humane.spawn({ addnCls: "humane-error", timeout: 5000 })(msg);
+	        humane.spawn({ addnCls: "humane-error", timeout: 20000 })(msg);
 	    };
 	    ;
 	    Notify.warning = function (msg) {
@@ -1014,7 +1023,7 @@
 	    };
 	    ;
 	    Notify.success = function (msg) {
-	        humane.spawn({ addnCls: "humane-success", timeout: 1000 })(msg);
+	        humane.spawn({ addnCls: "humane-success", timeout: 1500 })(msg);
 	    };
 	    ;
 	    return Notify;

@@ -11,6 +11,14 @@ function connectDB() {
             if (err)
                 throw err;
             var collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
+            collection.count({}, function (err, cnt) {
+                if (cnt <= 10)
+                    return;
+                collection.find().limit(cnt - 10).sort({ $natural: 1 })
+                    .toArray().then(function (records) {
+                    collection.remove({ _id: { $in: records.map(function (record) { return record._id; }) } });
+                });
+            });
             resolve(collection);
         });
     });

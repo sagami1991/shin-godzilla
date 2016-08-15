@@ -122,9 +122,14 @@ export class MainCanvas {
 		this.gozzila.draw();
 		this.simpleEbiruais.forEach(evil => evil.draw());
 		this.myEvil.draw();
+		this.drawNowPersonCount();
 		this.sendServer();
 	}
-
+	private drawNowPersonCount() {
+		this.ctx.fillStyle = "black";
+		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
+		this.ctx.fillText(`接続数:${this.simpleEbiruais.length + 1}`, 736, 18);
+	}
 	private sendServer() {
 		const sendData = {
 			isMigiMuki: this.myEvil.isMigiMuki,
@@ -157,11 +162,13 @@ export class MainCanvas {
 		this.canvasElm.addEventListener("click", () => {
 			MainCanvas.KeyEvent.atk = true;
 		});
-
 		MainCanvas.KEYSET.forEach((keyset) => {
 			window.addEventListener("keydown", e => {
 				if (keyset.keycode.find(keycode => e.keyCode === keycode)) {
 					(<any>MainCanvas.KeyEvent)[keyset.eventName] = true;
+					if (e.keyCode === 32 && document.activeElement === document.body) {
+						e.preventDefault();
+					}
 				}
 			});
 			window.addEventListener("keyup", e => {
