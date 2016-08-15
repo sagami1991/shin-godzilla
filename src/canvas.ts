@@ -56,8 +56,6 @@ export class MapleCanvas {
 	}
 
 	private onImageLoaded() {
-		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveEvils(type, value));
-		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveClosePerson(type, value));
 		this.myEvil = new Ebiruai(this.ctx, {
 			image: MapleCanvas.images.evilHidari,
 			x: Math.round(Math.random() * 500),
@@ -74,6 +72,8 @@ export class MapleCanvas {
 			personId: null
 		});
 		this.timer = window.setInterval(() => this.draw(), 1000 / MapleCanvas.FRAME);
+		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveEvils(type, value));
+		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveClosePerson(type, value));
 	}
 	private onReceiveClosePerson(type: number, value: any) {
 		if (type !== sendType.closePerson) return;
@@ -84,7 +84,7 @@ export class MapleCanvas {
 		const evils = <Zahyou[]> value;
 		evils.forEach(evil => {
 			const existEvil = this.simpleEbiruais.find(existEvil => existEvil.personId === evil.personId);
-			if (existEvil){
+			if (existEvil) {
 				Object.assign(existEvil, evil);
 			} else if (evil.personId !== this.myEvil.personId) {
 				this.simpleEbiruais.push(new SimpleEbiruai(this.ctx, evil));

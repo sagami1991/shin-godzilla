@@ -711,7 +711,7 @@
 
 
 	// module
-	exports.push([module.id, "body, h1, h2, h3, p {\n  margin: 0; }\n\nbody {\n  margin: 0;\n  background-color: #f9f9f9;\n  color: #5f5f5f; }\n\nmy-app {\n  opacity: 0.8; }\n\nh1, h2 {\n  font-weight: 300; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nul, dl {\n  margin: 0 0 10px 0; }\n\nul {\n  -webkit-padding-start: 20px; }\n  ul li {\n    margin-bottom: 6px; }\n\ndd {\n  -webkit-margin-start: 20px; }\n\n.canvas-wrapper {\n  width: 800px;\n  height: 500px;\n  position: relative; }\n\n.chat-area {\n  position: absolute;\n  width: 500px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    margin: 1px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 5px;\n    font-size: 14px;\n    height: 1em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n/** google material icon */\n.material-icons {\n  color: #757575; }\n\n#canvas {\n  border: 1px solid black; }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
+	exports.push([module.id, "body, h1, h2, h3, p {\n  margin: 0; }\n\nbody {\n  margin: 0;\n  background-color: #f9f9f9;\n  color: #5f5f5f; }\n\nmy-app {\n  opacity: 0.8; }\n\nh1, h2 {\n  font-weight: 300; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nul, dl {\n  margin: 0 0 10px 0; }\n\nul {\n  -webkit-padding-start: 20px; }\n  ul li {\n    margin-bottom: 6px; }\n\ndd {\n  -webkit-margin-start: 20px; }\n\n.canvas-wrapper {\n  width: 800px;\n  height: 500px;\n  position: relative; }\n\n.chat-area {\n  position: absolute;\n  width: 500px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    margin: 0;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 5px;\n    font-size: 14px;\n    height: 1em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n/** google material icon */\n.material-icons {\n  color: #757575; }\n\n#canvas {\n  border: 1px solid black; }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
 
 	// exports
 
@@ -745,8 +745,6 @@
 	    };
 	    MapleCanvas.prototype.onImageLoaded = function () {
 	        var _this = this;
-	        this.ws.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveEvils(type, value); });
-	        this.ws.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveClosePerson(type, value); });
 	        this.myEvil = new Ebiruai(this.ctx, {
 	            image: MapleCanvas.images.evilHidari,
 	            x: Math.round(Math.random() * 500),
@@ -763,6 +761,8 @@
 	            personId: null
 	        });
 	        this.timer = window.setInterval(function () { return _this.draw(); }, 1000 / MapleCanvas.FRAME);
+	        this.ws.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveEvils(type, value); });
+	        this.ws.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveClosePerson(type, value); });
 	    };
 	    MapleCanvas.prototype.onReceiveClosePerson = function (type, value) {
 	        if (type !== WebSocketService_1.sendType.closePerson)
