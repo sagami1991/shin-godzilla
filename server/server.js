@@ -10,7 +10,7 @@ function connectDB() {
         mongodb_1.MongoClient.connect(process.env.MONGODB_URI, function (err, db) {
             if (err)
                 throw err;
-            var collection = db.collection(process.env.COLLECTION_NAME || "chatlog");
+            var collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
             resolve(collection);
         });
     });

@@ -9,7 +9,7 @@ function connectDB(): Promise<Collection> {
 	return new Promise((resolve) => {
 		MongoClient.connect(process.env.MONGODB_URI , (err, db) => {
 			if (err) throw err;
-			const collection = db.collection(process.env.COLLECTION_NAME || "chatlog");
+			const collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
 			resolve(collection);
 		});
 	});
