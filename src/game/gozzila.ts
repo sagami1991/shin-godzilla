@@ -72,7 +72,7 @@ export class Gozzila extends BaseMonster {
 	}
 	/** 接触しているか */
 	public sessyoku(x: number, y: number) {
-		if (this.mode !== GozzilaMode.dead) return false;
+		if (this.mode === GozzilaMode.dead) return false;
 		return this.x + 30 <= x;
 	}
 

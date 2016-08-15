@@ -41,12 +41,12 @@ export class Ebiruai extends SimpleEbiruai {
 				this.y = MainCanvas.Y0;
 				this.isJump = false;
 			}
-			if (MainCanvas.KeyEvent.atk && this.myTrains.length < 1) {
+			if (MainCanvas.KeyEvent.atk && this.myTrains.length < 3) {
 				this.atksita = true;
 				this.atk();
 			}
 			if (this.gozzila.inBeam(this.x, this.y - SimpleEbiruai.HEIGHT, this.y + SimpleEbiruai.HEIGHT)) {
-				this.hp -= 2;
+				this.hp -= 1;
 			}
 			if (this.gozzila.sessyoku(this.x, this.y)) {
 				this.hp -= 10;

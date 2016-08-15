@@ -712,7 +712,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body, h1, h2, h3, p {\n  margin: 0; }\n\nbody {\n  margin: 0;\n  background-color: #f9f9f9;\n  color: #5f5f5f; }\n\nmy-app {\n  opacity: 0.8; }\n\nh1, h2 {\n  font-weight: 300; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nul, dl {\n  margin: 0 0 10px 0; }\n\nul {\n  -webkit-padding-start: 20px; }\n  ul li {\n    margin-bottom: 6px; }\n\ndd {\n  -webkit-margin-start: 20px; }\n\n.canvas-wrapper {\n  width: 800px;\n  height: 500px;\n  position: relative; }\n\n.chat-area {\n  position: absolute;\n  width: 500px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    margin: 0;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 5px;\n    font-size: 14px;\n    height: 1em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n/** google material icon */\n.material-icons {\n  color: #757575; }\n\n#canvas {\n  border: 1px solid black; }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
+	exports.push([module.id, "body, h1, h2, h3, p {\n  margin: 0; }\n\nbody {\n  width: 800px;\n  margin: 0;\n  background-color: #f9f9f9;\n  color: #5f5f5f; }\n\nmy-app {\n  opacity: 0.8; }\n\nh1, h2 {\n  font-weight: 300; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nul, dl {\n  margin: 0 0 10px 0; }\n\nul {\n  -webkit-padding-start: 20px; }\n  ul li {\n    margin-bottom: 6px; }\n\ndd {\n  -webkit-margin-start: 20px; }\n\n.canvas-wrapper {\n  width: 800px;\n  height: 500px;\n  position: relative; }\n\n.chat-area {\n  position: absolute;\n  width: 500px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    margin: 0;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 5px;\n    font-size: 14px;\n    height: 1em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n.key-pad {\n  position: relative; }\n\n.pad {\n  border: none;\n  position: absolute;\n  cursor: pointer;\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 46px; }\n  .pad:hover {\n    background-color: #9c27b0; }\n  .pad.hidari {\n    top: 100px;\n    left: 20px; }\n  .pad.migi {\n    top: 100px;\n    left: 180px; }\n  .pad.jump {\n    top: 100px;\n    left: 340px; }\n  .pad.atk {\n    top: 100px;\n    left: 500px; }\n\n#canvas {\n  border: 1px solid black; }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
 	
 	// exports
 
@@ -825,18 +825,28 @@
 	        this.canvasElm.addEventListener("click", function () {
 	            MainCanvas.KeyEvent.atk = true;
 	        });
-	        window.addEventListener("keydown", function (e) {
-	            MainCanvas.KEYSET.forEach(function (keyset) {
+	        MainCanvas.KEYSET.forEach(function (keyset) {
+	            window.addEventListener("keydown", function (e) {
 	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
 	                    MainCanvas.KeyEvent[keyset.eventName] = true;
 	                }
 	            });
-	        });
-	        window.addEventListener("keyup", function (e) {
-	            MainCanvas.KEYSET.forEach(function (keyset) {
+	            window.addEventListener("keyup", function (e) {
 	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
 	                    MainCanvas.KeyEvent[keyset.eventName] = false;
 	                }
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("mousedown", function () {
+	                MainCanvas.KeyEvent[keyset.eventName] = true;
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("touchstart", function () {
+	                MainCanvas.KeyEvent[keyset.eventName] = true;
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("mouseup", function () {
+	                MainCanvas.KeyEvent[keyset.eventName] = false;
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("touchend", function () {
+	                MainCanvas.KeyEvent[keyset.eventName] = false;
 	            });
 	        });
 	    };
@@ -886,8 +896,8 @@
 	    MainCanvas.images = {};
 	    MainCanvas.KEYSET = [
 	        { keycode: [68, 39], eventName: "migi" },
-	        { keycode: [87, 38], eventName: "ue" },
-	        { keycode: [83, 40], eventName: "sita" },
+	        // {keycode: [87, 38], eventName: "ue"},
+	        // {keycode: [83, 40], eventName: "sita"},
 	        { keycode: [65, 37], eventName: "hidari" },
 	        { keycode: [32], eventName: "jump" },
 	        { keycode: [88], eventName: "atk" }
@@ -1181,12 +1191,12 @@
 	                this.y = canvas_1.MainCanvas.Y0;
 	                this.isJump = false;
 	            }
-	            if (canvas_1.MainCanvas.KeyEvent.atk && this.myTrains.length < 1) {
+	            if (canvas_1.MainCanvas.KeyEvent.atk && this.myTrains.length < 3) {
 	                this.atksita = true;
 	                this.atk();
 	            }
 	            if (this.gozzila.inBeam(this.x, this.y - evil_1.SimpleEbiruai.HEIGHT, this.y + evil_1.SimpleEbiruai.HEIGHT)) {
-	                this.hp -= 2;
+	                this.hp -= 1;
 	            }
 	            if (this.gozzila.sessyoku(this.x, this.y)) {
 	                this.hp -= 10;
@@ -1279,7 +1289,7 @@
 	    };
 	    /** 接触しているか */
 	    Gozzila.prototype.sessyoku = function (x, y) {
-	        if (this.mode !== GozzilaMode.dead)
+	        if (this.mode === GozzilaMode.dead)
 	            return false;
 	        return this.x + 30 <= x;
 	    };

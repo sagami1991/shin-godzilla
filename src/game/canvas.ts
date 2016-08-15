@@ -147,8 +147,8 @@ export class MainCanvas {
 
 	private static KEYSET = [
 		{keycode: [68, 39], eventName: "migi"},
-		{keycode: [87, 38], eventName: "ue"},
-		{keycode: [83, 40], eventName: "sita"},
+		// {keycode: [87, 38], eventName: "ue"},
+		// {keycode: [83, 40], eventName: "sita"},
 		{keycode: [65, 37], eventName: "hidari"},
 		{keycode: [32], eventName: "jump"},
 		{keycode: [88], eventName: "atk"}
@@ -159,21 +159,34 @@ export class MainCanvas {
 			MainCanvas.KeyEvent.atk = true;
 		});
 
-		window.addEventListener("keydown", e => {
-			MainCanvas.KEYSET.forEach((keyset) => {
+		MainCanvas.KEYSET.forEach((keyset) => {
+			window.addEventListener("keydown", e => {
 				if (keyset.keycode.find(keycode => e.keyCode === keycode)) {
 					(<any>MainCanvas.KeyEvent)[keyset.eventName] = true;
 				}
 			});
-		});
-
-		window.addEventListener("keyup", e => {
-			MainCanvas.KEYSET.forEach((keyset) => {
+			window.addEventListener("keyup", e => {
 				if (keyset.keycode.find(keycode => e.keyCode === keycode)) {
 					(<any>MainCanvas.KeyEvent)[keyset.eventName] = false;
 				}
 			});
+
+			document.querySelector(`.${keyset.eventName}`).addEventListener("mousedown", () => {
+				(<any>MainCanvas.KeyEvent)[keyset.eventName] = true;
+			});
+
+			document.querySelector(`.${keyset.eventName}`).addEventListener("touchstart", () => {
+				(<any>MainCanvas.KeyEvent)[keyset.eventName] = true;
+			});
+
+			document.querySelector(`.${keyset.eventName}`).addEventListener("mouseup", () => {
+				(<any>MainCanvas.KeyEvent)[keyset.eventName] = false;
+			});
+			document.querySelector(`.${keyset.eventName}`).addEventListener("touchend", () => {
+				(<any>MainCanvas.KeyEvent)[keyset.eventName] = false;
+			});
 		});
+
 	}
 
 	/** 画像を読み込む */
