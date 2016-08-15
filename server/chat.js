@@ -189,7 +189,7 @@ var Chat = (function () {
             if (!resData.type || !resData.value) {
                 return false;
             }
-            if (resData.type === WSResType.log && resData.value.length > 80) {
+            if (resData.type === WSResType.log && resData.value.length > 50) {
                 return false;
             }
             if (resData.type === WSResType.zahyou) {
@@ -205,8 +205,8 @@ var Chat = (function () {
     };
     Chat.FRAME = 30;
     Chat.INTERVAL_SEC = {
-        NORMAL: 1.4,
-        BEFORE_ATK: 0.8,
+        NORMAL: 1,
+        BEFORE_ATK: 0.4,
         ATK: 2.6,
     };
     return Chat;

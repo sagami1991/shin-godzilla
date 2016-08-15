@@ -63,8 +63,8 @@ export class Chat {
 	private static FRAME = 30;
 	private intervalCount: number = 0;
 	private static INTERVAL_SEC = {
-		NORMAL: 1.4,
-		BEFORE_ATK: 0.8,
+		NORMAL: 1,
+		BEFORE_ATK: 0.4,
 		ATK: 2.6,
 	};
 	private decidedTarget:boolean;
@@ -231,7 +231,7 @@ export class Chat {
 				return false;
 			}
 
-			if (resData.type === WSResType.log && resData.value.length > 80) {
+			if (resData.type === WSResType.log && resData.value.length > 50) {
 				return false;
 			}
 

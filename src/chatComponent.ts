@@ -29,6 +29,7 @@ export class ChatComponent {
 	private logElem: HTMLElement;
 	private inputElem: HTMLTextAreaElement;
 	private sendElem: HTMLElement;
+	private isSended: boolean;
 	private static logsTmpl = Handlebars.compile(`
 		{{#logs}}
 			<li class="chat-log">{{msg}}</li>
@@ -92,9 +93,16 @@ export class ChatComponent {
 
 	private send() {
 		const value = this.inputElem.value;
-		if (value && !this.wsService.isClose) {
+		if (value && !this.wsService.isClose && this.isSended) {
 			this.wsService.send(WSDataType.log, value);
 			this.inputElem.value = "";
+			this.inputElem.disabled = true;
+			setTimeout(() => {
+				if (!this.wsService.isClose) {
+					this.inputElem.disabled = false;
+					this.isSended = false;
+				}
+			}, 3000);
 		}
 	}
 }

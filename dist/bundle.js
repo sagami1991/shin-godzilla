@@ -1383,10 +1383,18 @@
 	        this.inputElem.value = "切断されました。";
 	    };
 	    ChatComponent.prototype.send = function () {
+	        var _this = this;
 	        var value = this.inputElem.value;
-	        if (value && !this.wsService.isClose) {
+	        if (value && !this.wsService.isClose && this.isSended) {
 	            this.wsService.send(WebSocketService_1.WSDataType.log, value);
 	            this.inputElem.value = "";
+	            this.inputElem.disabled = true;
+	            setTimeout(function () {
+	                if (!_this.wsService.isClose) {
+	                    _this.inputElem.disabled = false;
+	                    _this.isSended = false;
+	                }
+	            }, 3000);
 	        }
 	    };
 	    ChatComponent.IS_TABLET = (function (u) {
