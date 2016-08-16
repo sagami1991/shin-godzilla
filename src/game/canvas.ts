@@ -3,6 +3,7 @@ import {SimpleEvil} from "./evil";
 import {Ebiruai} from "./myEvil";
 import {Gozzila} from "./gozzila";
 
+/** TODO いい加減送信用インターフェースに分ける */
 export interface Zahyou {
 	image?: HTMLImageElement;
 	personId: string;
@@ -14,6 +15,7 @@ export interface Zahyou {
 	isAtk?: boolean;
 	gozzila?: Gozzila;
 	lv?: number;
+	maxExp?: number;
 }
 
 interface GozzilaInfo {
@@ -100,6 +102,7 @@ export class MainCanvas {
 		this.gozzila.target = [0, 0].map( () => {return{x: this.myEvil.x, y: this.myEvil.y}; });
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
 		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveGameData(type, value));
+		this.ws.addOnCloseListener(() => window.clearInterval(this.timer));
 	}
 
 	private onReceiveGameData(type: number, value: any) {
@@ -145,10 +148,11 @@ export class MainCanvas {
 			isAtk: this.myEvil.atksita,
 			isDead: this.myEvil.isDead,
 			lv: this.myEvil.lv,
+			maxExp: this.myEvil.maxExp
 		};
 		// TODO エラー出てる
 		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
-			this.receiveMyEvilInfo.isDead !== sendData.isDead) {
+			!this.receiveMyEvilInfo || this.receiveMyEvilInfo.isDead !== sendData.isDead) {
 			this.ws.send(WSDataType.zahyou, sendData);
 			this.myEvil.atksita = false;
 		}

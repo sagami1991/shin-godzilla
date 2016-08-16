@@ -17,6 +17,7 @@ export class Ebiruai extends SimpleEvil {
 	private static BASE_JUMP = 10;
 	private static BASE_SPEED = 5;
 	private static EXP_BAIRITU = 1.2;
+	private static INIT_MAX_EXP = 50;
 	private jumpF: number;
 	private isJump: boolean;
 	public atksita: boolean;
@@ -27,7 +28,7 @@ export class Ebiruai extends SimpleEvil {
 	private speed: number;
 	private rebornTimeCount: number;
 	private exp: number;
-	private maxExp: number;
+	public maxExp: number;
 	private name: string;
 
 	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
@@ -38,7 +39,7 @@ export class Ebiruai extends SimpleEvil {
 		this.hp = this.maxHp;
 		this.jump = Ebiruai.BASE_JUMP;
 		this.speed = Ebiruai.BASE_SPEED;
-		this.maxExp = 50;
+		this.maxExp = Ebiruai.INIT_MAX_EXP;
 		this.name = "名前";
 		this.loadLocalStrage();
 		this.gozzila = zahyou.gozzila;
@@ -138,6 +139,7 @@ export class Ebiruai extends SimpleEvil {
 		this.exp -= Math.floor(this.maxExp / 8);
 		this.exp = this.exp < 0 ? 0 : this.exp;
 		this.statusBar.setExp(this.exp, this.maxExp);
+		this.saveLocalStrage();
 	}
 
 	private drawHp() {
@@ -165,7 +167,7 @@ export class Ebiruai extends SimpleEvil {
 		const loadData = <StrageData> JSON.parse(localStorage.getItem("saveDataVer0.0"));
 		if (loadData) {
 			this.lv = loadData.lv ? loadData.lv : 1;
-			this.maxExp = loadData.maxExp ? loadData.maxExp : 50 * Math.pow(1.2, this.lv -1);
+			this.maxExp = loadData.maxExp ? loadData.maxExp : Ebiruai.INIT_MAX_EXP * Math.pow(1.2, this.lv - 1);
 			this.exp = loadData.exp ? loadData.exp : 0;
 			this.maxHp = loadData.maxHp ? loadData.maxHp : 100;
 			this.name = loadData.name ? loadData.name : "名前";

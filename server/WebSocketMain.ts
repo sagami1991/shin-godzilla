@@ -36,6 +36,7 @@ interface Zahyou {
 	isAtk: boolean;
 	isDead: boolean;
 	lv: number;
+	maxExp: number;
 }
 
 interface SendAllOption {
@@ -56,8 +57,7 @@ export class MainWebSocket {
 	private evils: Zahyou[] = [];
 	private befSendData: Zahyou[] = [];
 	private gozzila: GozzilaInfo;
-	constructor(wss: WebSocket.Server,
-				collection: Collection) {
+	constructor(wss: WebSocket.Server, collection: Collection) {
 		this.wss = wss;
 		this.collection = collection;
 	}
@@ -78,7 +78,7 @@ export class MainWebSocket {
 
 		//リクエスト数、10秒毎に集計
 		setInterval(() => {
-			const ipMap: any = {}
+			const ipMap: any = {};
 			this.wss.clients.forEach((ws) => {
 				const ip = ws.upgradeReq.connection.remoteAddress;
 				ipMap[ip] = ipMap[ip] ? ipMap[ip] + 1 : 1;
@@ -111,7 +111,7 @@ export class MainWebSocket {
 		normalF: MainWebSocket.INTERVAL_SEC.NORMAL * MainWebSocket.FRAME,
 		beforeAtkF: (MainWebSocket.INTERVAL_SEC.NORMAL + MainWebSocket.INTERVAL_SEC.BEFORE_ATK) * MainWebSocket.FRAME,
 		atkSecF: (MainWebSocket.INTERVAL_SEC.NORMAL + MainWebSocket.INTERVAL_SEC.BEFORE_ATK + MainWebSocket.INTERVAL_SEC.ATK) * MainWebSocket.FRAME,
-	}
+	};
 	private gozzilaAction() {
 		if (this.intervalCount < MainWebSocket.G_F_RANGE.normalF) {
 			this.gozzila.mode = GozzilaMode.init;
@@ -186,24 +186,27 @@ export class MainWebSocket {
 	 * DBから新しい順に数行分のログ取り出して送信
 	 */
 	private sendInitLog(ws: WebSocket) {
-		try {
 		this.collection.find().limit(7).sort({ $natural: -1 })
 		.toArray((err, arr) => {
 			if (err) console.log(err);
-			ws.send(JSON.stringify({
-				type: WSResType.initlog,
-				value: arr ? arr.reverse() : []
-			}));
+			try {
+				ws.send(JSON.stringify({
+					type: WSResType.initlog,
+					value: arr ? arr.reverse() : []
+				}));
+			}catch (e) {console.error(e); }
 		});
-		}catch(e){}
 	}
 	/**
 	 * でーた受け取り時
 	 */
 	private receiveData(ws: WebSocket, data: any, flags: {binary: boolean}) {
 		if (!this.validateMsg(data, flags.binary)) {
+			console.log(data);
+			ws.close();
 			return;
 		}
+		if (flags.binary) return;
 		const resData = <ResData> JSON.parse(data);
 		switch (resData.type) {
 			case WSResType.zahyou:
@@ -213,7 +216,7 @@ export class MainWebSocket {
 				this.receiveMsg(ws, resData);
 				break;
 			case WSResType.gozzilaDamege:
-			this.receiveGozzilaDamege(ws)
+			this.receiveGozzilaDamege(ws);
 				break;
 		}
 	}
@@ -225,7 +228,9 @@ export class MainWebSocket {
 		} else {
 			this.accessCountPer10Sec[ipAddr] = 1;
 		}
-		if (this.accessCountPer10Sec[ipAddr] > 200) ws.close();
+		if (this.accessCountPer10Sec[ipAddr] > 200) {
+			ws.close();
+		}
 		this.gozzila.hp -= 2;
 	}
 	private receiveZahyou(nowWs: WebSocket, resData: ResData) {
@@ -245,13 +250,13 @@ export class MainWebSocket {
 		};
 		try {
 			this.collection.insert(log);
-		}catch(e){}
+		} catch (e) {}
 		this.sendAll({type: WSResType.log, value: log});
 
 	}
 
 	/** バイナリか50文字以上ははじく */
-	private validateMsg(data: string, isBinary: boolean, ) {
+	private validateMsg(data: string, isBinary: boolean) {
 		if (!isBinary) {
 			if (data.length > 500) return false;
 			const resData = <ResData> JSON.parse(data);
@@ -267,17 +272,20 @@ export class MainWebSocket {
 			if (resData.type === WSResType.log && resData.value.length > 50) {
 				return false;
 			}
-
 			if (resData.type === WSResType.zahyou) {
 				const evilInfo = <Zahyou> resData.value;
-				if (!Number.isInteger(evilInfo.lv) || !Number.isInteger(evilInfo.x) || !Number.isInteger(evilInfo.y)) {
+				for (let num of [evilInfo.lv, evilInfo.x, evilInfo.y, evilInfo.maxExp]){
+					if (typeof num !== "number") return false;
+				}
+				// バグの原因
+				if (evilInfo.maxExp !== 50 * Math.pow(1.2, evilInfo.lv - 1)) {
 					return false;
 				}
 			}
 		}
-		if (isBinary) {
-			return false;
-		}
+		// if (isBinary) {
+		// 	return false;
+		// }
 		return true;
 	}
 }

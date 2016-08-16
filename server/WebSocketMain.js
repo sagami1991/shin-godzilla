@@ -141,26 +141,32 @@ var MainWebSocket = (function () {
      * DBから新しい順に数行分のログ取り出して送信
      */
     MainWebSocket.prototype.sendInitLog = function (ws) {
-        try {
-            this.collection.find().limit(7).sort({ $natural: -1 })
-                .toArray(function (err, arr) {
-                if (err)
-                    console.log(err);
+        this.collection.find().limit(7).sort({ $natural: -1 })
+            .toArray(function (err, arr) {
+            if (err)
+                console.log(err);
+            try {
                 ws.send(JSON.stringify({
                     type: WSResType.initlog,
                     value: arr ? arr.reverse() : []
                 }));
-            });
-        }
-        catch (e) { }
+            }
+            catch (e) {
+                console.error(e);
+            }
+        });
     };
     /**
      * でーた受け取り時
      */
     MainWebSocket.prototype.receiveData = function (ws, data, flags) {
         if (!this.validateMsg(data, flags.binary)) {
+            console.log(data);
+            ws.close();
             return;
         }
+        if (flags.binary)
+            return;
         var resData = JSON.parse(data);
         switch (resData.type) {
             case WSResType.zahyou:
@@ -182,8 +188,9 @@ var MainWebSocket = (function () {
         else {
             this.accessCountPer10Sec[ipAddr] = 1;
         }
-        if (this.accessCountPer10Sec[ipAddr] > 200)
+        if (this.accessCountPer10Sec[ipAddr] > 200) {
             ws.close();
+        }
         this.gozzila.hp -= 2;
     };
     MainWebSocket.prototype.receiveZahyou = function (nowWs, resData) {
@@ -224,14 +231,20 @@ var MainWebSocket = (function () {
             }
             if (resData.type === WSResType.zahyou) {
                 var evilInfo = resData.value;
-                if (!Number.isInteger(evilInfo.lv) || !Number.isInteger(evilInfo.x) || !Number.isInteger(evilInfo.y)) {
+                for (var _i = 0, _a = [evilInfo.lv, evilInfo.x, evilInfo.y, evilInfo.maxExp]; _i < _a.length; _i++) {
+                    var num = _a[_i];
+                    if (typeof num !== "number")
+                        return false;
+                }
+                // バグの原因
+                if (evilInfo.maxExp !== 50 * Math.pow(1.2, evilInfo.lv - 1)) {
                     return false;
                 }
             }
         }
-        if (isBinary) {
-            return false;
-        }
+        // if (isBinary) {
+        // 	return false;
+        // }
         return true;
     };
     MainWebSocket.FRAME = 30;
