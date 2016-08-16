@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws';
-import {Collection} from 'mongodb';
+import {Collection, Db} from 'mongodb';
 
 /** 送信する情報のタイプ */
 enum WSResType {
@@ -57,9 +57,9 @@ export class MainWebSocket {
 	private evils: Zahyou[] = [];
 	private befSendData: Zahyou[] = [];
 	private gozzila: GozzilaInfo;
-	constructor(wss: WebSocket.Server, collection: Collection) {
+	constructor(wss: WebSocket.Server, db: Db) {
 		this.wss = wss;
-		this.collection = collection;
+		this.collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
 	}
 	private static FRAME = 30;
 	private intervalCount: number = 0;
@@ -222,13 +222,13 @@ export class MainWebSocket {
 	}
 	private accessCountPer10Sec: any = {};
 	private receiveGozzilaDamege(ws: WebSocket) {
-		const ipAddr = ws.upgradeReq.connection.remoteAddress;
-		if (this.accessCountPer10Sec[ipAddr]) {
-			this.accessCountPer10Sec[ipAddr] ++;
+		const personId = this.getPersonId(ws)
+		if (this.accessCountPer10Sec[personId]) {
+			this.accessCountPer10Sec[personId] ++;
 		} else {
-			this.accessCountPer10Sec[ipAddr] = 1;
+			this.accessCountPer10Sec[personId] = 1;
 		}
-		if (this.accessCountPer10Sec[ipAddr] > 200) {
+		if (this.accessCountPer10Sec[personId] > 100) {
 			ws.close();
 		}
 		this.gozzila.hp -= 2;
@@ -277,6 +277,8 @@ export class MainWebSocket {
 				for (let num of [evilInfo.lv, evilInfo.x, evilInfo.y, evilInfo.maxExp]){
 					if (typeof num !== "number") return false;
 				}
+				if (evilInfo.y < 140 ||  400 < evilInfo.y ) return false;
+
 				// バグの原因
 				if (evilInfo.maxExp !== Math.floor(50 * Math.pow(1.2, evilInfo.lv - 1))) {
 					return false;

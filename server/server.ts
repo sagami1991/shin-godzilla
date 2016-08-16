@@ -27,7 +27,7 @@ connectDB().then((db) => {
 	const server = createServer();
 	const app = express();
 	app.use(express.static(__dirname + '/../dist'));
-	new MainWebSocket(new WebSocketServer({ server: server }), db.collection(process.env.COLLECTION_NAME || "maplechatlog")).init();
+	new MainWebSocket(new WebSocketServer({ server: server }), db).init();
 	new Ranking(db.collection("ranking"), app).init();
 	server.on('request', app);
 	server.listen(process.env.PORT || 3000, () => {

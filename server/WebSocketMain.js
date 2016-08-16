@@ -19,13 +19,13 @@ var GozzilaMode;
     GozzilaMode[GozzilaMode["dead"] = 3] = "dead";
 })(GozzilaMode || (GozzilaMode = {}));
 var MainWebSocket = (function () {
-    function MainWebSocket(wss, collection) {
+    function MainWebSocket(wss, db) {
         this.evils = [];
         this.befSendData = [];
         this.intervalCount = 0;
         this.accessCountPer10Sec = {};
         this.wss = wss;
-        this.collection = collection;
+        this.collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
     }
     MainWebSocket.prototype.init = function () {
         var _this = this;
@@ -181,14 +181,14 @@ var MainWebSocket = (function () {
         }
     };
     MainWebSocket.prototype.receiveGozzilaDamege = function (ws) {
-        var ipAddr = ws.upgradeReq.connection.remoteAddress;
-        if (this.accessCountPer10Sec[ipAddr]) {
-            this.accessCountPer10Sec[ipAddr]++;
+        var personId = this.getPersonId(ws);
+        if (this.accessCountPer10Sec[personId]) {
+            this.accessCountPer10Sec[personId]++;
         }
         else {
-            this.accessCountPer10Sec[ipAddr] = 1;
+            this.accessCountPer10Sec[personId] = 1;
         }
-        if (this.accessCountPer10Sec[ipAddr] > 200) {
+        if (this.accessCountPer10Sec[personId] > 100) {
             ws.close();
         }
         this.gozzila.hp -= 2;
@@ -236,6 +236,8 @@ var MainWebSocket = (function () {
                     if (typeof num !== "number")
                         return false;
                 }
+                if (evilInfo.y < 140 || 400 < evilInfo.y)
+                    return false;
                 // バグの原因
                 if (evilInfo.maxExp !== Math.floor(50 * Math.pow(1.2, evilInfo.lv - 1))) {
                     return false;

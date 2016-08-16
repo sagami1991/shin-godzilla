@@ -62,6 +62,7 @@ export class MainCanvas {
 		gozzila_atk?: HTMLImageElement,
 		evilSinda?: HTMLImageElement
 		gozzilaBefAtk?: HTMLImageElement
+		lvup?: HTMLImageElement[];
 	} = {};
 
 	constructor(ws: WSService) {
