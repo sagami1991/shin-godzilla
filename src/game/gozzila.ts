@@ -11,6 +11,13 @@ export class Gozzila extends BaseMonster {
 	public static WIDTH = 64;
 	public static HEIGHT = 64;
 	public static BAIRITU = 5;
+	public static BEAM_DAMAGE = 1.3;
+	public static HP_INFO = {
+		X: 30,
+		Y: 10,
+		WIDTH: 500,
+		HEIGHT: 20
+	};
 	/** ビームが発射される座標*/
 	public begin: {x: number, y: number}[];
 	public isDamege: boolean;
@@ -39,16 +46,12 @@ export class Gozzila extends BaseMonster {
 	}
 
 	private drawHp() {
-		const x = 30;
-		const y = 10;
-		const width = 500;
-		const height = 20;
 		this.ctx.fillStyle = "#000";
-		this.ctx.fillRect(x, y, width + 2, height + 2);
+		this.ctx.fillRect(Gozzila.HP_INFO.X, Gozzila.HP_INFO.Y, Gozzila.HP_INFO.WIDTH + 2, Gozzila.HP_INFO.HEIGHT + 2);
 		this.ctx.fillStyle = "#fff";
-		this.ctx.fillRect(x + 1, y + 1, width, height);
+		this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH, Gozzila.HP_INFO.HEIGHT );
 		this.ctx.fillStyle = "#4f1ae8";
-		this.ctx.fillRect(x + 1, y + 1, width * this.hp / this.maxHp , height);
+		this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH * this.hp / this.maxHp , Gozzila.HP_INFO.HEIGHT );
 		this.ctx.fillStyle = "black";
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`${this.hp} / ${this.maxHp}`, this.x + 30, 40);
@@ -70,8 +73,8 @@ export class Gozzila extends BaseMonster {
 			break;
 		}
 	}
-	/** ビームに当たっている数 */
-	public inBeam(x0: number, x1: number,  y0: number, y1: number) {
+	/** ビームによるダメージ計算 */
+	public calcBeamDamege(x0: number, x1: number,  y0: number, y1: number) {
 		if (this.mode !== GozzilaMode.atk) return 0;
 		let count = 0;
 		this.target.forEach((target, i) => {
@@ -83,7 +86,7 @@ export class Gozzila extends BaseMonster {
 				count ++;
 			} ;
 		});
-		return count;
+		return count * Gozzila.BEAM_DAMAGE;
 	}
 	/** 接触しているか */
 	public sessyoku(x: number, y: number) {
@@ -93,7 +96,7 @@ export class Gozzila extends BaseMonster {
 
 	protected atk() {
 		this.target.forEach((target, i) => {
-			const endX = 0;
+			const endX = this.begin[i].x < target.x ? MainCanvas.WIDTH : 0;
 			const endY = (target.y - this.begin[i].y) * (endX - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
 			this.ctx.strokeStyle = "#317cff";
 			this.ctx.shadowColor = "#317cff";
@@ -104,6 +107,6 @@ export class Gozzila extends BaseMonster {
 			this.ctx.closePath();
 			this.ctx.stroke();
 			this.ctx.shadowBlur = 0;
-		})
+		});
 	}
 }

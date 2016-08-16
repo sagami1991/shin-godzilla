@@ -712,7 +712,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body, h1, h2, h3, p {\n  margin: 0; }\n\nbody {\n  width: 800px;\n  margin: 0 auto;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(146) + "); }\n\nmy-app {\n  opacity: 0.8; }\n\nh1, h2 {\n  font-weight: 300; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nul, dl {\n  margin: 0 0 10px 0; }\n\nul {\n  -webkit-padding-start: 20px; }\n  ul li {\n    margin-bottom: 6px; }\n\nbutton {\n  outline: 0; }\n\n.canvas-wrapper {\n  background-color: #f9f9f9;\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative;\n  border-radius: 10px; }\n\n.chat-area {\n  position: absolute;\n  width: 500px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    margin: 0;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 5px;\n    font-size: 14px;\n    height: 1em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n.key-pad {\n  width: 100%;\n  display: flex;\n  margin-bottom: 140px;\n  padding-left: 20px; }\n\n.pad {\n  margin-top: 80px;\n  margin-right: 20px;\n  border: none;\n  cursor: pointer;\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 46px; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n\n.footer {\n  background-color: #212121;\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(146) + "); }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0; }\n\n.canvas-wrapper {\n  background-color: #f9f9f9;\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative;\n  border-radius: 10px; }\n\n.chat-area {\n  position: absolute;\n  width: 500px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n.key-pad {\n  width: 100%;\n  display: flex;\n  margin-bottom: 140px;\n  padding-left: 20px; }\n\n.pad {\n  margin-top: 80px;\n  margin-right: 20px;\n  border: none;\n  cursor: pointer;\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA';\n  background-color: #f9f9f9;\n  color: rgba(2, 33, 2, 0.68);\n  height: 120px;\n  margin-top: 6px;\n  border-radius: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.footer {\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
 	
 	// exports
 
@@ -726,9 +726,10 @@
 	var evil_1 = __webpack_require__(13);
 	var myEvil_1 = __webpack_require__(16);
 	var gozzila_1 = __webpack_require__(17);
+	/** canvasの総合操作クラス */
 	var MainCanvas = (function () {
 	    function MainCanvas(ws) {
-	        this.simpleEbiruais = [];
+	        this.otherPersonEvils = [];
 	        this.ws = ws;
 	    }
 	    /** 下からのY座標を上からのY座標に変更 */
@@ -738,6 +739,8 @@
 	    MainCanvas.prototype.init = function () {
 	        var _this = this;
 	        this.canvasElm = document.querySelector("#canvas");
+	        this.canvasElm.width = MainCanvas.WIDTH;
+	        this.canvasElm.height = MainCanvas.HEIGHT;
 	        this.ctx = this.canvasElm.getContext('2d');
 	        this.keyset();
 	        this.ws.addOnReceiveMsgListener(function (type) {
@@ -763,17 +766,12 @@
 	            isMigiMuki: true,
 	            isMy: true,
 	            personId: this.ws.personId,
-	            gozzila: this.gozzila
+	            gozzila: this.gozzila,
+	            lv: 1
 	        });
 	        this.gozzila.target = [0, 0].map(function () { return { x: _this.myEvil.x, y: _this.myEvil.y }; });
 	        this.timer = window.setInterval(function () { return _this.draw(); }, 1000 / MainCanvas.FRAME);
 	        this.ws.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveGameData(type, value); });
-	        this.ws.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveClosePerson(type, value); });
-	    };
-	    MainCanvas.prototype.onReceiveClosePerson = function (type, value) {
-	        if (type !== WebSocketService_1.WSDataType.closePerson)
-	            return;
-	        this.simpleEbiruais = this.simpleEbiruais.filter(function (evil) { return evil.personId !== value; });
 	    };
 	    MainCanvas.prototype.onReceiveGameData = function (type, value) {
 	        var _this = this;
@@ -783,22 +781,24 @@
 	        this.gozzila.hp = gozzilaInfo.hp;
 	        this.gozzila.mode = gozzilaInfo.mode;
 	        this.gozzila.target = gozzilaInfo.target;
-	        var evils = value.evils;
-	        evils.forEach(function (evil) {
-	            var existEvil = _this.simpleEbiruais.find(function (existEvil) { return existEvil.personId === evil.personId; });
+	        var receiveEvils = value.evils;
+	        receiveEvils.forEach(function (evilInfo) {
+	            var existEvil = _this.otherPersonEvils.find(function (existEvil) { return existEvil.personId === evilInfo.personId; });
 	            if (existEvil) {
-	                Object.assign(existEvil, evil);
+	                Object.assign(existEvil, evilInfo);
 	            }
-	            else if (evil.personId !== _this.myEvil.personId) {
-	                _this.simpleEbiruais.push(new evil_1.SimpleEbiruai(_this.ctx, evil));
+	            else if (evilInfo.personId !== _this.myEvil.personId) {
+	                _this.otherPersonEvils.push(new evil_1.SimpleEvil(_this.ctx, evilInfo));
 	            }
 	        });
+	        this.otherPersonEvils = this.otherPersonEvils.filter(function (evil) { return receiveEvils.find(function (receiveEvil) { return receiveEvil.personId === evil.personId; }); });
+	        this.receiveMyEvilInfo = receiveEvils.find(function (evil) { return evil.personId === _this.myEvil.personId; });
 	    };
 	    /** 描写 */
 	    MainCanvas.prototype.draw = function () {
 	        this.ctx.clearRect(0, 0, MainCanvas.WIDTH, MainCanvas.HEIGHT);
 	        this.gozzila.draw();
-	        this.simpleEbiruais.forEach(function (evil) { return evil.draw(); });
+	        this.otherPersonEvils.forEach(function (evil) { return evil.draw(); });
 	        this.myEvil.draw();
 	        this.drawNowPersonCount();
 	        this.sendServer();
@@ -806,7 +806,7 @@
 	    MainCanvas.prototype.drawNowPersonCount = function () {
 	        this.ctx.fillStyle = "black";
 	        this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
-	        this.ctx.fillText("\u63A5\u7D9A\u6570:" + (this.simpleEbiruais.length + 1), 736, 18);
+	        this.ctx.fillText("\u63A5\u7D9A\u6570:" + (this.otherPersonEvils.length + 1), 736, 18);
 	    };
 	    MainCanvas.prototype.sendServer = function () {
 	        var sendData = {
@@ -814,9 +814,11 @@
 	            x: this.myEvil.x,
 	            y: this.myEvil.y,
 	            isAtk: this.myEvil.atksita,
-	            isDead: this.myEvil.isDead
+	            isDead: this.myEvil.isDead,
+	            lv: this.myEvil.lv,
 	        };
-	        if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
+	        if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
+	            this.receiveMyEvilInfo.isDead !== sendData.isDead) {
 	            this.ws.send(WebSocketService_1.WSDataType.zahyou, sendData);
 	            this.myEvil.atksita = false;
 	        }
@@ -826,6 +828,7 @@
 	        }
 	        this.befSendData = JSON.parse(JSON.stringify(sendData));
 	    };
+	    /** ボタンやキーを設定 */
 	    MainCanvas.prototype.keyset = function () {
 	        this.canvasElm.addEventListener("click", function () {
 	            MainCanvas.KeyEvent.atk = true;
@@ -1050,32 +1053,41 @@
 	var canvas_1 = __webpack_require__(10);
 	var train_1 = __webpack_require__(14);
 	var BaseMonster_1 = __webpack_require__(15);
-	var SimpleEbiruai = (function (_super) {
-	    __extends(SimpleEbiruai, _super);
-	    function SimpleEbiruai(ctx, option) {
+	/** 人間が操作する機能の入っていないエビルアイ */
+	var SimpleEvil = (function (_super) {
+	    __extends(SimpleEvil, _super);
+	    function SimpleEvil(ctx, option) {
 	        _super.call(this, ctx, option);
 	        this.myTrains = [];
+	        this.lv = option.lv;
+	        this.isDead = option.isDead;
 	        this.isAtk = option.isAtk;
 	        this.personId = option.personId;
 	    }
-	    SimpleEbiruai.prototype.draw = function () {
+	    SimpleEvil.prototype.draw = function () {
 	        this.action();
 	        this.image = this.isDead ? canvas_1.MainCanvas.images.evilSinda :
 	            this.isMigiMuki ? canvas_1.MainCanvas.images.evilmigi :
 	                canvas_1.MainCanvas.images.evilHidari;
-	        this.ctx.drawImage(this.image, this.x, canvas_1.MainCanvas.convY(this.y, SimpleEbiruai.HEIGHT));
+	        this.ctx.drawImage(this.image, this.x, canvas_1.MainCanvas.convY(this.y, SimpleEvil.HEIGHT));
 	        this.trainDraw();
+	        this.lvDraw();
 	    };
-	    SimpleEbiruai.prototype.trainDraw = function () {
+	    SimpleEvil.prototype.lvDraw = function () {
+	        this.ctx.fillStyle = "black";
+	        this.ctx.font = "14px 'ＭＳ Ｐゴシック'";
+	        this.ctx.fillText("Lv " + this.lv, this.x + 34, canvas_1.MainCanvas.convY(this.y - 10, 0));
+	    };
+	    SimpleEvil.prototype.trainDraw = function () {
 	        this.myTrains = this.myTrains.filter(function (train) { return !train.isDead; });
 	        this.myTrains.forEach(function (train) { return train.draw(); });
 	    };
-	    SimpleEbiruai.prototype.action = function () {
+	    SimpleEvil.prototype.action = function () {
 	        if (this.isAtk) {
 	            this.atk();
 	        }
 	    };
-	    SimpleEbiruai.prototype.atk = function () {
+	    SimpleEvil.prototype.atk = function () {
 	        this.isAtk = false;
 	        var train = new train_1.Train(this.ctx, {
 	            image: canvas_1.MainCanvas.images.densya,
@@ -1087,11 +1099,11 @@
 	        });
 	        this.myTrains.push(train);
 	    };
-	    SimpleEbiruai.WIDTH = 103;
-	    SimpleEbiruai.HEIGHT = 63;
-	    return SimpleEbiruai;
+	    SimpleEvil.WIDTH = 103;
+	    SimpleEvil.HEIGHT = 63;
+	    return SimpleEvil;
 	}(BaseMonster_1.BaseMonster));
-	exports.SimpleEbiruai = SimpleEbiruai;
+	exports.SimpleEvil = SimpleEvil;
 
 
 /***/ },
@@ -1112,13 +1124,18 @@
 	    TrainMode[TrainMode["bakuhatu"] = 1] = "bakuhatu";
 	    TrainMode[TrainMode["sibou"] = 2] = "sibou";
 	})(TrainMode || (TrainMode = {}));
+	/** 攻撃時出現する電車 */
 	var Train = (function (_super) {
 	    __extends(Train, _super);
 	    function Train(ctx, zahyou) {
 	        _super.call(this, ctx, zahyou);
+	        this.onBakuhatu = [];
 	        this.gozzila = canvas_1.MainCanvas.GOZZILA;
 	        this.mode = TrainMode.ikiteru;
 	    }
+	    Train.prototype.setOnAtked = function (callback) {
+	        this.onBakuhatu.push(callback);
+	    };
 	    Train.prototype.draw = function () {
 	        this.ctx.drawImage(this.image, this.x, canvas_1.MainCanvas.convY(this.y, Train.HEIGHT));
 	        this.move();
@@ -1127,9 +1144,7 @@
 	        switch (this.mode) {
 	            case TrainMode.ikiteru:
 	                this.x += 10 * (this.isMigiMuki ? 1 : -1);
-	                if (this.x < 0 - Train.WIDTH || 800 < this.x) {
-	                    this.isDead = true;
-	                }
+	                this.isDead = this.x < 0 - Train.WIDTH || 800 < this.x;
 	                if (this.gozzila.x + 100 < this.x) {
 	                    this.mode = TrainMode.bakuhatu;
 	                    this.image = canvas_1.MainCanvas.images.bakuhatu;
@@ -1144,6 +1159,7 @@
 	                if (this.bakuhatuCount <= 0) {
 	                    this.isDead = true;
 	                    this.mode = TrainMode.sibou;
+	                    this.onBakuhatu.forEach(function (cb) { return cb(); });
 	                }
 	                break;
 	            default:
@@ -1163,6 +1179,7 @@
 /***/ function(module, exports) {
 
 	"use strict";
+	/** ゴジラやエビルアイ、電車などの基底クラス */
 	var BaseMonster = (function () {
 	    function BaseMonster(ctx, option) {
 	        this.image = option.image;
@@ -1189,42 +1206,45 @@
 	};
 	var canvas_1 = __webpack_require__(10);
 	var evil_1 = __webpack_require__(13);
+	var StatusBar_1 = __webpack_require__(147);
+	/** 自分が操作する機能をもつエビルアイ */
 	var Ebiruai = (function (_super) {
 	    __extends(Ebiruai, _super);
 	    function Ebiruai(ctx, zahyou) {
-	        var _this = this;
 	        _super.call(this, ctx, zahyou);
-	        this.jump = 10;
-	        this.speed = 5;
+	        this.lv = 1;
+	        this.exp = 0;
 	        this.maxHp = 100;
-	        this.hp = 100;
+	        this.hp = this.maxHp;
+	        this.jump = Ebiruai.BASE_JUMP;
+	        this.speed = Ebiruai.BASE_SPEED;
+	        this.maxExp = 50;
 	        this.gozzila = zahyou.gozzila;
+	        this.initHukkatuButton();
+	        this.statusBar = new StatusBar_1.StatusBar();
+	        this.statusBar.setExp(this.exp, this.maxExp);
+	        this.statusBar.setLv(this.lv);
+	    }
+	    Ebiruai.prototype.initHukkatuButton = function () {
+	        var _this = this;
 	        this.hukkatuButton = document.querySelector(".hukkatu");
-	        this.hukkatuButton.style.display = "none";
 	        this.hukkatuButton.addEventListener("click", function () {
+	            if (_this.hukkatuButton.className.indexOf("disabled") !== -1)
+	                return;
 	            _this.hp = _this.maxHp;
 	            _this.isDead = false;
-	            _this.isDeadOnceJikkou = false;
-	            _this.hukkatuButton.style.display = "none";
+	            _this.hukkatuButton.className += " disabled";
 	        });
-	    }
-	    Ebiruai.prototype.isDeadOnce = function () {
-	        var _this = this;
-	        if (!this.isDeadOnceJikkou) {
-	            setTimeout(function () {
-	                _this.hukkatuButton.style.display = "block";
-	            }, 8000);
-	            this.isDeadOnceJikkou = true;
-	        }
 	    };
+	    /** 毎フレーム実行される動作 */
 	    Ebiruai.prototype.action = function () {
+	        this.drawHp();
 	        if (this.isDead) {
-	            if (this.timecount >= 0)
-	                this.timecount--;
+	            if (this.rebornTimeCount >= 0)
+	                this.rebornTimeCount--;
 	            this.ctx.fillStyle = "black";
 	            this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
-	            this.ctx.fillText("\u6B7B\u306B\u307E\u3057\u305F\u3002" + Math.ceil(this.timecount / 30) + "\u79D2\u5F8C\u306B\u5FA9\u6D3B\u30DC\u30BF\u30F3\u304C\u8868\u793A\u3055\u308C\u307E\u3059", 100, 200);
-	            this.isDeadOnce();
+	            this.ctx.fillText("\u6B7B\u306B\u307E\u3057\u305F\u3002" + Math.ceil(this.rebornTimeCount / 30) + "\u79D2\u5F8C\u306B\u5FA9\u6D3B\u30DC\u30BF\u30F3\u304C\u4F7F\u7528\u53EF\u80FD\u306B\u306A\u308A\u307E\u3059", 80, 180);
 	        }
 	        else {
 	            if (canvas_1.MainCanvas.KeyEvent.hidari) {
@@ -1253,27 +1273,54 @@
 	                this.atksita = true;
 	                this.atk();
 	            }
-	            var beamAtatteiruCount = this.gozzila.inBeam(this.x, this.x + evil_1.SimpleEbiruai.WIDTH, this.y, this.y + evil_1.SimpleEbiruai.HEIGHT);
-	            this.hp -= 1.4 * beamAtatteiruCount;
-	            if (this.gozzila.sessyoku(this.x, this.y)) {
-	                this.hp -= 12;
-	            }
+	            this.hp -= this.gozzila.calcBeamDamege(this.x, this.x + evil_1.SimpleEvil.WIDTH, this.y, this.y + evil_1.SimpleEvil.HEIGHT);
+	            this.hp -= this.gozzila.sessyoku(this.x, this.y) ? 12 : 0;
 	            if (this.hp <= 0) {
-	                this.hp = 0;
-	                this.isDead = true;
-	                this.timecount = canvas_1.MainCanvas.FRAME * 8;
+	                this.dead();
 	            }
 	            canvas_1.MainCanvas.KeyEvent.atk = false;
 	        }
-	        this.ctx.fillStyle = "#000";
-	        this.ctx.fillRect(this.x + 10, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEbiruai.HEIGHT, 10), 82, 10);
-	        this.ctx.fillStyle = "#fff";
-	        this.ctx.fillRect(this.x + 10 + 1, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEbiruai.HEIGHT + 1, 8), 80, 8);
-	        this.ctx.fillStyle = "#e60c0c";
-	        this.ctx.fillRect(this.x + 10 + 1, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEbiruai.HEIGHT + 1, 8), 80 * this.hp / this.maxHp, 8);
 	    };
+	    Ebiruai.prototype.atk = function () {
+	        var _this = this;
+	        _super.prototype.atk.call(this);
+	        this.myTrains[this.myTrains.length - 1].setOnAtked(function () {
+	            _this.exp += 2;
+	            if (_this.maxExp <= _this.exp) {
+	                _this.lv++;
+	                _this.exp = 0;
+	                _this.maxExp *= Ebiruai.EXP_BAIRITU;
+	                _this.statusBar.setLv(_this.lv);
+	            }
+	            _this.statusBar.setExp(_this.exp, _this.maxExp);
+	        });
+	    };
+	    /** 死んだとき一度だけ実行される */
+	    Ebiruai.prototype.dead = function () {
+	        var _this = this;
+	        this.hp = 0;
+	        this.isDead = true;
+	        this.rebornTimeCount = canvas_1.MainCanvas.FRAME * 8;
+	        setTimeout(function () {
+	            _this.hukkatuButton.className = _this.hukkatuButton.className.replace(" disabled", "");
+	        }, 8000);
+	        this.exp -= Math.floor(this.maxExp / 4);
+	        this.exp = this.exp < 0 ? 0 : this.exp;
+	        this.statusBar.setExp(this.exp, this.maxExp);
+	    };
+	    Ebiruai.prototype.drawHp = function () {
+	        this.ctx.fillStyle = "#000";
+	        this.ctx.fillRect(this.x + 10, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEvil.HEIGHT, 10), 82, 10);
+	        this.ctx.fillStyle = "#fff";
+	        this.ctx.fillRect(this.x + 10 + 1, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEvil.HEIGHT + 1, 8), 80, 8);
+	        this.ctx.fillStyle = "#e60c0c";
+	        this.ctx.fillRect(this.x + 10 + 1, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp, 8);
+	    };
+	    Ebiruai.BASE_JUMP = 10;
+	    Ebiruai.BASE_SPEED = 5;
+	    Ebiruai.EXP_BAIRITU = 1.2;
 	    return Ebiruai;
-	}(evil_1.SimpleEbiruai));
+	}(evil_1.SimpleEvil));
 	exports.Ebiruai = Ebiruai;
 
 
@@ -1314,16 +1361,12 @@
 	        this.action();
 	    };
 	    Gozzila.prototype.drawHp = function () {
-	        var x = 30;
-	        var y = 10;
-	        var width = 500;
-	        var height = 20;
 	        this.ctx.fillStyle = "#000";
-	        this.ctx.fillRect(x, y, width + 2, height + 2);
+	        this.ctx.fillRect(Gozzila.HP_INFO.X, Gozzila.HP_INFO.Y, Gozzila.HP_INFO.WIDTH + 2, Gozzila.HP_INFO.HEIGHT + 2);
 	        this.ctx.fillStyle = "#fff";
-	        this.ctx.fillRect(x + 1, y + 1, width, height);
+	        this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH, Gozzila.HP_INFO.HEIGHT);
 	        this.ctx.fillStyle = "#4f1ae8";
-	        this.ctx.fillRect(x + 1, y + 1, width * this.hp / this.maxHp, height);
+	        this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH * this.hp / this.maxHp, Gozzila.HP_INFO.HEIGHT);
 	        this.ctx.fillStyle = "black";
 	        this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 	        this.ctx.fillText(this.hp + " / " + this.maxHp, this.x + 30, 40);
@@ -1344,8 +1387,8 @@
 	                break;
 	        }
 	    };
-	    /** ビームに当たっている数 */
-	    Gozzila.prototype.inBeam = function (x0, x1, y0, y1) {
+	    /** ビームによるダメージ計算 */
+	    Gozzila.prototype.calcBeamDamege = function (x0, x1, y0, y1) {
 	        var _this = this;
 	        if (this.mode !== GozzilaMode.atk)
 	            return 0;
@@ -1360,7 +1403,7 @@
 	            }
 	            ;
 	        });
-	        return count;
+	        return count * Gozzila.BEAM_DAMAGE;
 	    };
 	    /** 接触しているか */
 	    Gozzila.prototype.sessyoku = function (x, y) {
@@ -1371,7 +1414,7 @@
 	    Gozzila.prototype.atk = function () {
 	        var _this = this;
 	        this.target.forEach(function (target, i) {
-	            var endX = 0;
+	            var endX = _this.begin[i].x < target.x ? canvas_1.MainCanvas.WIDTH : 0;
 	            var endY = (target.y - _this.begin[i].y) * (endX - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
 	            _this.ctx.strokeStyle = "#317cff";
 	            _this.ctx.shadowColor = "#317cff";
@@ -1387,6 +1430,13 @@
 	    Gozzila.WIDTH = 64;
 	    Gozzila.HEIGHT = 64;
 	    Gozzila.BAIRITU = 5;
+	    Gozzila.BEAM_DAMAGE = 1.3;
+	    Gozzila.HP_INFO = {
+	        X: 30,
+	        Y: 10,
+	        WIDTH: 500,
+	        HEIGHT: 20
+	    };
 	    return Gozzila;
 	}(BaseMonster_1.BaseMonster));
 	exports.Gozzila = Gozzila;
@@ -4338,6 +4388,47 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "998892e6c6b68b8d8bd57f798c85f4a8.jpg";
+
+/***/ },
+/* 147 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var StatusBar = (function () {
+	    function StatusBar() {
+	        var _this = this;
+	        this.statusBarElem = document.querySelector(".status-bar");
+	        this.statusBarElem.innerHTML = StatusBar.STATUS_TMPL;
+	        this.lvElem = this.statusBarElem.querySelector(".lv-panel .value");
+	        this.nameElem = document.querySelector(".name-panel .name");
+	        this.nameDisplayElem = document.querySelector(".name-panel .display");
+	        this.nameEditElem = document.querySelector(".name-panel .edit");
+	        this.nameInputElem = document.querySelector(".name-panel .name-input");
+	        this.expBarElm = document.querySelector(".exp-bar");
+	        this.nameEditElem.addEventListener("click", function () {
+	            _this.nameElem.style.display = "none";
+	            _this.nameInputElem.style.display = "block";
+	            _this.nameInputElem.focus();
+	        });
+	        this.nameInputElem.addEventListener("focusout", function () {
+	            _this.nameElem.style.display = "flex";
+	            _this.nameInputElem.style.display = "none";
+	            _this.nameDisplayElem.innerText = _this.nameInputElem.value;
+	        });
+	    }
+	    StatusBar.prototype.init = function () {
+	    };
+	    StatusBar.prototype.setLv = function (lv) {
+	        this.lvElem.innerText = "" + lv;
+	    };
+	    StatusBar.prototype.setExp = function (exp, maxExp) {
+	        this.expBarElm.style.width = Math.floor(100 * exp / maxExp) + "px";
+	    };
+	    StatusBar.STATUS_TMPL = "\n\t\t<div class=\"lv-panel\">\n\t\t\t<span class=\"label\">Lv </span><span class=\"value\"></span>\n\t\t</div>\n\t\t<div class=\"name-panel\">\n\t\t\t<div class=\"name\">\n\t\t\t\t<span class=\"display\">EditName</span>\n\t\t\t\t<i class=\"material-icons edit\">mode_edit</i>\n\t\t\t</div>\n\t\t\t<input type=\"text\" class=\"name-input\" value=\"Edit\" maxlength=\"8\"></input>\n\t\t\t<div class=\"job\">\u521D\u5FC3\u8005</div>\n\t\t</div>\n\t\t<div class=\"graph-panel\">\n\t\t\t<div class=\"graph-info\">Exp</div>\n\t\t\t<div class=\"graph-bar\">\n\t\t\t\t<div class=\"value-bar exp-bar\"></div>\n\t\t\t</div>\n\t\t</div>\n\t";
+	    return StatusBar;
+	}());
+	exports.StatusBar = StatusBar;
+
 
 /***/ }
 /******/ ]);

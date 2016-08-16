@@ -20,7 +20,7 @@ var GozzilaMode;
 })(GozzilaMode || (GozzilaMode = {}));
 var Chat = (function () {
     function Chat(wss, collection) {
-        this.zahyous = [];
+        this.evils = [];
         this.befSendData = [];
         this.intervalCount = 0;
         this.wss = wss;
@@ -52,12 +52,12 @@ var Chat = (function () {
         }, 1000 / Chat.FRAME);
         this.wss.on('connection', function (ws) {
             ws.send(JSON.stringify({ type: WSResType.personId, value: _this.getPersonId(ws) }));
-            _this.sendLog10(ws);
+            _this.sendInitLog(ws);
             _this.sendAll({
                 myWs: ws,
                 isSelfSend: false,
                 type: WSResType.infolog,
-                value: "\u8AB0\u304B\u304C\u30A2\u30AF\u30BB\u30B9\u3057\u307E\u3057\u305F\u3000\u63A5\u7D9A\u6570: " + (_this.zahyous.length + 1)
+                value: "\u8AB0\u304B\u304C\u30A2\u30AF\u30BB\u30B9\u3057\u307E\u3057\u305F\u3000\u63A5\u7D9A\u6570: " + (_this.evils.length + 1)
             });
             ws.on('message', function (data, flags) { return _this.receiveData(ws, data, flags); });
             ws.on("close", function () { return _this.onClose(ws); });
@@ -68,30 +68,27 @@ var Chat = (function () {
             target: null
         };
     };
+    Chat.prototype.getRandom = function (arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    };
     Chat.prototype.decideTarget = function () {
+        var _this = this;
         if (this.decidedTarget)
             return;
-        try {
-            var targets = this.zahyous.filter(function (evil) { return !evil.isDead; });
-            var target1 = targets ? targets[Math.floor(Math.random() * targets.length)] :
-                this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
-            var target2 = targets ? targets[Math.floor(Math.random() * targets.length)] :
-                this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
-            if (target1 && target2) {
-                var sendTargets = [target1, target2].map(function (target) { return { x: target.x, y: target.y }; });
-                if (sendTargets) {
-                    this.gozzila.target = sendTargets;
-                    this.decidedTarget = true;
-                }
-            }
-        }
-        catch (e) {
+        var notDeadEvils = this.evils.filter(function (evil) { return !evil.isDead; });
+        var targets = [null, null].map(function () { return notDeadEvils.length > 0 ? _this.getRandom(notDeadEvils) :
+            _this.evils.length > 0 ? _this.getRandom(_this.evils) :
+                null; })
+            .map(function (evil) { return evil ? { x: evil.x + 50, y: evil.y + 30 } : null; });
+        if (targets.every(function (target) { return target !== null; })) {
+            this.gozzila.target = targets;
+            this.decidedTarget = true;
         }
     };
     Chat.prototype.sendGameData = function () {
         var sendData = {
             gozzila: this.gozzila,
-            evils: this.zahyous
+            evils: this.evils
         };
         if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
             this.sendAll({
@@ -106,17 +103,17 @@ var Chat = (function () {
     };
     Chat.prototype.onClose = function (closeWs) {
         var _this = this;
-        var targetIdx = this.zahyous.findIndex(function (zahyou) { return zahyou.personId === _this.getPersonId(closeWs); });
-        this.zahyous.splice(targetIdx, 1);
+        var targetIdx = this.evils.findIndex(function (zahyou) { return zahyou.personId === _this.getPersonId(closeWs); });
+        this.evils.splice(targetIdx, 1);
         // this.sendAll({
         // 	myWs: closeWs,
         // 	type: WSResType.infolog,
         // 	value: `誰かが切断しました　接続数: ${this.zahyous.length + 1}`
         // });
-        this.sendAll({
-            type: WSResType.closePerson,
-            value: this.getPersonId(closeWs)
-        });
+        // this.sendAll({
+        // 	type: WSResType.closePerson,
+        // 	value: this.getPersonId(closeWs)
+        // });
     };
     /** 全員に送る */
     Chat.prototype.sendAll = function (opt) {
@@ -137,9 +134,9 @@ var Chat = (function () {
         });
     };
     /**
-     * DBから新しい順に10行分のログ取り出して送信
+     * DBから新しい順に数行分のログ取り出して送信
      */
-    Chat.prototype.sendLog10 = function (ws) {
+    Chat.prototype.sendInitLog = function (ws) {
         try {
             this.collection.find().limit(7).sort({ $natural: -1 })
                 .toArray(function (err, arr) {
@@ -175,12 +172,12 @@ var Chat = (function () {
     };
     Chat.prototype.receiveZahyou = function (nowWs, resData) {
         var _this = this;
-        var evilInfo = this.zahyous.find(function (zahyou) { return zahyou.personId === _this.getPersonId(nowWs); });
+        var evilInfo = this.evils.find(function (zahyou) { return zahyou.personId === _this.getPersonId(nowWs); });
         if (evilInfo) {
             Object.assign(evilInfo, resData.value);
         }
         else {
-            this.zahyous.push(Object.assign({ personId: this.getPersonId(nowWs) }, resData.value));
+            this.evils.push(Object.assign({ personId: this.getPersonId(nowWs) }, resData.value));
         }
     };
     Chat.prototype.receiveMsg = function (nowWs, resData) {
@@ -197,6 +194,8 @@ var Chat = (function () {
     /** バイナリか80文字以上ははじく */
     Chat.prototype.validateMsg = function (data, isBinary) {
         if (!isBinary) {
+            if (data.length > 1000)
+                return false;
             var resData = JSON.parse(data);
             if (resData.type === WSResType.gozzilaDamege) {
                 return true;

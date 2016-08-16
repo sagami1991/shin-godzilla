@@ -1,5 +1,6 @@
 import {Zahyou} from "./canvas";
 
+/** ゴジラやエビルアイ、電車などの基底クラス */
 export class BaseMonster {
 	protected ctx: CanvasRenderingContext2D;
 	protected image: HTMLImageElement;

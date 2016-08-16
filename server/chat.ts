@@ -35,6 +35,7 @@ interface Zahyou {
 	y: number;
 	isAtk: boolean;
 	isDead: boolean;
+	lv: number;
 }
 
 interface SendAllOption {
@@ -52,7 +53,7 @@ interface GozzilaInfo {
 export class Chat {
 	private wss: WebSocket.Server;
 	private collection: Collection;
-	private zahyous: Zahyou[] = [];
+	private evils: Zahyou[] = [];
 	private befSendData: Zahyou[] = [];
 	private gozzila: GozzilaInfo;
 	constructor(wss: WebSocket.Server,
@@ -93,12 +94,12 @@ export class Chat {
 		);
 		this.wss.on('connection', (ws) => {
 			ws.send(JSON.stringify({type: WSResType.personId, value: this.getPersonId(ws)}));
-			this.sendLog10(ws);
+			this.sendInitLog(ws);
 			this.sendAll({
 				myWs: ws,
 				isSelfSend: false,
 				type: WSResType.infolog,
-				value: `誰かがアクセスしました　接続数: ${this.zahyous.length + 1}`
+				value: `誰かがアクセスしました　接続数: ${this.evils.length + 1}`
 			});
 			ws.on('message', (data, flags) => this.receiveData(ws, data, flags));
 			ws.on("close", () => this.onClose(ws));
@@ -109,29 +110,27 @@ export class Chat {
 			target: null
 		};
 	}
+
+	private getRandom(arr: any[]) {
+		return arr[Math.floor(Math.random() * arr.length)];
+	}
+
 	private decideTarget() {
 		if (this.decidedTarget) return;
-		try{
-			const targets = this.zahyous.filter(evil => !evil.isDead);
-			const target1 = targets ? targets[Math.floor(Math.random() * targets.length)] :
-								this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
-			const target2 = targets ? targets[Math.floor(Math.random() * targets.length)] :
-								this.zahyous[Math.floor(Math.random() * this.zahyous.length)];
-			if(target1 && target2) {
-				let sendTargets = [target1, target2].map((target) => {return {x: target.x, y: target.y}});
-					if (sendTargets) {
-						this.gozzila.target = sendTargets;
-						this.decidedTarget = true;
-					}
-			}
-		} catch(e) {
-
+		const notDeadEvils = this.evils.filter(evil => !evil.isDead);
+		const targets = [null, null].map(() => notDeadEvils.length > 0 ? this.getRandom(notDeadEvils) :
+											   this.evils.length > 0   ? this.getRandom(this.evils) :
+															  null)
+		.map(evil => evil ? {x: evil.x + 50, y: evil.y + 30} : null);
+		if (targets.every( target => target !== null)) {
+			this.gozzila.target = targets;
+			this.decidedTarget = true;
 		}
 	}
 	private sendGameData() {
 		const sendData = {
 			gozzila: this.gozzila,
-			evils: this.zahyous
+			evils: this.evils
 		};
 		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
 			this.sendAll({
@@ -145,17 +144,17 @@ export class Chat {
 		return ws.upgradeReq.headers["sec-websocket-key"];
 	}
 	private onClose(closeWs: WebSocket) {
-		const targetIdx = this.zahyous.findIndex(zahyou => zahyou.personId === this.getPersonId(closeWs));
-		this.zahyous.splice(targetIdx, 1);
+		const targetIdx = this.evils.findIndex(zahyou => zahyou.personId === this.getPersonId(closeWs));
+		this.evils.splice(targetIdx, 1);
 		// this.sendAll({
 		// 	myWs: closeWs,
 		// 	type: WSResType.infolog,
 		// 	value: `誰かが切断しました　接続数: ${this.zahyous.length + 1}`
 		// });
-		this.sendAll({
-			type: WSResType.closePerson,
-			value: this.getPersonId(closeWs)
-		});
+		// this.sendAll({
+		// 	type: WSResType.closePerson,
+		// 	value: this.getPersonId(closeWs)
+		// });
 	}
 	/** 全員に送る */
 	private sendAll(opt: SendAllOption) {
@@ -175,9 +174,9 @@ export class Chat {
 		});
 	}
 	/**
-	 * DBから新しい順に10行分のログ取り出して送信
+	 * DBから新しい順に数行分のログ取り出して送信
 	 */
-	private sendLog10(ws: WebSocket) {
+	private sendInitLog(ws: WebSocket) {
 		try {
 		this.collection.find().limit(7).sort({ $natural: -1 })
 		.toArray((err, arr) => {
@@ -210,11 +209,11 @@ export class Chat {
 		}
 	}
 	private receiveZahyou(nowWs: WebSocket, resData: ResData) {
-		const evilInfo = this.zahyous.find(zahyou => zahyou.personId === this.getPersonId(nowWs));
+		const evilInfo = this.evils.find(zahyou => zahyou.personId === this.getPersonId(nowWs));
 		if (evilInfo) {
 			Object.assign(evilInfo, resData.value);
 		} else {
-			this.zahyous.push(Object.assign({personId: this.getPersonId(nowWs)}, resData.value));
+			this.evils.push(Object.assign({personId: this.getPersonId(nowWs)}, resData.value));
 		}
 	}
 
@@ -234,6 +233,7 @@ export class Chat {
 	/** バイナリか80文字以上ははじく */
 	private validateMsg(data: string, isBinary: boolean, ) {
 		if (!isBinary) {
+			if (data.length > 1000) return false;
 			const resData = <ResData> JSON.parse(data);
 
 			if (resData.type === WSResType.gozzilaDamege) {

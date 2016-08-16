@@ -1,7 +1,7 @@
 import {WSService, WSDataType} from "../WebSocketService";
-import {SimpleEbiruai} from "./evil";
+import {SimpleEvil} from "./evil";
 import {Ebiruai} from "./myEvil";
-import {Gozzila, GozzilaMode} from "./gozzila";
+import {Gozzila} from "./gozzila";
 
 export interface Zahyou {
 	image?: HTMLImageElement;
@@ -10,8 +10,10 @@ export interface Zahyou {
 	isMigiMuki: boolean;
 	x: number;
 	y: number;
+	isDead?: boolean;
 	isAtk?: boolean;
 	gozzila?: Gozzila;
+	lv?: number;
 }
 
 interface GozzilaInfo {
@@ -20,6 +22,7 @@ interface GozzilaInfo {
 	target: {x: number, y: number}[];
 }
 
+/** canvasの総合操作クラス */
 export class MainCanvas {
 	public static FRAME = 30;
 	public static HEIGHT = 500;
@@ -37,7 +40,8 @@ export class MainCanvas {
 	private myEvil: Ebiruai;
 	private gozzila: Gozzila;
 	public static GOZZILA: Gozzila;
-	private simpleEbiruais: SimpleEbiruai[] = [];
+	private otherPersonEvils: SimpleEvil[] = [];
+	private receiveMyEvilInfo: Zahyou;
 	private befSendData: Zahyou;
 	public static KeyEvent = {
 		ue: false,
@@ -63,6 +67,8 @@ export class MainCanvas {
 	}
 	public init() {
 		this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
+		this.canvasElm.width = MainCanvas.WIDTH;
+		this.canvasElm.height = MainCanvas.HEIGHT;
 		this.ctx = this.canvasElm.getContext('2d');
 		this.keyset();
 		this.ws.addOnReceiveMsgListener((type) => {
@@ -88,39 +94,40 @@ export class MainCanvas {
 			isMigiMuki: true,
 			isMy: true,
 			personId: this.ws.personId,
-			gozzila: this.gozzila
+			gozzila: this.gozzila,
+			lv: 1
 		});
-		this.gozzila.target = [0, 0].map( ()=> {return{x: this.myEvil.x, y: this.myEvil.y}});
+		this.gozzila.target = [0, 0].map( () => {return{x: this.myEvil.x, y: this.myEvil.y}; });
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
 		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveGameData(type, value));
-		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveClosePerson(type, value));
 	}
-	private onReceiveClosePerson(type: number, value: any) {
-		if (type !== WSDataType.closePerson) return;
-		this.simpleEbiruais = this.simpleEbiruais.filter(evil => evil.personId !== value);
-	}
+
 	private onReceiveGameData(type: number, value: any) {
 		if (type !== WSDataType.zahyou) return;
 		const gozzilaInfo = <GozzilaInfo> value.gozzila;
 		this.gozzila.hp = gozzilaInfo.hp;
 		this.gozzila.mode = gozzilaInfo.mode;
 		this.gozzila.target = gozzilaInfo.target;
-		const evils = <Zahyou[]> value.evils;
-		evils.forEach(evil => {
-			const existEvil = this.simpleEbiruais.find(existEvil => existEvil.personId === evil.personId);
+		const receiveEvils = <Zahyou[]> value.evils;
+		receiveEvils.forEach(evilInfo => {
+			const existEvil = this.otherPersonEvils.find(existEvil => existEvil.personId === evilInfo.personId);
 			if (existEvil) {
-				Object.assign(existEvil, evil);
-			} else if (evil.personId !== this.myEvil.personId) {
-				this.simpleEbiruais.push(new SimpleEbiruai(this.ctx, evil));
+				Object.assign(existEvil, evilInfo);
+			} else if (evilInfo.personId !== this.myEvil.personId) {
+				this.otherPersonEvils.push(new SimpleEvil(this.ctx, evilInfo));
 			}
 		});
+		this.otherPersonEvils = this.otherPersonEvils.filter(
+			evil => receiveEvils.find(receiveEvil => receiveEvil.personId === evil.personId)
+		);
+		this.receiveMyEvilInfo = receiveEvils.find(evil => evil.personId === this.myEvil.personId);
 	}
 
 	/** 描写 */
 	private draw() {
 		this.ctx.clearRect(0, 0, MainCanvas.WIDTH, MainCanvas.HEIGHT);
 		this.gozzila.draw();
-		this.simpleEbiruais.forEach(evil => evil.draw());
+		this.otherPersonEvils.forEach(evil => evil.draw());
 		this.myEvil.draw();
 		this.drawNowPersonCount();
 		this.sendServer();
@@ -128,7 +135,7 @@ export class MainCanvas {
 	private drawNowPersonCount() {
 		this.ctx.fillStyle = "black";
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
-		this.ctx.fillText(`接続数:${this.simpleEbiruais.length + 1}`, 736, 18);
+		this.ctx.fillText(`接続数:${this.otherPersonEvils.length + 1}`, 736, 18);
 	}
 	private sendServer() {
 		const sendData = {
@@ -136,9 +143,11 @@ export class MainCanvas {
 			x: this.myEvil.x,
 			y: this.myEvil.y,
 			isAtk: this.myEvil.atksita,
-			isDead: this.myEvil.isDead
+			isDead: this.myEvil.isDead,
+			lv: this.myEvil.lv,
 		};
-		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
+		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
+			this.receiveMyEvilInfo.isDead !== sendData.isDead) {
 			this.ws.send(WSDataType.zahyou, sendData);
 			this.myEvil.atksita = false;
 		}
@@ -158,6 +167,7 @@ export class MainCanvas {
 		{keycode: [88], eventName: "atk"}
 	];
 
+	/** ボタンやキーを設定 */
 	private keyset() {
 		this.canvasElm.addEventListener("click", () => {
 			MainCanvas.KeyEvent.atk = true;
