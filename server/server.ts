@@ -1,11 +1,12 @@
 import {createServer}  from 'http';
 import * as express from 'express';
 import {Server as WebSocketServer} from 'ws';
-import {MongoClient, Collection} from 'mongodb';
-import {Chat} from "./chat";
+import {MongoClient, Db} from 'mongodb';
+import {MainWebSocket} from "./WebSocketMain";
+import {Ranking} from "./ranking";
 
 /** DBに接続 */
-function connectDB(): Promise<Collection> {
+function connectDB(): Promise<Db> {
 	return new Promise((resolve) => {
 		MongoClient.connect(process.env.MONGODB_URI , (err, db) => {
 			if (err) throw err;
@@ -17,18 +18,17 @@ function connectDB(): Promise<Collection> {
 					collection.remove({_id: {$in: records.map(record => record._id)}});
 				});
 			});
-			resolve(collection);
+			resolve(db);
 		});
 	});
 }
 
-connectDB().then((collection) => {
+connectDB().then((db) => {
 	const server = createServer();
 	const app = express();
-	app.use((<any>express).logger('dev'));
-	app.use((<any>express).compress());
 	app.use(express.static(__dirname + '/../dist'));
-	new Chat(new WebSocketServer({ server: server }), collection).init();
+	new MainWebSocket(new WebSocketServer({ server: server }), db.collection(process.env.COLLECTION_NAME || "maplechatlog")).init();
+	new Ranking(db.collection("ranking"), app).init();
 	server.on('request', app);
 	server.listen(process.env.PORT || 3000, () => {
 		console.log('Server listening on port %s', server.address().port);

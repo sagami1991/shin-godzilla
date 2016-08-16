@@ -3,6 +3,15 @@ import {SimpleEvil} from "./evil";
 import {Gozzila} from "./gozzila";
 import {StatusBar} from "./StatusBar";
 
+interface StrageData {
+	date: Date;
+	lv: number;
+	maxExp: number;
+	exp: number;
+	maxHp: number;
+	name: string;
+}
+
 /** 自分が操作する機能をもつエビルアイ */
 export class Ebiruai extends SimpleEvil {
 	private static BASE_JUMP = 10;
@@ -19,6 +28,7 @@ export class Ebiruai extends SimpleEvil {
 	private rebornTimeCount: number;
 	private exp: number;
 	private maxExp: number;
+	private name: string;
 
 	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
 		super(ctx, zahyou);
@@ -29,13 +39,23 @@ export class Ebiruai extends SimpleEvil {
 		this.jump = Ebiruai.BASE_JUMP;
 		this.speed = Ebiruai.BASE_SPEED;
 		this.maxExp = 50;
+		this.name = "名前";
+		this.loadLocalStrage();
 		this.gozzila = zahyou.gozzila;
 		this.initHukkatuButton();
-		this.statusBar = new StatusBar();
-		this.statusBar.setExp(this.exp, this.maxExp);
-		this.statusBar.setLv(this.lv);
+		this.initStatusBar();
 	}
 
+	private initStatusBar() {
+		this.statusBar = new StatusBar();
+		this.statusBar.addOnNameEditListner((name) => { 
+			this.name = name;
+			this.saveLocalStrage();
+		});
+		this.statusBar.setExp(this.exp, this.maxExp);
+		this.statusBar.setLv(this.lv);
+		this.statusBar.setName(this.name);
+	}
 
 	private initHukkatuButton() {
 		this.hukkatuButton = <HTMLElement> document.querySelector(".hukkatu");
@@ -92,16 +112,21 @@ export class Ebiruai extends SimpleEvil {
 	}
 	protected atk() {
 		super.atk();
-		this.myTrains[this.myTrains.length - 1].setOnAtked(() => {
-			this.exp += 2;
-			if (this.maxExp <= this.exp) {
-				this.lv ++;
-				this.exp = 0;
-				this.maxExp *= Ebiruai.EXP_BAIRITU;
-				this.statusBar.setLv(this.lv);
-			}
+		this.myTrains[this.myTrains.length - 1].setOnAtked(() => this.increaseExp());
+	}
+
+	private increaseExp() {
+		this.exp += 2;
+		this.statusBar.setExp(this.exp, this.maxExp);
+		console.log(this.exp, this.maxExp)
+		if (this.maxExp <= this.exp) {
+			this.lv ++;
+			this.exp = 0;
+			this.maxExp *= Ebiruai.EXP_BAIRITU;
 			this.statusBar.setExp(this.exp, this.maxExp);
-		});
+			this.statusBar.setLv(this.lv);
+			this.saveLocalStrage();
+		}
 	}
 	/** 死んだとき一度だけ実行される */
 	private dead() {
@@ -111,7 +136,7 @@ export class Ebiruai extends SimpleEvil {
 		setTimeout(() => {
 			this.hukkatuButton.className = this.hukkatuButton.className.replace(" disabled", "");
 		}, 8000);
-		this.exp -= Math.floor(this.maxExp / 4);
+		this.exp -= Math.floor(this.maxExp / 8);
 		this.exp = this.exp < 0 ? 0 : this.exp;
 		this.statusBar.setExp(this.exp, this.maxExp);
 	}
@@ -123,5 +148,28 @@ export class Ebiruai extends SimpleEvil {
 		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleEvil.HEIGHT + 1, 8), 80, 8);
 		this.ctx.fillStyle = "#e60c0c";
 		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp , 8);
+	}
+	/** TODO DBに変える */
+	private saveLocalStrage() {
+		const saveData: StrageData = {
+			date: new Date(),
+			lv: this.lv,
+			maxExp: this.maxExp,
+			exp: this.exp,
+			maxHp: this.maxHp,
+			name: this.name
+		};
+		localStorage.setItem("saveDataVer0.0", JSON.stringify(saveData));
+	}
+
+	private loadLocalStrage() {
+		const loadData = <StrageData> JSON.parse(localStorage.getItem("saveDataVer0.0"));
+		if (loadData) {
+			this.lv = loadData.lv ? loadData.lv : 1;
+			this.maxExp = loadData.maxExp ? loadData.maxExp : 50 * Math.pow(1.2, this.lv -1);
+			this.exp = loadData.exp ? loadData.exp : 0;
+			this.maxHp = loadData.maxHp ? loadData.maxHp : 100;
+			this.name = loadData.name ? loadData.name : "名前";
+		}
 	}
 }

@@ -14,7 +14,7 @@
   "dependencies": {
     "core-js": "^2.4.1",
     "dateformat": "^1.0.12",
-    "express": "^3.3.8",
+    "express": "^4.14.0",
     "handlebars": "^4.0.5",
     "http": "0.0.0",
     "humane-js": "^3.2.2",

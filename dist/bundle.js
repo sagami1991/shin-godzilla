@@ -817,6 +817,7 @@
 	            isDead: this.myEvil.isDead,
 	            lv: this.myEvil.lv,
 	        };
+	        // TODO エラー出てる
 	        if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
 	            this.receiveMyEvilInfo.isDead !== sendData.isDead) {
 	            this.ws.send(WebSocketService_1.WSDataType.zahyou, sendData);
@@ -1032,7 +1033,7 @@
 	    };
 	    ;
 	    Notify.success = function (msg) {
-	        humane.spawn({ addnCls: "humane-success", timeout: 1500 })(msg);
+	        humane.spawn({ addnCls: "humane-success", timeout: 1800 })(msg);
 	    };
 	    ;
 	    return Notify;
@@ -1219,12 +1220,23 @@
 	        this.jump = Ebiruai.BASE_JUMP;
 	        this.speed = Ebiruai.BASE_SPEED;
 	        this.maxExp = 50;
+	        this.name = "名前";
+	        this.loadLocalStrage();
 	        this.gozzila = zahyou.gozzila;
 	        this.initHukkatuButton();
+	        this.initStatusBar();
+	    }
+	    Ebiruai.prototype.initStatusBar = function () {
+	        var _this = this;
 	        this.statusBar = new StatusBar_1.StatusBar();
+	        this.statusBar.addOnNameEditListner(function (name) {
+	            _this.name = name;
+	            _this.saveLocalStrage();
+	        });
 	        this.statusBar.setExp(this.exp, this.maxExp);
 	        this.statusBar.setLv(this.lv);
-	    }
+	        this.statusBar.setName(this.name);
+	    };
 	    Ebiruai.prototype.initHukkatuButton = function () {
 	        var _this = this;
 	        this.hukkatuButton = document.querySelector(".hukkatu");
@@ -1284,16 +1296,20 @@
 	    Ebiruai.prototype.atk = function () {
 	        var _this = this;
 	        _super.prototype.atk.call(this);
-	        this.myTrains[this.myTrains.length - 1].setOnAtked(function () {
-	            _this.exp += 2;
-	            if (_this.maxExp <= _this.exp) {
-	                _this.lv++;
-	                _this.exp = 0;
-	                _this.maxExp *= Ebiruai.EXP_BAIRITU;
-	                _this.statusBar.setLv(_this.lv);
-	            }
-	            _this.statusBar.setExp(_this.exp, _this.maxExp);
-	        });
+	        this.myTrains[this.myTrains.length - 1].setOnAtked(function () { return _this.increaseExp(); });
+	    };
+	    Ebiruai.prototype.increaseExp = function () {
+	        this.exp += 2;
+	        this.statusBar.setExp(this.exp, this.maxExp);
+	        console.log(this.exp, this.maxExp);
+	        if (this.maxExp <= this.exp) {
+	            this.lv++;
+	            this.exp = 0;
+	            this.maxExp *= Ebiruai.EXP_BAIRITU;
+	            this.statusBar.setExp(this.exp, this.maxExp);
+	            this.statusBar.setLv(this.lv);
+	            this.saveLocalStrage();
+	        }
 	    };
 	    /** 死んだとき一度だけ実行される */
 	    Ebiruai.prototype.dead = function () {
@@ -1304,7 +1320,7 @@
 	        setTimeout(function () {
 	            _this.hukkatuButton.className = _this.hukkatuButton.className.replace(" disabled", "");
 	        }, 8000);
-	        this.exp -= Math.floor(this.maxExp / 4);
+	        this.exp -= Math.floor(this.maxExp / 8);
 	        this.exp = this.exp < 0 ? 0 : this.exp;
 	        this.statusBar.setExp(this.exp, this.maxExp);
 	    };
@@ -1315,6 +1331,28 @@
 	        this.ctx.fillRect(this.x + 10 + 1, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEvil.HEIGHT + 1, 8), 80, 8);
 	        this.ctx.fillStyle = "#e60c0c";
 	        this.ctx.fillRect(this.x + 10 + 1, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp, 8);
+	    };
+	    /** TODO DBに変える */
+	    Ebiruai.prototype.saveLocalStrage = function () {
+	        var saveData = {
+	            date: new Date(),
+	            lv: this.lv,
+	            maxExp: this.maxExp,
+	            exp: this.exp,
+	            maxHp: this.maxHp,
+	            name: this.name
+	        };
+	        localStorage.setItem("saveDataVer0.0", JSON.stringify(saveData));
+	    };
+	    Ebiruai.prototype.loadLocalStrage = function () {
+	        var loadData = JSON.parse(localStorage.getItem("saveDataVer0.0"));
+	        if (loadData) {
+	            this.lv = loadData.lv ? loadData.lv : 1;
+	            this.maxExp = loadData.maxExp ? loadData.maxExp : 50 * Math.pow(1.2, this.lv - 1);
+	            this.exp = loadData.exp ? loadData.exp : 0;
+	            this.maxHp = loadData.maxHp ? loadData.maxHp : 100;
+	            this.name = loadData.name ? loadData.name : "名前";
+	        }
 	    };
 	    Ebiruai.BASE_JUMP = 10;
 	    Ebiruai.BASE_SPEED = 5;
@@ -1413,6 +1451,7 @@
 	    };
 	    Gozzila.prototype.atk = function () {
 	        var _this = this;
+	        // TODO エラー出てる
 	        this.target.forEach(function (target, i) {
 	            var endX = _this.begin[i].x < target.x ? canvas_1.MainCanvas.WIDTH : 0;
 	            var endY = (target.y - _this.begin[i].y) * (endX - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
@@ -4397,6 +4436,7 @@
 	var StatusBar = (function () {
 	    function StatusBar() {
 	        var _this = this;
+	        this.onNameEditeds = [];
 	        this.statusBarElem = document.querySelector(".status-bar");
 	        this.statusBarElem.innerHTML = StatusBar.STATUS_TMPL;
 	        this.lvElem = this.statusBarElem.querySelector(".lv-panel .value");
@@ -4411,12 +4451,17 @@
 	            _this.nameInputElem.focus();
 	        });
 	        this.nameInputElem.addEventListener("focusout", function () {
+	            var name = _this.nameInputElem.value;
 	            _this.nameElem.style.display = "flex";
 	            _this.nameInputElem.style.display = "none";
-	            _this.nameDisplayElem.innerText = _this.nameInputElem.value;
+	            _this.nameDisplayElem.innerText = name;
+	            _this.onNameEditeds.forEach(function (cb) { return cb(name); });
 	        });
 	    }
 	    StatusBar.prototype.init = function () {
+	    };
+	    StatusBar.prototype.addOnNameEditListner = function (cb) {
+	        this.onNameEditeds.push(cb);
 	    };
 	    StatusBar.prototype.setLv = function (lv) {
 	        this.lvElem.innerText = "" + lv;
@@ -4424,7 +4469,11 @@
 	    StatusBar.prototype.setExp = function (exp, maxExp) {
 	        this.expBarElm.style.width = Math.floor(100 * exp / maxExp) + "px";
 	    };
-	    StatusBar.STATUS_TMPL = "\n\t\t<div class=\"lv-panel\">\n\t\t\t<span class=\"label\">Lv </span><span class=\"value\"></span>\n\t\t</div>\n\t\t<div class=\"name-panel\">\n\t\t\t<div class=\"name\">\n\t\t\t\t<span class=\"display\">EditName</span>\n\t\t\t\t<i class=\"material-icons edit\">mode_edit</i>\n\t\t\t</div>\n\t\t\t<input type=\"text\" class=\"name-input\" value=\"Edit\" maxlength=\"8\"></input>\n\t\t\t<div class=\"job\">\u521D\u5FC3\u8005</div>\n\t\t</div>\n\t\t<div class=\"graph-panel\">\n\t\t\t<div class=\"graph-info\">Exp</div>\n\t\t\t<div class=\"graph-bar\">\n\t\t\t\t<div class=\"value-bar exp-bar\"></div>\n\t\t\t</div>\n\t\t</div>\n\t";
+	    StatusBar.prototype.setName = function (name) {
+	        this.nameDisplayElem.innerText = name;
+	        this.nameInputElem.value = name;
+	    };
+	    StatusBar.STATUS_TMPL = "\n\t\t<div class=\"lv-panel\">\n\t\t\t<span class=\"label\">Lv </span><span class=\"value\"></span>\n\t\t</div>\n\t\t<div class=\"name-panel\">\n\t\t\t<div class=\"name\">\n\t\t\t\t<span class=\"display\"></span>\n\t\t\t\t<i class=\"material-icons edit\">mode_edit</i>\n\t\t\t</div>\n\t\t\t<input type=\"text\" class=\"name-input\" value=\"Edit\" maxlength=\"8\"></input>\n\t\t\t<div class=\"job\">\u521D\u5FC3\u8005</div>\n\t\t</div>\n\t\t<div class=\"graph-panel\">\n\t\t\t<div class=\"graph-info\">Exp</div>\n\t\t\t<div class=\"graph-bar\">\n\t\t\t\t<div class=\"value-bar exp-bar\"></div>\n\t\t\t</div>\n\t\t</div>\n\t";
 	    return StatusBar;
 	}());
 	exports.StatusBar = StatusBar;

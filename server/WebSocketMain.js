@@ -18,38 +18,26 @@ var GozzilaMode;
     GozzilaMode[GozzilaMode["atk"] = 2] = "atk";
     GozzilaMode[GozzilaMode["dead"] = 3] = "dead";
 })(GozzilaMode || (GozzilaMode = {}));
-var Chat = (function () {
-    function Chat(wss, collection) {
+var MainWebSocket = (function () {
+    function MainWebSocket(wss, collection) {
         this.evils = [];
         this.befSendData = [];
         this.intervalCount = 0;
+        this.accessCount = {};
         this.wss = wss;
         this.collection = collection;
     }
-    Chat.prototype.init = function () {
+    MainWebSocket.prototype.init = function () {
         var _this = this;
-        var normalF = Chat.INTERVAL_SEC.NORMAL * Chat.FRAME;
-        var beforeAtkF = (Chat.INTERVAL_SEC.NORMAL + Chat.INTERVAL_SEC.BEFORE_ATK) * Chat.FRAME;
-        var atkSecF = (Chat.INTERVAL_SEC.NORMAL + Chat.INTERVAL_SEC.BEFORE_ATK + Chat.INTERVAL_SEC.ATK) * Chat.FRAME;
         setInterval(function () {
             _this.sendGameData();
-            if (_this.intervalCount < normalF) {
-                _this.gozzila.mode = GozzilaMode.init;
-            }
-            else if (_this.intervalCount < beforeAtkF) {
-                _this.gozzila.mode = GozzilaMode.beforeAtk;
-                _this.decideTarget();
-            }
-            else if (_this.intervalCount < atkSecF) {
-                _this.gozzila.mode = GozzilaMode.atk;
-                _this.decideTarget();
-            }
-            else {
-                _this.decidedTarget = false;
-                _this.intervalCount = 0;
-            }
+            _this.gozzilaAction();
             _this.intervalCount++;
-        }, 1000 / Chat.FRAME);
+        }, 1000 / MainWebSocket.FRAME);
+        //リクエスト数、10秒毎に集計
+        setInterval(function () {
+            _this.accessCount = {};
+        }, 10 * 1000);
         this.wss.on('connection', function (ws) {
             ws.send(JSON.stringify({ type: WSResType.personId, value: _this.getPersonId(ws) }));
             _this.sendInitLog(ws);
@@ -68,10 +56,27 @@ var Chat = (function () {
             target: null
         };
     };
-    Chat.prototype.getRandom = function (arr) {
+    MainWebSocket.prototype.gozzilaAction = function () {
+        if (this.intervalCount < MainWebSocket.G_F_RANGE.normalF) {
+            this.gozzila.mode = GozzilaMode.init;
+        }
+        else if (this.intervalCount < MainWebSocket.G_F_RANGE.beforeAtkF) {
+            this.gozzila.mode = GozzilaMode.beforeAtk;
+            this.decideTarget();
+        }
+        else if (this.intervalCount < MainWebSocket.G_F_RANGE.atkSecF) {
+            this.gozzila.mode = GozzilaMode.atk;
+            this.decideTarget();
+        }
+        else {
+            this.decidedTarget = false;
+            this.intervalCount = 0;
+        }
+    };
+    MainWebSocket.prototype.getRandom = function (arr) {
         return arr[Math.floor(Math.random() * arr.length)];
     };
-    Chat.prototype.decideTarget = function () {
+    MainWebSocket.prototype.decideTarget = function () {
         var _this = this;
         if (this.decidedTarget)
             return;
@@ -85,7 +90,7 @@ var Chat = (function () {
             this.decidedTarget = true;
         }
     };
-    Chat.prototype.sendGameData = function () {
+    MainWebSocket.prototype.sendGameData = function () {
         var sendData = {
             gozzila: this.gozzila,
             evils: this.evils
@@ -98,25 +103,16 @@ var Chat = (function () {
         }
         this.befSendData = JSON.parse(JSON.stringify(sendData));
     };
-    Chat.prototype.getPersonId = function (ws) {
+    MainWebSocket.prototype.getPersonId = function (ws) {
         return ws.upgradeReq.headers["sec-websocket-key"];
     };
-    Chat.prototype.onClose = function (closeWs) {
+    MainWebSocket.prototype.onClose = function (closeWs) {
         var _this = this;
         var targetIdx = this.evils.findIndex(function (zahyou) { return zahyou.personId === _this.getPersonId(closeWs); });
         this.evils.splice(targetIdx, 1);
-        // this.sendAll({
-        // 	myWs: closeWs,
-        // 	type: WSResType.infolog,
-        // 	value: `誰かが切断しました　接続数: ${this.zahyous.length + 1}`
-        // });
-        // this.sendAll({
-        // 	type: WSResType.closePerson,
-        // 	value: this.getPersonId(closeWs)
-        // });
     };
     /** 全員に送る */
-    Chat.prototype.sendAll = function (opt) {
+    MainWebSocket.prototype.sendAll = function (opt) {
         this.wss.clients.forEach(function (ws) {
             if (!opt.isSelfSend && opt.myWs === ws) {
                 return;
@@ -136,7 +132,7 @@ var Chat = (function () {
     /**
      * DBから新しい順に数行分のログ取り出して送信
      */
-    Chat.prototype.sendInitLog = function (ws) {
+    MainWebSocket.prototype.sendInitLog = function (ws) {
         try {
             this.collection.find().limit(7).sort({ $natural: -1 })
                 .toArray(function (err, arr) {
@@ -153,7 +149,7 @@ var Chat = (function () {
     /**
      * でーた受け取り時
      */
-    Chat.prototype.receiveData = function (ws, data, flags) {
+    MainWebSocket.prototype.receiveData = function (ws, data, flags) {
         if (!this.validateMsg(data, flags.binary)) {
             return;
         }
@@ -166,11 +162,23 @@ var Chat = (function () {
                 this.receiveMsg(ws, resData);
                 break;
             case WSResType.gozzilaDamege:
-                this.gozzila.hp -= 2;
+                this.receiveGozzilaDamege(ws);
                 break;
         }
     };
-    Chat.prototype.receiveZahyou = function (nowWs, resData) {
+    MainWebSocket.prototype.receiveGozzilaDamege = function (ws) {
+        var pesonId = this.getPersonId(ws);
+        if (this.accessCount[pesonId]) {
+            this.accessCount[pesonId]++;
+        }
+        else {
+            this.accessCount[pesonId] = 1;
+        }
+        if (this.accessCount[pesonId] > 200)
+            ws.close();
+        this.gozzila.hp -= 2;
+    };
+    MainWebSocket.prototype.receiveZahyou = function (nowWs, resData) {
         var _this = this;
         var evilInfo = this.evils.find(function (zahyou) { return zahyou.personId === _this.getPersonId(nowWs); });
         if (evilInfo) {
@@ -180,7 +188,7 @@ var Chat = (function () {
             this.evils.push(Object.assign({ personId: this.getPersonId(nowWs) }, resData.value));
         }
     };
-    Chat.prototype.receiveMsg = function (nowWs, resData) {
+    MainWebSocket.prototype.receiveMsg = function (nowWs, resData) {
         var log = {
             msg: resData.value,
             personId: this.getPersonId(nowWs),
@@ -191,10 +199,10 @@ var Chat = (function () {
         catch (e) { }
         this.sendAll({ type: WSResType.log, value: log });
     };
-    /** バイナリか80文字以上ははじく */
-    Chat.prototype.validateMsg = function (data, isBinary) {
+    /** バイナリか50文字以上ははじく */
+    MainWebSocket.prototype.validateMsg = function (data, isBinary) {
         if (!isBinary) {
-            if (data.length > 1000)
+            if (data.length > 500)
                 return false;
             var resData = JSON.parse(data);
             if (resData.type === WSResType.gozzilaDamege) {
@@ -207,7 +215,8 @@ var Chat = (function () {
                 return false;
             }
             if (resData.type === WSResType.zahyou) {
-                if (!Number.isInteger(resData.value.x) || !Number.isInteger(resData.value.y)) {
+                var evilInfo = resData.value;
+                if (!Number.isInteger(evilInfo.lv) || !Number.isInteger(evilInfo.x) || !Number.isInteger(evilInfo.y)) {
                     return false;
                 }
             }
@@ -217,12 +226,17 @@ var Chat = (function () {
         }
         return true;
     };
-    Chat.FRAME = 30;
-    Chat.INTERVAL_SEC = {
+    MainWebSocket.FRAME = 30;
+    MainWebSocket.INTERVAL_SEC = {
         NORMAL: 1,
         BEFORE_ATK: 0.8,
         ATK: 1.6,
     };
-    return Chat;
+    MainWebSocket.G_F_RANGE = {
+        normalF: MainWebSocket.INTERVAL_SEC.NORMAL * MainWebSocket.FRAME,
+        beforeAtkF: (MainWebSocket.INTERVAL_SEC.NORMAL + MainWebSocket.INTERVAL_SEC.BEFORE_ATK) * MainWebSocket.FRAME,
+        atkSecF: (MainWebSocket.INTERVAL_SEC.NORMAL + MainWebSocket.INTERVAL_SEC.BEFORE_ATK + MainWebSocket.INTERVAL_SEC.ATK) * MainWebSocket.FRAME,
+    };
+    return MainWebSocket;
 }());
-exports.Chat = Chat;
+exports.MainWebSocket = MainWebSocket;

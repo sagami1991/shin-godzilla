@@ -95,6 +95,7 @@ export class Gozzila extends BaseMonster {
 	}
 
 	protected atk() {
+		// TODO エラー出てる
 		this.target.forEach((target, i) => {
 			const endX = this.begin[i].x < target.x ? MainCanvas.WIDTH : 0;
 			const endY = (target.y - this.begin[i].y) * (endX - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;

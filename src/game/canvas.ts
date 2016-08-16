@@ -146,6 +146,7 @@ export class MainCanvas {
 			isDead: this.myEvil.isDead,
 			lv: this.myEvil.lv,
 		};
+		// TODO エラー出てる
 		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
 			this.receiveMyEvilInfo.isDead !== sendData.isDead) {
 			this.ws.send(WSDataType.zahyou, sendData);

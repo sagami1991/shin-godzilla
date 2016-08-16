@@ -7,7 +7,7 @@ export class StatusBar {
 		</div>
 		<div class="name-panel">
 			<div class="name">
-				<span class="display">EditName</span>
+				<span class="display"></span>
 				<i class="material-icons edit">mode_edit</i>
 			</div>
 			<input type="text" class="name-input" value="Edit" maxlength="8"></input>
@@ -27,7 +27,7 @@ export class StatusBar {
 	private nameEditElem: HTMLElement;
 	private nameInputElem: HTMLInputElement;
 	private expBarElm: HTMLElement;
-
+	private onNameEditeds: Array<(name: string) => void> = [];
 	constructor() {
 		this.statusBarElem = <HTMLElement> document.querySelector(".status-bar");
 		this.statusBarElem.innerHTML = StatusBar.STATUS_TMPL;
@@ -44,13 +44,18 @@ export class StatusBar {
 		});
 
 		this.nameInputElem.addEventListener("focusout", () => {
+			const name = this.nameInputElem.value;
 			this.nameElem.style.display = "flex";
 			this.nameInputElem.style.display = "none";
-			this.nameDisplayElem.innerText = this.nameInputElem.value;
+			this.nameDisplayElem.innerText = name;
+			this.onNameEditeds.forEach(cb => cb(name));
 		});
 	}
 	public init() {
+	}
 
+	public addOnNameEditListner(cb: (name: string) => void) {
+		this.onNameEditeds.push(cb);
 	}
 	public setLv(lv: number) {
 		this.lvElem.innerText = `${lv}`;
@@ -58,5 +63,10 @@ export class StatusBar {
 
 	public setExp(exp: number, maxExp: number) {
 		this.expBarElm.style.width = `${Math.floor(100 * exp / maxExp)}px`;
+	}
+
+	public setName(name: string) {
+		this.nameDisplayElem.innerText = name;
+		this.nameInputElem.value = name;
 	}
 }

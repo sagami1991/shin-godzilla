@@ -50,7 +50,7 @@ interface GozzilaInfo {
 	mode: number;
 	target: {x: number, y: number}[];
 }
-export class Chat {
+export class MainWebSocket {
 	private wss: WebSocket.Server;
 	private collection: Collection;
 	private evils: Zahyou[] = [];
@@ -68,30 +68,19 @@ export class Chat {
 		BEFORE_ATK: 0.8,
 		ATK: 1.6,
 	};
-	private decidedTarget:boolean;
+	private decidedTarget: boolean;
 	public init() {
-		const normalF = Chat.INTERVAL_SEC.NORMAL * Chat.FRAME;
-		const beforeAtkF = (Chat.INTERVAL_SEC.NORMAL + Chat.INTERVAL_SEC.BEFORE_ATK) * Chat.FRAME;
-		const atkSecF = (Chat.INTERVAL_SEC.NORMAL + Chat.INTERVAL_SEC.BEFORE_ATK + Chat.INTERVAL_SEC.ATK) * Chat.FRAME;
-		setInterval(
-			() => {
-				this.sendGameData();
+		setInterval(() => {
+			this.sendGameData();
+			this.gozzilaAction();
+			this.intervalCount ++;
+		}, 1000 / MainWebSocket.FRAME);
 
-				if (this.intervalCount < normalF) {
-					this.gozzila.mode = GozzilaMode.init;
-				} else if (this.intervalCount < beforeAtkF) {
-					this.gozzila.mode = GozzilaMode.beforeAtk;
-					this.decideTarget();
-				} else if (this.intervalCount < atkSecF) {
-					this.gozzila.mode = GozzilaMode.atk;
-					this.decideTarget();
-				} else {
-					this.decidedTarget = false;
-					this.intervalCount = 0;
-				}
-				this.intervalCount ++;
-			}, 1000 / Chat.FRAME
-		);
+		//リクエスト数、10秒毎に集計
+		setInterval(() => {
+			this.accessCount = {};
+		}, 10 * 1000);
+
 		this.wss.on('connection', (ws) => {
 			ws.send(JSON.stringify({type: WSResType.personId, value: this.getPersonId(ws)}));
 			this.sendInitLog(ws);
@@ -109,6 +98,25 @@ export class Chat {
 			mode: GozzilaMode.init,
 			target: null
 		};
+	}
+	private static G_F_RANGE = {
+		normalF: MainWebSocket.INTERVAL_SEC.NORMAL * MainWebSocket.FRAME,
+		beforeAtkF: (MainWebSocket.INTERVAL_SEC.NORMAL + MainWebSocket.INTERVAL_SEC.BEFORE_ATK) * MainWebSocket.FRAME,
+		atkSecF: (MainWebSocket.INTERVAL_SEC.NORMAL + MainWebSocket.INTERVAL_SEC.BEFORE_ATK + MainWebSocket.INTERVAL_SEC.ATK) * MainWebSocket.FRAME,
+	}
+	private gozzilaAction() {
+		if (this.intervalCount < MainWebSocket.G_F_RANGE.normalF) {
+			this.gozzila.mode = GozzilaMode.init;
+		} else if (this.intervalCount < MainWebSocket.G_F_RANGE.beforeAtkF) {
+			this.gozzila.mode = GozzilaMode.beforeAtk;
+			this.decideTarget();
+		} else if (this.intervalCount < MainWebSocket.G_F_RANGE.atkSecF) {
+			this.gozzila.mode = GozzilaMode.atk;
+			this.decideTarget();
+		} else {
+			this.decidedTarget = false;
+			this.intervalCount = 0;
+		}
 	}
 
 	private getRandom(arr: any[]) {
@@ -146,16 +154,8 @@ export class Chat {
 	private onClose(closeWs: WebSocket) {
 		const targetIdx = this.evils.findIndex(zahyou => zahyou.personId === this.getPersonId(closeWs));
 		this.evils.splice(targetIdx, 1);
-		// this.sendAll({
-		// 	myWs: closeWs,
-		// 	type: WSResType.infolog,
-		// 	value: `誰かが切断しました　接続数: ${this.zahyous.length + 1}`
-		// });
-		// this.sendAll({
-		// 	type: WSResType.closePerson,
-		// 	value: this.getPersonId(closeWs)
-		// });
 	}
+
 	/** 全員に送る */
 	private sendAll(opt: SendAllOption) {
 		this.wss.clients.forEach(ws => {
@@ -173,6 +173,7 @@ export class Chat {
 			}
 		});
 	}
+
 	/**
 	 * DBから新しい順に数行分のログ取り出して送信
 	 */
@@ -204,9 +205,21 @@ export class Chat {
 				this.receiveMsg(ws, resData);
 				break;
 			case WSResType.gozzilaDamege:
-				this.gozzila.hp -= 2;
+			this.receiveGozzilaDamege(ws)
 				break;
 		}
+	}
+
+	private accessCount: any = {};
+	private receiveGozzilaDamege(ws: WebSocket) {
+		const pesonId = this.getPersonId(ws);
+		if (this.accessCount[pesonId]) {
+			this.accessCount[pesonId] ++;
+		} else {
+			this.accessCount[pesonId] = 1;
+		}
+		if (this.accessCount[pesonId] > 200) ws.close();
+		this.gozzila.hp -= 2;
 	}
 	private receiveZahyou(nowWs: WebSocket, resData: ResData) {
 		const evilInfo = this.evils.find(zahyou => zahyou.personId === this.getPersonId(nowWs));
@@ -230,10 +243,10 @@ export class Chat {
 
 	}
 
-	/** バイナリか80文字以上ははじく */
+	/** バイナリか50文字以上ははじく */
 	private validateMsg(data: string, isBinary: boolean, ) {
 		if (!isBinary) {
-			if (data.length > 1000) return false;
+			if (data.length > 500) return false;
 			const resData = <ResData> JSON.parse(data);
 
 			if (resData.type === WSResType.gozzilaDamege) {
@@ -249,12 +262,11 @@ export class Chat {
 			}
 
 			if (resData.type === WSResType.zahyou) {
-				if (!Number.isInteger(resData.value.x) || !Number.isInteger(resData.value.y)) {
+				const evilInfo = <Zahyou> resData.value;
+				if (!Number.isInteger(evilInfo.lv) || !Number.isInteger(evilInfo.x) || !Number.isInteger(evilInfo.y)) {
 					return false;
 				}
 			}
-
-
 		}
 		if (isBinary) {
 			return false;
