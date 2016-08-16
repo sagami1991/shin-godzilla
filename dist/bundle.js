@@ -1301,7 +1301,6 @@
 	    Ebiruai.prototype.increaseExp = function () {
 	        this.exp += 2;
 	        this.statusBar.setExp(this.exp, this.maxExp);
-	        console.log(this.exp, this.maxExp);
 	        if (this.maxExp <= this.exp) {
 	            this.lv++;
 	            this.exp = 0;

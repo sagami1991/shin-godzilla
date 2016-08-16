@@ -23,7 +23,7 @@ var MainWebSocket = (function () {
         this.evils = [];
         this.befSendData = [];
         this.intervalCount = 0;
-        this.accessCount = {};
+        this.accessCountPer10Sec = {};
         this.wss = wss;
         this.collection = collection;
     }
@@ -36,7 +36,15 @@ var MainWebSocket = (function () {
         }, 1000 / MainWebSocket.FRAME);
         //リクエスト数、10秒毎に集計
         setInterval(function () {
-            _this.accessCount = {};
+            var ipMap = {};
+            _this.wss.clients.forEach(function (ws) {
+                var ip = ws.upgradeReq.connection.remoteAddress;
+                ipMap[ip] = ipMap[ip] ? ipMap[ip] + 1 : 1;
+                if (ipMap[ip] > 2) {
+                    ws.close();
+                }
+            });
+            _this.accessCountPer10Sec = {};
         }, 10 * 1000);
         this.wss.on('connection', function (ws) {
             ws.send(JSON.stringify({ type: WSResType.personId, value: _this.getPersonId(ws) }));
@@ -167,14 +175,14 @@ var MainWebSocket = (function () {
         }
     };
     MainWebSocket.prototype.receiveGozzilaDamege = function (ws) {
-        var pesonId = this.getPersonId(ws);
-        if (this.accessCount[pesonId]) {
-            this.accessCount[pesonId]++;
+        var ipAddr = ws.upgradeReq.connection.remoteAddress;
+        if (this.accessCountPer10Sec[ipAddr]) {
+            this.accessCountPer10Sec[ipAddr]++;
         }
         else {
-            this.accessCount[pesonId] = 1;
+            this.accessCountPer10Sec[ipAddr] = 1;
         }
-        if (this.accessCount[pesonId] > 200)
+        if (this.accessCountPer10Sec[ipAddr] > 200)
             ws.close();
         this.gozzila.hp -= 2;
     };

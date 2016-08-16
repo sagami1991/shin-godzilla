@@ -78,7 +78,15 @@ export class MainWebSocket {
 
 		//リクエスト数、10秒毎に集計
 		setInterval(() => {
-			this.accessCount = {};
+			const ipMap: any = {}
+			this.wss.clients.forEach((ws) => {
+				const ip = ws.upgradeReq.connection.remoteAddress;
+				ipMap[ip] = ipMap[ip] ? ipMap[ip] + 1 : 1;
+				if (ipMap[ip] > 2) {
+					ws.close();
+				}
+			});
+			this.accessCountPer10Sec = {};
 		}, 10 * 1000);
 
 		this.wss.on('connection', (ws) => {
@@ -209,16 +217,15 @@ export class MainWebSocket {
 				break;
 		}
 	}
-
-	private accessCount: any = {};
+	private accessCountPer10Sec: any = {};
 	private receiveGozzilaDamege(ws: WebSocket) {
-		const pesonId = this.getPersonId(ws);
-		if (this.accessCount[pesonId]) {
-			this.accessCount[pesonId] ++;
+		const ipAddr = ws.upgradeReq.connection.remoteAddress;
+		if (this.accessCountPer10Sec[ipAddr]) {
+			this.accessCountPer10Sec[ipAddr] ++;
 		} else {
-			this.accessCount[pesonId] = 1;
+			this.accessCountPer10Sec[ipAddr] = 1;
 		}
-		if (this.accessCount[pesonId] > 200) ws.close();
+		if (this.accessCountPer10Sec[ipAddr] > 200) ws.close();
 		this.gozzila.hp -= 2;
 	}
 	private receiveZahyou(nowWs: WebSocket, resData: ResData) {
