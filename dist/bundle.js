@@ -712,7 +712,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body, h1, h2, h3, p {\n  margin: 0; }\n\nbody {\n  width: 800px;\n  margin: 0;\n  background-color: #f9f9f9;\n  color: #5f5f5f; }\n\nmy-app {\n  opacity: 0.8; }\n\nh1, h2 {\n  font-weight: 300; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nul, dl {\n  margin: 0 0 10px 0; }\n\nul {\n  -webkit-padding-start: 20px; }\n  ul li {\n    margin-bottom: 6px; }\n\ndd {\n  -webkit-margin-start: 20px; }\n\n.canvas-wrapper {\n  width: 800px;\n  height: 500px;\n  position: relative; }\n\n.chat-area {\n  position: absolute;\n  width: 500px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    margin: 0;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 5px;\n    font-size: 14px;\n    height: 1em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n.key-pad {\n  padding: 100px 0;\n  display: flex; }\n\n.pad {\n  margin-right: 20px;\n  border: none;\n  cursor: pointer;\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 46px; }\n  .pad:hover {\n    background-color: #9c27b0; }\n\n.footer {\n  background-color: #212121;\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n#canvas {\n  border: 1px solid black; }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
+	exports.push([module.id, "body, h1, h2, h3, p {\n  margin: 0; }\n\nbody {\n  width: 800px;\n  margin: 0 auto;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(146) + "); }\n\nmy-app {\n  opacity: 0.8; }\n\nh1, h2 {\n  font-weight: 300; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nul, dl {\n  margin: 0 0 10px 0; }\n\nul {\n  -webkit-padding-start: 20px; }\n  ul li {\n    margin-bottom: 6px; }\n\nbutton {\n  outline: 0; }\n\n.canvas-wrapper {\n  background-color: #f9f9f9;\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative;\n  border-radius: 10px; }\n\n.chat-area {\n  position: absolute;\n  width: 500px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    margin: 0;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 5px;\n    font-size: 14px;\n    height: 1em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n.key-pad {\n  width: 100%;\n  display: flex;\n  margin-bottom: 140px;\n  padding-left: 20px; }\n\n.pad {\n  margin-top: 80px;\n  margin-right: 20px;\n  border: none;\n  cursor: pointer;\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 46px; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n\n.footer {\n  background-color: #212121;\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
 	
 	// exports
 
@@ -847,14 +847,20 @@
 	            document.querySelector("." + keyset.eventName).addEventListener("mousedown", function () {
 	                MainCanvas.KeyEvent[keyset.eventName] = true;
 	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("touchstart", function () {
+	            document.querySelector("." + keyset.eventName).addEventListener("touchstart", function (e) {
 	                MainCanvas.KeyEvent[keyset.eventName] = true;
+	                var elem = e.target;
+	                elem.className = elem.className + " hover";
+	                e.preventDefault();
 	            });
 	            document.querySelector("." + keyset.eventName).addEventListener("mouseup", function () {
 	                MainCanvas.KeyEvent[keyset.eventName] = false;
 	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("touchend", function () {
+	            document.querySelector("." + keyset.eventName).addEventListener("touchend", function (e) {
 	                MainCanvas.KeyEvent[keyset.eventName] = false;
+	                var elem = e.target;
+	                elem.className = elem.className.replace(" hover", "");
+	                e.preventDefault();
 	            });
 	        });
 	    };
@@ -1188,13 +1194,15 @@
 	    function Ebiruai(ctx, zahyou) {
 	        var _this = this;
 	        _super.call(this, ctx, zahyou);
+	        this.jump = 10;
+	        this.speed = 5;
 	        this.maxHp = 100;
 	        this.hp = 100;
 	        this.gozzila = zahyou.gozzila;
 	        this.hukkatuButton = document.querySelector(".hukkatu");
 	        this.hukkatuButton.style.display = "none";
 	        this.hukkatuButton.addEventListener("click", function () {
-	            _this.hp = 100;
+	            _this.hp = _this.maxHp;
 	            _this.isDead = false;
 	            _this.isDeadOnceJikkou = false;
 	            _this.hukkatuButton.style.display = "none";
@@ -1220,11 +1228,11 @@
 	        }
 	        else {
 	            if (canvas_1.MainCanvas.KeyEvent.hidari) {
-	                this.x -= 5;
+	                this.x -= this.speed;
 	                this.isMigiMuki = false;
 	            }
 	            if (canvas_1.MainCanvas.KeyEvent.migi) {
-	                this.x += 5;
+	                this.x += this.speed;
 	                this.isMigiMuki = true;
 	            }
 	            if (canvas_1.MainCanvas.KeyEvent.jump) {
@@ -1235,7 +1243,7 @@
 	            }
 	            if (this.isJump) {
 	                this.jumpF++;
-	                this.y = canvas_1.MainCanvas.Y0 + 10 * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
+	                this.y = canvas_1.MainCanvas.Y0 + this.jump * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
 	            }
 	            if (this.isJump && this.y < canvas_1.MainCanvas.Y0) {
 	                this.y = canvas_1.MainCanvas.Y0;
@@ -4324,6 +4332,12 @@
 	    }({}, false) : undefined),
 	  check: check
 	};
+
+/***/ },
+/* 146 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "998892e6c6b68b8d8bd57f798c85f4a8.jpg";
 
 /***/ }
 /******/ ]);

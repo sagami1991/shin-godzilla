@@ -6,9 +6,9 @@ body, h1, h2, h3, p {
 // }
 body {
 	width: 800px;
-	margin: 0;
-	background-color: #f9f9f9;
+	margin: 0 auto;
 	color: #5f5f5f;
+	background-image: url("./assets/background.jpg")
 }
 
 my-app {
@@ -33,13 +33,19 @@ ul {
 	}
 }
 
-dd {
-	-webkit-margin-start: 20px;
+
+button {
+	outline: 0;
 }
 .canvas-wrapper {
+	background-color: #f9f9f9;
+	margin-top: 40px;
 	width: 800px;
 	height: 500px;
 	position: relative;
+	border-radius: 10px;
+	// #canvas {
+	// }
 }
 
 .chat-area {
@@ -56,6 +62,7 @@ ul.chat-logs {
 	list-style: none;
 	margin: 0;
 	padding-left: 5px;
+	border-radius: 4px;
 	li.chat-log {
 		color: white;
 		font-size: 12px;
@@ -105,10 +112,13 @@ ul.chat-logs {
 }
 
 .key-pad {
-	padding: 100px 0 ;
+	width: 100%;
 	display: flex;
+	margin-bottom: 140px;
+	padding-left: 20px;
 }
 .pad {
+	margin-top: 80px;
 	margin-right: 20px;
 	border: none;
 	cursor: pointer;
@@ -125,7 +135,7 @@ ul.chat-logs {
 	.material-icons {
 		font-size: 46px;
 	}
-	&:hover {
+	&:hover, &.hover {
 		background-color: #9c27b0;
 	}
 
@@ -135,9 +145,7 @@ ul.chat-logs {
 	padding: 30px;
 	color: rgba(255, 255, 255, 0.541176);
 }
-#canvas {
-	border: 1px solid black;
-}
+
 
 
 // humane-jsのnotify

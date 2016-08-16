@@ -8,6 +8,8 @@ export class Ebiruai extends SimpleEbiruai {
 	public atksita: boolean;
 	private gozzila: Gozzila;
 	private hukkatuButton: HTMLElement;
+	private jump: number = 10;
+	private speed: number = 5;
 	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
 		super(ctx, zahyou);
 		this.maxHp = 100;
@@ -16,7 +18,7 @@ export class Ebiruai extends SimpleEbiruai {
 		this.hukkatuButton = <HTMLElement>document.querySelector(".hukkatu");
 		this.hukkatuButton.style.display = "none";
 		this.hukkatuButton.addEventListener("click", () => {
-			this.hp = 100;
+			this.hp = this.maxHp;
 			this.isDead = false;
 			this.isDeadOnceJikkou = false;
 			this.hukkatuButton.style.display = "none";
@@ -41,11 +43,11 @@ export class Ebiruai extends SimpleEbiruai {
 			this.isDeadOnce();
 		} else {
 			if (MainCanvas.KeyEvent.hidari) {
-				this.x -= 5;
+				this.x -= this.speed;
 				this.isMigiMuki = false;
 			}
 			if (MainCanvas.KeyEvent.migi) {
-				this.x += 5;
+				this.x += this.speed;
 				this.isMigiMuki = true;
 			}
 			if (MainCanvas.KeyEvent.jump) {
@@ -56,7 +58,7 @@ export class Ebiruai extends SimpleEbiruai {
 			}
 			if (this.isJump) {
 				this.jumpF ++ ;
-				this.y = MainCanvas.Y0 + 10 * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
+				this.y = MainCanvas.Y0 + this.jump * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
 			}
 			if (this.isJump && this.y < MainCanvas.Y0) {
 				this.y = MainCanvas.Y0;

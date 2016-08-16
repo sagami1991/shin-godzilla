@@ -181,15 +181,21 @@ export class MainCanvas {
 				(<any>MainCanvas.KeyEvent)[keyset.eventName] = true;
 			});
 
-			document.querySelector(`.${keyset.eventName}`).addEventListener("touchstart", () => {
+			document.querySelector(`.${keyset.eventName}`).addEventListener("touchstart", e => {
 				(<any>MainCanvas.KeyEvent)[keyset.eventName] = true;
+				const elem = (<HTMLElement> e.target);
+				elem.className = elem.className + " hover";
+				e.preventDefault();
 			});
 
 			document.querySelector(`.${keyset.eventName}`).addEventListener("mouseup", () => {
 				(<any>MainCanvas.KeyEvent)[keyset.eventName] = false;
 			});
-			document.querySelector(`.${keyset.eventName}`).addEventListener("touchend", () => {
+			document.querySelector(`.${keyset.eventName}`).addEventListener("touchend", e => {
 				(<any>MainCanvas.KeyEvent)[keyset.eventName] = false;
+				const elem = (<HTMLElement> e.target);
+				elem.className = elem.className.replace(" hover", "");
+				e.preventDefault();
 			});
 		});
 
