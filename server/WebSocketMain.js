@@ -236,10 +236,6 @@ var MainWebSocket = (function () {
                     if (typeof num !== "number")
                         return false;
                 }
-                // バグの原因
-                if (evilInfo.maxExp !== 50 * Math.pow(1.2, evilInfo.lv - 1)) {
-                    return false;
-                }
             }
         }
         // if (isBinary) {
