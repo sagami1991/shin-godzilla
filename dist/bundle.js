@@ -1306,7 +1306,7 @@
 	        if (this.maxExp <= this.exp) {
 	            this.lv++;
 	            this.exp = 0;
-	            this.maxExp *= Ebiruai.EXP_BAIRITU;
+	            this.maxExp = Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
 	            this.statusBar.setExp(this.exp, this.maxExp);
 	            this.statusBar.setLv(this.lv);
 	            this.saveLocalStrage();
@@ -1339,7 +1339,6 @@
 	        var saveData = {
 	            date: new Date(),
 	            lv: this.lv,
-	            maxExp: this.maxExp,
 	            exp: this.exp,
 	            maxHp: this.maxHp,
 	            name: this.name
@@ -1350,7 +1349,7 @@
 	        var loadData = JSON.parse(localStorage.getItem("saveDataVer0.0"));
 	        if (loadData) {
 	            this.lv = loadData.lv ? loadData.lv : 1;
-	            this.maxExp = loadData.maxExp ? loadData.maxExp : Ebiruai.INIT_MAX_EXP * Math.pow(1.2, this.lv - 1);
+	            this.maxExp = Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
 	            this.exp = loadData.exp ? loadData.exp : 0;
 	            this.maxHp = loadData.maxHp ? loadData.maxHp : 100;
 	            this.name = loadData.name ? loadData.name : "名前";
