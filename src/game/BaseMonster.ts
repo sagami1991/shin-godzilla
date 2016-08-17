@@ -1,4 +1,12 @@
-import {Zahyou} from "./canvas";
+import {Zahyou} from "./main";
+
+export interface BaseMobOption {
+	image: HTMLImageElement;
+	x: number;
+	y: number;
+	isMigiMuki: boolean;
+	isMy?: boolean;
+}
 
 /** ゴジラやエビルアイ、電車などの基底クラス */
 export class BaseMonster {
@@ -11,7 +19,7 @@ export class BaseMonster {
 	public maxHp: number;
 	public hp: number;
 	public isMigiMuki: boolean;
-	constructor(ctx: CanvasRenderingContext2D, option: Zahyou) {
+	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {
 		this.image = option.image;
 		this.ctx = ctx;
 		this.x = option.x;

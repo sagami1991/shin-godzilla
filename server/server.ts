@@ -31,11 +31,11 @@ connectDB().then((db) => {
 	const server = createServer();
 	const app = express();
 	app.use(express.static(__dirname + '/../dist'));
-	new UserService(db.collection("users"));
+	const userService = new UserService(db.collection("users"));
 	const main = new MainController(new WebSocketServer({ server: server }), db);
 	main.init();
 	new ChatController(main, db.collection(process.env.COLLECTION_NAME || "maplechatlog")).init();
-	new GameController(main).init();
+	new GameController(main, userService).init();
 	new InfoMsgController(main).init();
 
 	server.on('request', app);

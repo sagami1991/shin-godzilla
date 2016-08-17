@@ -1,5 +1,6 @@
-import {WSService, WSDataType} from "./WebSocketService";
+import {WSService} from "./WebSocketService";
 import * as Handlebars from "handlebars";
+import {SocketType} from "../server/share/share";
 
 interface ChatLog {
 	personId: string;
@@ -32,20 +33,18 @@ export class ChatComponent {
 				this.inputElem.focus();
 			}
 		});
-		this.wsService.addOnReceiveMsgListener((type, value) => this.onReceiveInitLog(type, value));
-		this.wsService.addOnReceiveMsgListener((type, value) => this.onReceiveMsg(type, value));
+		this.wsService.addOnReceiveMsgListener(SocketType.chatLog, (value) => this.onReceiveInitLog(value));
+		this.wsService.addOnReceiveMsgListener(SocketType.initlog, (value) => this.onReceiveMsg(value));
 		this.wsService.addOnOpenListener(() => this.onOpen());
 		this.wsService.addOnCloseListener(() => this.onClose());
 	}
-	private onReceiveMsg(type: WSDataType, value: any) {
-		if (type !== WSDataType.log) return;
+	private onReceiveMsg(value: any) {
 		const log = <ChatLog>value;
 		this.logs.push(log);
 		if (this.logs.length > ChatComponent.MAX_LINE) this.logs.shift();
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
 	}
-	private onReceiveInitLog(type: WSDataType, value: any) {
-		if (type !== WSDataType.initlog) return;
+	private onReceiveInitLog(value: any) {
 		this.logs = <ChatLog[]> value;
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
 	}
@@ -72,7 +71,7 @@ export class ChatComponent {
 	private send() {
 		const value = this.inputElem.value;
 		if (value && !this.wsService.isClose && !this.isSended) {
-			this.wsService.send(WSDataType.log, value);
+			this.wsService.send(SocketType.chatLog, value);
 			this.inputElem.value = "";
 			this.inputElem.disabled = true;
 			this.isSended = true;

@@ -1,6 +1,6 @@
 "use strict";
-var MainController_1 = require("./MainController");
 var GameController_1 = require("./GameController");
+var share_1 = require("../share/share");
 var GodzillaMode;
 (function (GodzillaMode) {
     GodzillaMode[GodzillaMode["init"] = 0] = "init";
@@ -29,10 +29,7 @@ var GodzillaController = (function () {
             mode: GodzillaMode.init,
             target: Array.from(new Array(2)).map(function () { return { x: 0, y: 0 }; })
         };
-        this.main.addMsgListner({
-            type: MainController_1.SocketType.gozzilaDamege,
-            cb: function (ws, reqData) { return _this.onAtkGodzilla(ws); }
-        });
+        this.main.addMsgListner(share_1.SocketType.gozzilaDamege, function (ws, reqData) { return _this.onAtkGodzilla(ws); });
         this.actionFrameCount = 0;
     };
     GodzillaController.prototype.roopAction = function () {

@@ -1,6 +1,7 @@
 import * as WebSocket from 'ws';
-import {MainController, SocketType} from "./MainController";
+import {MainController} from "./MainController";
 import {GameController, Zahyou} from "./GameController";
+import {SocketType} from "../share/share";
 
 export interface GodzillaInfo {
 	hp: number;
@@ -41,10 +42,7 @@ export class GodzillaController {
 			mode: GodzillaMode.init,
 			target: Array.from(new Array(2)).map( () => {return {x: 0, y: 0}; })
 		};
-		this.main.addMsgListner({
-			type: SocketType.gozzilaDamege,
-			cb: (ws, reqData) => this.onAtkGodzilla(ws)
-		});
+		this.main.addMsgListner(SocketType.gozzilaDamege, (ws, reqData) => this.onAtkGodzilla(ws));
 		this.actionFrameCount = 0;
 	}
 

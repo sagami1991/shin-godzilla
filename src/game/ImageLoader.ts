@@ -1,6 +1,5 @@
 
 export class ImageLoader {
-	private static PREFIX_PATH = "./assets/";
 	public static IMAGES: {
 		densya: HTMLImageElement;
 		bakuhatu: HTMLImageElement;
@@ -11,7 +10,10 @@ export class ImageLoader {
 		evilSinda: HTMLImageElement;
 		gozzilaBefAtk: HTMLImageElement;
 	};
-
+	public static ANIME_IMAGE: {
+		lvup: HTMLImageElement[];
+	};
+	private static PREFIX_PATH = "./assets/";
 	private static IMAGE_PATHS = [
 		"ebiruai.png",
 		"ebiruai_.png",
@@ -22,9 +24,6 @@ export class ImageLoader {
 		"evil_sinda.png",
 		"gozzila_bef_atk.png",
 	];
-	public static ANIME_IMAGE: {
-		lvup: HTMLImageElement[];
-	};
 	private static AnimationPath = [
 		{baseName: "lvup/LevelUp.", length: 21}
 	];
@@ -49,7 +48,7 @@ export class ImageLoader {
 	private static commonImageLoad() {
 		return Promise.all(ImageLoader.IMAGE_PATHS.map((src) => {
 			return new Promise<HTMLImageElement>(reslve => {
-				return ImageLoader.imageLoad(`${ImageLoader.PREFIX_PATH}${src}`, reslve)
+				return ImageLoader.imageLoad(`${ImageLoader.PREFIX_PATH}${src}`, reslve);
 			});
 		})).then((imageElms) => {
 			ImageLoader.IMAGES = {

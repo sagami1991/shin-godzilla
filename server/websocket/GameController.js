@@ -1,9 +1,11 @@
 "use strict";
-var MainController_1 = require("./MainController");
 var GodzillaController_1 = require("./GodzillaController");
+var share_1 = require("../share/share");
+var shortid = require("shortid");
 var GameController = (function () {
-    function GameController(main) {
+    function GameController(main, userService) {
         this.main = main;
+        this.userService = userService;
         this.evils = [];
         this.godzillaController = new GodzillaController_1.GodzillaController(main, this.evils);
         this.godzillaController.init();
@@ -13,21 +15,40 @@ var GameController = (function () {
     };
     GameController.prototype.init = function () {
         var _this = this;
-        this.main.addConnectListner(function (ws) { return _this.onSomebodyConnect(ws); });
         this.main.addCloseListner(function (ws) { return _this.deleteClosedEvil(ws); });
-        this.main.addMsgListner({
-            type: MainController_1.SocketType.zahyou,
-            cb: function (ws, reqData) { return _this.updateEvils(ws, reqData); }
-        });
+        this.main.addMsgListner(share_1.SocketType.init, function (ws, reqData) { return _this.onReceiveUserId(ws, reqData); });
+        this.main.addMsgListner(share_1.SocketType.zahyou, function (ws, reqData) { return _this.updateEvils(ws, reqData); });
         setInterval(function () { return _this.intervalAction(); }, 1000 / GameController.FRAME);
     };
-    GameController.prototype.onSomebodyConnect = function (ws) {
-        this.main.sendAll({
-            myWs: ws,
-            isSelfSend: false,
-            type: MainController_1.SocketType.infolog,
-            value: "\u8AB0\u304B\u304C\u30A2\u30AF\u30BB\u30B9\u3057\u307E\u3057\u305F"
+    GameController.prototype.onReceiveUserId = function (ws, reqData) {
+        var _this = this;
+        if (!reqData._id) {
+            this.createInitUser(ws);
+        }
+        else {
+            this.userService.getUser(reqData._id).then(function (user) {
+                console.log(user);
+                if (user) {
+                    _this.main.send(ws, share_1.SocketType.init, user);
+                }
+                else {
+                    _this.createInitUser(ws);
+                }
+            });
+        }
+    };
+    GameController.prototype.createInitUser = function (ws) {
+        var initialData = {
+            _id: shortid.generate(),
+            exp: 0,
+            lv: 1,
+            name: "名前"
+        };
+        this.main.send(ws, share_1.SocketType.init, {
+            personId: this.main.getSercretKey(ws),
+            userData: initialData
         });
+        this.userService.createUser(initialData);
     };
     GameController.prototype.deleteClosedEvil = function (ws) {
         var _this = this;
@@ -45,7 +66,7 @@ var GameController = (function () {
         };
         if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
             this.main.sendAll({
-                type: MainController_1.SocketType.zahyou,
+                type: share_1.SocketType.zahyou,
                 value: sendData
             });
         }
@@ -62,6 +83,12 @@ var GameController = (function () {
         }
     };
     GameController.FRAME = 30;
+    GameController.INIT_USERDATA = {
+        _id: "",
+        exp: 0,
+        lv: 1,
+        name: "名前"
+    };
     return GameController;
 }());
 exports.GameController = GameController;

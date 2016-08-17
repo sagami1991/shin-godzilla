@@ -32,11 +32,11 @@ connectDB().then(function (db) {
     var server = http_1.createServer();
     var app = express();
     app.use(express.static(__dirname + '/../dist'));
-    new UserService_1.UserService(db.collection("users"));
+    var userService = new UserService_1.UserService(db.collection("users"));
     var main = new MainController_1.MainController(new ws_1.Server({ server: server }), db);
     main.init();
     new ChatController_1.ChatController(main, db.collection(process.env.COLLECTION_NAME || "maplechatlog")).init();
-    new GameController_1.GameController(main).init();
+    new GameController_1.GameController(main, userService).init();
     new InfoMsgController_1.InfoMsgController(main).init();
     server.on('request', app);
     server.listen(process.env.PORT || 3000, function () {

@@ -1,16 +1,15 @@
 import * as WebSocket from 'ws';
 import {Collection} from 'mongodb';
-import {MainController, SocketType, ReqData} from "./MainController";
+import {MainController, ReqData} from "./MainController";
+import {SocketType} from "../share/share";
+
 export class ChatController {
 	constructor(private main: MainController, private collection: Collection) {
 	}
 
 	public init() {
 		this.main.addConnectListner(ws => this.sendInitLog(ws));
-		this.main.addMsgListner({
-			type: SocketType.chatLog,
-			cb: (ws, reqData) => this.onReceiveMsg(ws, reqData)
-		});
+		this.main.addMsgListner(SocketType.chatLog, (ws, reqData) => this.onReceiveMsg(ws, reqData));
 	}
 
 	private onReceiveMsg(ws: WebSocket, reqData: ReqData) {

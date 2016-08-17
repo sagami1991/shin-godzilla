@@ -1,16 +1,5 @@
 "use strict";
-/** 送信する情報のタイプ */
-(function (SocketType) {
-    SocketType[SocketType["error"] = 0] = "error";
-    SocketType[SocketType["initlog"] = 1] = "initlog";
-    SocketType[SocketType["chatLog"] = 2] = "chatLog";
-    SocketType[SocketType["infolog"] = 3] = "infolog";
-    SocketType[SocketType["zahyou"] = 4] = "zahyou";
-    SocketType[SocketType["personId"] = 5] = "personId";
-    SocketType[SocketType["closePerson"] = 6] = "closePerson";
-    SocketType[SocketType["gozzilaDamege"] = 7] = "gozzilaDamege";
-})(exports.SocketType || (exports.SocketType = {}));
-var SocketType = exports.SocketType;
+var share_1 = require("../share/share");
 var MainController = (function () {
     function MainController(wss, db) {
         this.onConnectListners = [];
@@ -22,8 +11,8 @@ var MainController = (function () {
     MainController.prototype.addConnectListner = function (cb) {
         this.onConnectListners.push(cb);
     };
-    MainController.prototype.addMsgListner = function (msglistner) {
-        this.onMsgListners.push(msglistner);
+    MainController.prototype.addMsgListner = function (type, cb) {
+        this.onMsgListners.push({ type: type, cb: cb });
     };
     MainController.prototype.addCloseListner = function (cb) {
         this.onCloseListners.push(cb);
@@ -31,15 +20,22 @@ var MainController = (function () {
     MainController.prototype.init = function () {
         var _this = this;
         this.wss.on('connection', function (ws) {
-            ws.send(JSON.stringify({ type: SocketType.personId, value: _this.getSercretKey(ws) }));
             _this.onConnectListners.forEach(function (cb) { return cb(ws); });
             ws.on('message', function (data, flags) { return _this.onReqData(ws, data, flags); });
-            ws.on("close", function () { return _this.onClose(ws); });
+            ws.on("close", function () { return _this.onCloseListners.forEach(function (cb) { return cb(ws); }); });
         });
     };
     // TODO このキー普通にデータにのせて大丈夫か
     MainController.prototype.getSercretKey = function (ws) {
         return ws.upgradeReq.headers["sec-websocket-key"];
+    };
+    MainController.prototype.send = function (ws, type, data) {
+        try {
+            ws.send(JSON.stringify({ type: type, value: data }));
+        }
+        catch (e) {
+            console.error(e);
+        }
     };
     /** 全員に送る */
     MainController.prototype.sendAll = function (opt) {
@@ -57,9 +53,6 @@ var MainController = (function () {
                 console.error(err);
             }
         });
-    };
-    MainController.prototype.onClose = function (closeWs) {
-        this.onCloseListners.forEach(function (cb) { return cb(closeWs); });
     };
     /**
      * でーた受け取り時
@@ -83,13 +76,13 @@ var MainController = (function () {
             if (!resData.type) {
                 return false;
             }
-            if (resData.type === SocketType.gozzilaDamege) {
+            if (resData.type === share_1.SocketType.gozzilaDamege) {
                 return true;
             }
-            if (resData.type === SocketType.chatLog && resData.value.length > 50) {
+            if (resData.type === share_1.SocketType.chatLog && resData.value.length > 50) {
                 return false;
             }
-            if (resData.type === SocketType.zahyou) {
+            if (resData.type === share_1.SocketType.zahyou) {
                 var evilInfo = resData.value;
                 for (var _i = 0, _a = [evilInfo.lv, evilInfo.x, evilInfo.y, evilInfo.maxExp]; _i < _a.length; _i++) {
                     var num = _a[_i];

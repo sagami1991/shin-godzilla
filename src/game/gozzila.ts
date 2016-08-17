@@ -1,5 +1,5 @@
-import {MainCanvas, Zahyou} from "./canvas";
-import {BaseMonster} from "./BaseMonster";
+import {MainCanvas, Zahyou} from "./main";
+import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
 
 export enum GozzilaMode {
@@ -20,14 +20,14 @@ export class Gozzila extends BaseMonster {
 		WIDTH: 500,
 		HEIGHT: 20
 	};
+
 	/** ビームが発射される座標*/
 	public begin: {x: number, y: number}[];
 	public isDamege: boolean;
 	public target: {x: number, y: number}[];
 	public mode: number;
-	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
-		super(ctx, zahyou);
-		//34, 61
+	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {
+		super(ctx, option);
 		this.begin = [
 			{x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU},
 			{x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU},
@@ -35,6 +35,7 @@ export class Gozzila extends BaseMonster {
 		this.maxHp = 4000;
 		this.hp = 4000;
 	}
+
 	public draw() {
 		this.ctx.drawImage(
 			this.image,
@@ -47,34 +48,6 @@ export class Gozzila extends BaseMonster {
 		this.action();
 	}
 
-	private drawHp() {
-		this.ctx.fillStyle = "#000";
-		this.ctx.fillRect(Gozzila.HP_INFO.X, Gozzila.HP_INFO.Y, Gozzila.HP_INFO.WIDTH + 2, Gozzila.HP_INFO.HEIGHT + 2);
-		this.ctx.fillStyle = "#fff";
-		this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH, Gozzila.HP_INFO.HEIGHT );
-		this.ctx.fillStyle = "#4f1ae8";
-		this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH * this.hp / this.maxHp , Gozzila.HP_INFO.HEIGHT );
-		this.ctx.fillStyle = "black";
-		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
-		this.ctx.fillText(`${this.hp} / ${this.maxHp}`, this.x + 30, 40);
-	}
-
-	private action() {
-		switch (this.mode) {
-		case GozzilaMode.init:
-			this.image = ImageLoader.IMAGES.gozzila;
-			break;
-		case GozzilaMode.beforeAtk:
-			this.image = ImageLoader.IMAGES.gozzilaBefAtk;
-			break;
-		case GozzilaMode.atk:
-			this.image = ImageLoader.IMAGES.gozzila_atk;
-			this.atk();
-			break;
-		default:
-			break;
-		}
-	}
 	/** ビームによるダメージ計算 */
 	public calcBeamDamege(x0: number, x1: number,  y0: number, y1: number) {
 		if (this.mode !== GozzilaMode.atk) return 0;
@@ -111,5 +84,34 @@ export class Gozzila extends BaseMonster {
 			this.ctx.stroke();
 			this.ctx.shadowBlur = 0;
 		});
+	}
+
+	private drawHp() {
+		this.ctx.fillStyle = "#000";
+		this.ctx.fillRect(Gozzila.HP_INFO.X, Gozzila.HP_INFO.Y, Gozzila.HP_INFO.WIDTH + 2, Gozzila.HP_INFO.HEIGHT + 2);
+		this.ctx.fillStyle = "#fff";
+		this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH, Gozzila.HP_INFO.HEIGHT );
+		this.ctx.fillStyle = "#4f1ae8";
+		this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH * this.hp / this.maxHp , Gozzila.HP_INFO.HEIGHT );
+		this.ctx.fillStyle = "black";
+		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
+		this.ctx.fillText(`${this.hp} / ${this.maxHp}`, this.x + 30, 40);
+	}
+
+	private action() {
+		switch (this.mode) {
+		case GozzilaMode.init:
+			this.image = ImageLoader.IMAGES.gozzila;
+			break;
+		case GozzilaMode.beforeAtk:
+			this.image = ImageLoader.IMAGES.gozzilaBefAtk;
+			break;
+		case GozzilaMode.atk:
+			this.image = ImageLoader.IMAGES.gozzila_atk;
+			this.atk();
+			break;
+		default:
+			break;
+		}
 	}
 }

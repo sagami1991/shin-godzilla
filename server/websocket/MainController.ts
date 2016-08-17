@@ -1,18 +1,7 @@
 import * as WebSocket from 'ws';
 import {Collection, Db} from 'mongodb';
 import {Zahyou} from "./GameController";
-
-/** 送信する情報のタイプ */
-export enum SocketType {
-	error, // エラーメッセージ
-	initlog,  //最初に送るログ配列
-	chatLog,  // チャット
-	infolog,  // 情報ログ
-	zahyou, // 座標
-	personId,
-	closePerson,
-	gozzilaDamege
-}
+import {SocketType} from "../share/share";
 
 interface Msglistner {
 	type: SocketType;
@@ -20,7 +9,7 @@ interface Msglistner {
 }
 
 export interface ReqData {
-	type: number;
+	type: SocketType;
 	value: any;
 }
 
@@ -47,8 +36,8 @@ export class MainController {
 		this.onConnectListners.push(cb);
 	}
 
-	public addMsgListner(msglistner: Msglistner) {
-		this.onMsgListners.push(msglistner);
+	public addMsgListner(type: SocketType, cb: (ws: WebSocket, data: any) => void) {
+		this.onMsgListners.push({type: type, cb: cb});
 	}
 
 	public addCloseListner(cb: (ws: WebSocket) => void) {
@@ -57,16 +46,23 @@ export class MainController {
 
 	public init() {
 		this.wss.on('connection', (ws) => {
-			ws.send(JSON.stringify({type: SocketType.personId, value: this.getSercretKey(ws)}));
 			this.onConnectListners.forEach(cb => cb(ws));
 			ws.on('message', (data, flags) => this.onReqData(ws, data, flags));
-			ws.on("close", () => this.onClose(ws));
+			ws.on("close", () => this.onCloseListners.forEach(cb => cb(ws)));
 		});
 	}
 
 	// TODO このキー普通にデータにのせて大丈夫か
 	public getSercretKey(ws: WebSocket) {
 		return ws.upgradeReq.headers["sec-websocket-key"];
+	}
+
+	public send(ws: WebSocket, type: SocketType, data: any) {
+		try {
+			ws.send(JSON.stringify({type: type, value: data}));
+		} catch (e) {
+			console.error(e);
+		}
 	}
 
 	/** 全員に送る */
@@ -86,9 +82,6 @@ export class MainController {
 		});
 	}
 
-	private onClose(closeWs: WebSocket) {
-		this.onCloseListners.forEach(cb => cb(closeWs));
-	}
 	/**
 	 * でーた受け取り時
 	 */
@@ -112,11 +105,9 @@ export class MainController {
 			if (!resData.type) {
 				return false;
 			}
-
 			if (resData.type === SocketType.gozzilaDamege) {
 				return true;
 			}
-
 			if (resData.type === SocketType.chatLog && resData.value.length > 50) {
 				return false;
 			}

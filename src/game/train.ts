@@ -1,6 +1,6 @@
-import {MainCanvas, Zahyou} from "./canvas";
+import {MainCanvas, Zahyou} from "./main";
 import {Gozzila} from "./gozzila";
-import {BaseMonster} from "./BaseMonster";
+import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
 
 enum TrainMode {
@@ -18,8 +18,8 @@ export class Train extends BaseMonster {
 	private gozzila: Gozzila;
 	private bakuhatuCount: number;
 	private onBakuhatu: Array<() => void> = [];
-	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
-		super(ctx, zahyou);
+	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {
+		super(ctx, option);
 		this.gozzila = MainCanvas.GOZZILA;
 		this.mode = TrainMode.ikiteru;
 	}

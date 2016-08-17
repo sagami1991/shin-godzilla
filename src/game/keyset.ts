@@ -18,7 +18,7 @@ export class Keyset {
 	];
 
 	/** ボタンやキーを設定 */
-	public static keyset() {
+	public static setKeyAndButton() {
 		document.querySelector("#canvas").addEventListener("click", () => {
 			Keyset.KeyEvent.atk = true;
 		});

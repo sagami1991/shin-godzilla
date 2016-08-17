@@ -11,10 +11,18 @@ var UserService = (function () {
         return this.collection.find().limit(20).sort({ lv: -1 }).toArray();
     };
     UserService.prototype.createUser = function (user) {
-        this.collection.insert(this.filterUserData(user));
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.validate(user) ? resolve() : reject();
+            _this.collection.insert(_this.filterUserData(user));
+        });
     };
     UserService.prototype.updateUser = function (user) {
-        this.collection.update({ _id: user._id }, this.filterUserData(user));
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.validate(user) ? resolve() : reject();
+            _this.collection.update({ _id: user._id }, _this.filterUserData(user));
+        });
     };
     UserService.prototype.deleteUser = function (id) {
         this.collection.deleteOne({ _id: id });
@@ -27,6 +35,12 @@ var UserService = (function () {
             exp: user.exp,
             date: new Date()
         };
+    };
+    UserService.prototype.validate = function (user) {
+        return (user._id &&
+            user.name &&
+            typeof user.lv === "number" &&
+            typeof user.exp === "number");
     };
     return UserService;
 }());

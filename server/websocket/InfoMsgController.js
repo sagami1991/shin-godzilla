@@ -1,5 +1,5 @@
 "use strict";
-var MainController_1 = require("./MainController");
+var share_1 = require("../share/share");
 var InfoMsgController = (function () {
     function InfoMsgController(main) {
         this.main = main;
@@ -12,7 +12,7 @@ var InfoMsgController = (function () {
         this.main.sendAll({
             myWs: ws,
             isSelfSend: false,
-            type: MainController_1.SocketType.infolog,
+            type: share_1.SocketType.infolog,
             value: "\u8AB0\u304B\u304C\u30A2\u30AF\u30BB\u30B9\u3057\u307E\u3057\u305F"
         });
     };

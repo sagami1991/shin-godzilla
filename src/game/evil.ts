@@ -1,7 +1,14 @@
-import {MainCanvas, Zahyou} from "./canvas";
+import {MainCanvas, Zahyou} from "./main";
 import {Train} from "./train";
-import {BaseMonster} from "./BaseMonster";
+import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
+
+export interface EvilOption extends BaseMobOption {
+	lv: number;
+	isDead?: boolean;
+	isAtk?: boolean;
+	personId: string;
+}
 
 /** 人間が操作する機能の入っていないエビルアイ */
 export class SimpleEvil extends BaseMonster {
@@ -11,7 +18,7 @@ export class SimpleEvil extends BaseMonster {
 	public isAtk: boolean;
 	protected myTrains: Train[] = [];
 	public lv: number;
-	constructor(ctx: CanvasRenderingContext2D, option: Zahyou) {
+	constructor(ctx: CanvasRenderingContext2D, option: EvilOption) {
 		super(ctx, option);
 		this.lv = option.lv;
 		this.isDead = option.isDead;
@@ -27,15 +34,6 @@ export class SimpleEvil extends BaseMonster {
 		this.trainDraw();
 		this.lvDraw();
 	}
-	private lvDraw() {
-		this.ctx.fillStyle = "black";
-		this.ctx.font = "14px 'ＭＳ Ｐゴシック'";
-		this.ctx.fillText(`Lv ${this.lv}`, this.x + 34, MainCanvas.convY(this.y - 10, 0));
-	}
-	private trainDraw() {
-		this.myTrains = this.myTrains.filter(train => !train.isDead);
-		this.myTrains.forEach(train => train.draw());
-	}
 	protected action() {
 		if (this.isAtk) {
 			this.atk();
@@ -48,9 +46,17 @@ export class SimpleEvil extends BaseMonster {
 			x: this.x,
 			y: this.y,
 			isMigiMuki: this.isMigiMuki,
-			isMy: this.isMy,
-			personId: null
+			isMy: this.isMy
 		});
 		this.myTrains.push(train);
+	}
+	private lvDraw() {
+		this.ctx.fillStyle = "black";
+		this.ctx.font = "14px 'ＭＳ Ｐゴシック'";
+		this.ctx.fillText(`Lv ${this.lv}`, this.x + 34, MainCanvas.convY(this.y - 10, 0));
+	}
+	private trainDraw() {
+		this.myTrains = this.myTrains.filter(train => !train.isDead);
+		this.myTrains.forEach(train => train.draw());
 	}
 }

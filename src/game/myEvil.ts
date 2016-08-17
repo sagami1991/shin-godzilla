@@ -1,14 +1,20 @@
-import {MainCanvas, Zahyou} from "./canvas";
-import {SimpleEvil} from "./evil";
+import {SimpleEvil, EvilOption} from "./evil";
 import {Gozzila} from "./gozzila";
 import {StatusBar} from "./StatusBar";
 import {Keyset} from "./keyset";
+import {MainCanvas, Zahyou} from "./main";
 
 interface StrageData {
 	date: Date;
 	lv: number;
 	exp: number;
 	maxHp: number;
+	name: string;
+}
+
+export interface MyEvilOption extends EvilOption {
+	gozzila: Gozzila;
+	exp: number;
 	name: string;
 }
 
@@ -33,9 +39,9 @@ export class Ebiruai extends SimpleEvil {
 	private exp: number;
 	private name: string;
 
-	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
-		super(ctx, zahyou);
-		this.lv = 1;
+	constructor(ctx: CanvasRenderingContext2D, option: MyEvilOption) {
+		super(ctx, option);
+		this.lv = option.lv;
 		this.exp = 0;
 		this.maxHp = Ebiruai.INIT_MAX_HP;
 		this.jumpValue = Ebiruai.BASE_JUMP;
@@ -44,7 +50,7 @@ export class Ebiruai extends SimpleEvil {
 		this.hp = this.maxHp;
 		this.name = "名前";
 		this.loadLocalStrage();
-		this.gozzila = zahyou.gozzila;
+		this.gozzila = option.gozzila;
 		this.initButtons();
 		this.initStatusBar();
 	}

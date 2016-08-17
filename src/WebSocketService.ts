@@ -1,34 +1,29 @@
-// import * as Handlebars from "handlebars";
 import {Notify} from "./util";
-// import * as shortid from 'shortid';
-
-export enum WSDataType {
-	error,
-	initlog,
-	log,
-	infolog,
-	zahyou,
-	personId,
-	closePerson,
-	gozzilaDamege
-}
+import {SocketType} from "../server/share/share";
 
 export interface ResData {
 	type: number;
 	value: any;
 }
 
+interface Msglistner {
+	type: SocketType;
+	cb: (data: any) => void;
+}
+
 export class WSService {
 	private static URL = location.origin.replace(/^http/, 'ws');
+	public isClose: boolean;
 	private ws: WebSocket;
 	private pingTimer: number;
-	public isClose: boolean;
-	public personId: string;
-	private onReceiveMsgEvents: Array<(type: number, value: any) => void> = [];
+	private onReceiveMsgEvents: Msglistner[] = [];
 	private onOpenEvents: Array<() => void> = [];
 	private onCloseEvents: Array<() => void> = [];
-	public addOnReceiveMsgListener(callback: (type: number, value: any) => void) {
-		this.onReceiveMsgEvents.push(callback);
+	public addOnReceiveMsgListener(type: number, cb: (value: any) => void) {
+		this.onReceiveMsgEvents.push({
+			type: type,
+			cb: cb
+		});
 	}
 
 	public addOnOpenListener(callback: () => void) {
@@ -45,13 +40,8 @@ export class WSService {
 		this.ws.onmessage = (msgEvent) => this.onReceiveMsg(msgEvent);
 		this.ws.onclose = () => this.onClose();
 		this.pingInterval();
-		this.addOnReceiveMsgListener((type, value) => {
-			if (type !== WSDataType.infolog) return;
+		this.addOnReceiveMsgListener(SocketType.infolog, (value) => {
 			Notify.success(<string> value);
-		});
-		this.addOnReceiveMsgListener((type, value) => {
-			if (type !== WSDataType.personId) return;
-			this.personId = value;
 		});
 
 		this.addOnCloseListener(() => {
@@ -59,6 +49,14 @@ export class WSService {
 			Notify.error("切断されました。サーバーが落ちた可能性があります");
 			window.clearInterval(this.pingTimer);
 		});
+	}
+
+	public send(type: number, value: any) {
+		if (this.isClose) return;
+		this.ws.send(JSON.stringify({
+			type: type,
+			value: value
+		}));
 	}
 
 	/** herokuは無通信時、55秒で遮断されるため、50秒ごとに無駄な通信を行う */
@@ -75,17 +73,7 @@ export class WSService {
 	}
 
 	private onReceiveMsg(msgEvent: MessageEvent) {
-		const data = <ResData> JSON.parse(msgEvent.data);
-		this.onReceiveMsgEvents.forEach((callback) => {
-			callback(data.type, data.value);
-		});
-	}
-
-	public send(type: number, value: any) {
-		if (this.isClose) return;
-		this.ws.send(JSON.stringify({
-			type: type,
-			value: value
-		}));
+		const resData = <ResData> JSON.parse(msgEvent.data);
+		this.onReceiveMsgEvents.forEach(msgLister => {resData.type === msgLister.type ? msgLister.cb(resData) : null; });
 	}
 }

@@ -1,5 +1,6 @@
 import * as WebSocket from 'ws';
-import {MainController, SocketType} from "./MainController";
+import {MainController} from "./MainController";
+import {SocketType} from "../share/share";
 export class InfoMsgController {
 	constructor(private main: MainController) {
 	}

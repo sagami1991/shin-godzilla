@@ -1,12 +1,5 @@
-import {Collection} from 'mongodb';
-
-export interface DbUserData {
-	_id: string;
-	lv: number;
-	name: string;
-	exp: number;
-	date?: Date;
-}
+import {Collection} from "mongodb";
+import {DbUserData} from "../share/share";
 
 export class UserService {
 	constructor(private collection: Collection) {
@@ -22,11 +15,17 @@ export class UserService {
 	}
 
 	public createUser(user: DbUserData) {
-		this.collection.insert(this.filterUserData(user));
+		return new Promise((resolve, reject) => {
+			this.validate(user) ? resolve() : reject();
+			this.collection.insert(this.filterUserData(user));
+		});
 	}
 
 	public updateUser(user: DbUserData) {
-		this.collection.update({_id: user._id}, this.filterUserData(user));
+		return new Promise((resolve, reject) => {
+			this.validate(user) ? resolve() : reject();
+			this.collection.update({_id: user._id}, this.filterUserData(user));
+		});
 	}
 
 	public deleteUser(id: string) {
@@ -41,5 +40,14 @@ export class UserService {
 			exp: user.exp,
 			date: new Date()
 		};
+	}
+
+	private validate(user: DbUserData) {
+		return (
+			user._id &&
+			user.name &&
+			typeof user.lv === "number" &&
+			typeof user.exp === "number"
+			);
 	}
 }

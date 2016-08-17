@@ -1,9 +1,10 @@
-import {WSService, WSDataType} from "../WebSocketService";
-import {SimpleEvil} from "./evil";
+import {WSService} from "../WebSocketService";
+import {SimpleEvil, EvilOption} from "./evil";
 import {Ebiruai} from "./myEvil";
 import {Gozzila} from "./gozzila";
 import {ImageLoader} from "./ImageLoader";
 import {Keyset} from "./keyset";
+import {SocketType, InitialUserData} from "../../server/share/share";
 
 /** TODO いい加減送信用インターフェースに分ける */
 export interface Zahyou {
@@ -20,13 +21,14 @@ export interface Zahyou {
 	maxExp?: number;
 }
 
+
 interface GozzilaInfo {
 	hp: number;
 	mode: number;
 	target: {x: number, y: number}[];
 }
 
-/** canvasの総合操作クラス */
+/** ゲーム機能の総合操作クラス */
 export class MainCanvas {
 	public static FRAME = 30;
 	public static HEIGHT = 500;
@@ -52,26 +54,28 @@ export class MainCanvas {
 	constructor(ws: WSService) {
 		this.ws = ws;
 	}
+
 	public init() {
-		this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
-		this.canvasElm.width = MainCanvas.WIDTH;
-		this.canvasElm.height = MainCanvas.HEIGHT;
-		this.ctx = this.canvasElm.getContext('2d');
-		Keyset.keyset();
-		this.ws.addOnReceiveMsgListener((type) => {
-			if (type === WSDataType.personId) {
-				ImageLoader.load().then(() => this.onImageLoaded());
-			}
+		ImageLoader.load().then(() => {
+			this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
+			this.canvasElm.width = MainCanvas.WIDTH;
+			this.canvasElm.height = MainCanvas.HEIGHT;
+			this.ctx = this.canvasElm.getContext('2d');
+			Keyset.setKeyAndButton();
+			this.ws.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
+			this.ws.addOnOpenListener(() => {
+				this.ws.send(SocketType.init, {_id: localStorage.getItem("dbId")});
+			});
 		});
 	}
 
-	private onImageLoaded() {
+	private onReceiveInitData(resData: InitialUserData) {
+		localStorage.setItem("dbId", resData.userData._id);
 		this.gozzila = new Gozzila(this.ctx, {
 			image: ImageLoader.IMAGES.gozzila,
 			x: 550,
 			y: MainCanvas.Y0,
-			isMigiMuki: false,
-			personId: null
+			isMigiMuki: false
 		});
 		MainCanvas.GOZZILA = this.gozzila;
 		this.myEvil = new Ebiruai(this.ctx, {
@@ -80,23 +84,24 @@ export class MainCanvas {
 			y: MainCanvas.Y0,
 			isMigiMuki: true,
 			isMy: true,
-			personId: this.ws.personId,
+			personId: resData.personId,
 			gozzila: this.gozzila,
-			lv: 1
+			lv: resData.userData.lv,
+			exp: resData.userData.exp,
+			name: resData.userData.name,
 		});
 		this.gozzila.target = [0, 0].map( () => {return{x: this.myEvil.x, y: this.myEvil.y}; });
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
-		this.ws.addOnReceiveMsgListener((type, value) => this.onReceiveGameData(type, value));
+		this.ws.addOnReceiveMsgListener(SocketType.zahyou, (value) => this.onReceiveGameData(value));
 		this.ws.addOnCloseListener(() => window.clearInterval(this.timer));
 	}
 
-	private onReceiveGameData(type: number, value: any) {
-		if (type !== WSDataType.zahyou) return;
+	private onReceiveGameData(value: any) {
 		const gozzilaInfo = <GozzilaInfo> value.gozzila;
 		this.gozzila.hp = gozzilaInfo.hp;
 		this.gozzila.mode = gozzilaInfo.mode;
 		this.gozzila.target = gozzilaInfo.target;
-		const receiveEvils = <Zahyou[]> value.evils;
+		const receiveEvils = <EvilOption[]> value.evils;
 		receiveEvils.forEach(evilInfo => {
 			const existEvil = this.otherPersonEvils.find(existEvil => existEvil.personId === evilInfo.personId);
 			if (existEvil) {
@@ -137,11 +142,11 @@ export class MainCanvas {
 		};
 		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
 			!this.receiveMyEvilInfo || this.receiveMyEvilInfo.isDead !== sendData.isDead) {
-			this.ws.send(WSDataType.zahyou, sendData);
+			this.ws.send(SocketType.zahyou, sendData);
 			this.myEvil.atksita = false;
 		}
 		if (this.gozzila.isDamege) {
-			this.ws.send(WSDataType.gozzilaDamege, null);
+			this.ws.send(SocketType.gozzilaDamege, null);
 			this.gozzila.isDamege = false;
 		}
 		this.befSendData = JSON.parse(JSON.stringify(sendData));
