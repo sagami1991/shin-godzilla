@@ -2,6 +2,7 @@ import {MainCanvas, Zahyou} from "./canvas";
 import {SimpleEvil} from "./evil";
 import {Gozzila} from "./gozzila";
 import {StatusBar} from "./StatusBar";
+import {Keyset} from "./keyset";
 
 interface StrageData {
 	date: Date;
@@ -17,53 +18,69 @@ export class Ebiruai extends SimpleEvil {
 	private static BASE_SPEED = 5;
 	private static EXP_BAIRITU = 1.2;
 	private static INIT_MAX_EXP = 50;
-	private jumpF: number;
-	private isJump: boolean;
+	private static INIT_MAX_HP = 100;
 	public atksita: boolean;
+	public maxExp: number;
+	private jumpF: number;
+	private isJumping: boolean;
 	private gozzila: Gozzila;
-	private hukkatuButton: HTMLElement;
+	private rebirthButton: HTMLButtonElement;
+	private resetButton: HTMLButtonElement;
 	private statusBar: StatusBar;
-	private jump: number;
+	private jumpValue: number;
 	private speed: number;
 	private rebornTimeCount: number;
 	private exp: number;
-	public maxExp: number;
 	private name: string;
 
 	constructor(ctx: CanvasRenderingContext2D, zahyou: Zahyou) {
 		super(ctx, zahyou);
 		this.lv = 1;
 		this.exp = 0;
-		this.maxHp = 100;
-		this.hp = this.maxHp;
-		this.jump = Ebiruai.BASE_JUMP;
+		this.maxHp = Ebiruai.INIT_MAX_HP;
+		this.jumpValue = Ebiruai.BASE_JUMP;
 		this.speed = Ebiruai.BASE_SPEED;
 		this.maxExp = Ebiruai.INIT_MAX_EXP;
+		this.hp = this.maxHp;
 		this.name = "名前";
 		this.loadLocalStrage();
 		this.gozzila = zahyou.gozzila;
-		this.initHukkatuButton();
+		this.initButtons();
 		this.initStatusBar();
 	}
 
 	private initStatusBar() {
 		this.statusBar = new StatusBar();
-		this.statusBar.addOnNameEditListner((name) => { 
+		this.statusBar.addOnNameEditListner((name) => {
 			this.name = name;
 			this.saveLocalStrage();
 		});
+		this.refreshStatusBar();
+	}
+	private refreshStatusBar() {
 		this.statusBar.setExp(this.exp, this.maxExp);
 		this.statusBar.setLv(this.lv);
 		this.statusBar.setName(this.name);
+
 	}
 
-	private initHukkatuButton() {
-		this.hukkatuButton = <HTMLElement> document.querySelector(".hukkatu");
-		this.hukkatuButton.addEventListener("click", () => {
-			if (this.hukkatuButton.className.indexOf("disabled") !== -1) return;
+	private initButtons() {
+		this.rebirthButton = <HTMLButtonElement> document.querySelector(".hukkatu");
+		this.rebirthButton.addEventListener("click", () => {
+			if (this.rebirthButton.className.indexOf("disabled") !== -1) return;
 			this.hp = this.maxHp;
 			this.isDead = false;
-			this.hukkatuButton.className += " disabled";
+			this.rebirthButton.className += " disabled";
+		});
+		this.resetButton = <HTMLButtonElement> document.querySelector(".reset-button");
+		this.resetButton.addEventListener("click", () => {
+			if (window.confirm("レベルをリセットしますか？")) {
+				this.lv = 1;
+				this.maxExp = this.getMaxExp();
+				this.exp = 0;
+				this.saveLocalStrage();
+				this.refreshStatusBar();
+			}
 		});
 	}
 
@@ -71,48 +88,54 @@ export class Ebiruai extends SimpleEvil {
 	protected action() {
 		this.drawHp();
 		if (this.isDead) {
-			if (this.rebornTimeCount >= 0) this.rebornTimeCount--;
-			this.ctx.fillStyle = "black";
-			this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
-			this.ctx.fillText(`死にました。${Math.ceil(this.rebornTimeCount / 30)}秒後に復活ボタンが使用可能になります`, 80, 180);
+			this.drawRespawnCount();
 		} else {
-			if (MainCanvas.KeyEvent.hidari) {
-				this.x -= this.speed;
-				this.isMigiMuki = false;
-			}
-			if (MainCanvas.KeyEvent.migi) {
-				this.x += this.speed;
-				this.isMigiMuki = true;
-			}
-			if (MainCanvas.KeyEvent.jump) {
-				if (!this.isJump) {
-					this.jumpF = 0;
-					this.isJump = true;
-				}
-			}
-			if (this.isJump) {
-				this.jumpF ++ ;
-				this.y = MainCanvas.Y0 + this.jump * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
-			}
-			if (this.isJump && this.y < MainCanvas.Y0) {
-				this.y = MainCanvas.Y0;
-				this.isJump = false;
-			}
-			if (MainCanvas.KeyEvent.atk && this.myTrains.length < 3) {
-				this.atksita = true;
-				this.atk();
-			}
-			this.hp -= this.gozzila.calcBeamDamege(this.x, this.x + SimpleEvil.WIDTH, this.y, this.y + SimpleEvil.HEIGHT);
-			this.hp -= this.gozzila.sessyoku(this.x, this.y) ? 12 : 0;
-			if (this.hp <= 0) {
-				this.dead();
-			}
-			MainCanvas.KeyEvent.atk = false;
+			this.move();
+			this.jump();
+			this.beforeAtk();
+			this.damegeCalc();
+			this.deadOnce();
 		}
 	}
-	protected atk() {
-		super.atk();
-		this.myTrains[this.myTrains.length - 1].setOnAtked(() => this.increaseExp());
+
+	private damegeCalc() {
+		this.hp -= this.gozzila.calcBeamDamege(this.x, this.x + SimpleEvil.WIDTH, this.y, this.y + SimpleEvil.HEIGHT);
+		this.hp -= this.gozzila.sessyoku(this.x, this.y) ? 12 : 0;
+	}
+
+	private move() {
+		if (Keyset.KeyEvent.hidari) {
+			this.x -= this.speed;
+			this.isMigiMuki = false;
+		}
+		if (Keyset.KeyEvent.migi) {
+			this.x += this.speed;
+			this.isMigiMuki = true;
+		}
+	}
+
+	private jump() {
+		if (Keyset.KeyEvent.jump && !this.isJumping) {
+			this.jumpF = 0;
+			this.isJumping = true;
+		}
+		if (this.isJumping) {
+			this.jumpF ++ ;
+			this.y = MainCanvas.Y0 + this.jumpValue * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
+		}
+		if (this.isJumping && this.y < MainCanvas.Y0) {
+			this.y = MainCanvas.Y0;
+			this.isJumping = false;
+		}
+	}
+
+	private beforeAtk() {
+		if (Keyset.KeyEvent.atk && this.myTrains.length < 3) {
+			Keyset.KeyEvent.atk = false;
+			this.atksita = true;
+			super.atk();
+			this.myTrains[this.myTrains.length - 1].setOnAtked(() => this.increaseExp());
+		}
 	}
 
 	private increaseExp() {
@@ -121,24 +144,33 @@ export class Ebiruai extends SimpleEvil {
 		if (this.maxExp <= this.exp) {
 			this.lv ++;
 			this.exp = 0;
-			this.maxExp = Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
-			this.statusBar.setExp(this.exp, this.maxExp);
-			this.statusBar.setLv(this.lv);
+			this.maxExp = this.getMaxExp();
+			this.refreshStatusBar();
 			this.saveLocalStrage();
 		}
 	}
+
+	private drawRespawnCount() {
+		if (this.rebornTimeCount >= 0) this.rebornTimeCount--;
+		this.ctx.fillStyle = "black";
+		this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
+		this.ctx.fillText(`死にました。${Math.ceil(this.rebornTimeCount / 30)}秒後に復活ボタンが使用可能になります`, 80, 180);
+	}
+
 	/** 死んだとき一度だけ実行される */
-	private dead() {
-		this.hp = 0;
-		this.isDead = true;
-		this.rebornTimeCount = MainCanvas.FRAME * 8;
-		setTimeout(() => {
-			this.hukkatuButton.className = this.hukkatuButton.className.replace(" disabled", "");
-		}, 8000);
-		this.exp -= Math.floor(this.maxExp / 8);
-		this.exp = this.exp < 0 ? 0 : this.exp;
-		this.statusBar.setExp(this.exp, this.maxExp);
-		this.saveLocalStrage();
+	private deadOnce() {
+		if (this.hp <= 0) {
+			this.hp = 0;
+			this.isDead = true;
+			this.rebornTimeCount = MainCanvas.FRAME * 8;
+			setTimeout(() => {
+				this.rebirthButton.className = this.rebirthButton.className.replace(" disabled", "");
+			}, 8000);
+			this.exp -= Math.floor(this.maxExp / 8);
+			this.exp = this.exp < 0 ? 0 : this.exp;
+			this.statusBar.setExp(this.exp, this.maxExp);
+			this.saveLocalStrage();
+		}
 	}
 
 	private drawHp() {
@@ -149,6 +181,10 @@ export class Ebiruai extends SimpleEvil {
 		this.ctx.fillStyle = "#e60c0c";
 		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp , 8);
 	}
+	private getMaxExp() {
+		return Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
+	}
+
 	/** TODO DBに変える */
 	private saveLocalStrage() {
 		const saveData: StrageData = {
@@ -160,12 +196,11 @@ export class Ebiruai extends SimpleEvil {
 		};
 		localStorage.setItem("saveDataVer0.0", JSON.stringify(saveData));
 	}
-
 	private loadLocalStrage() {
 		const loadData = <StrageData> JSON.parse(localStorage.getItem("saveDataVer0.0"));
 		if (loadData) {
 			this.lv = loadData.lv ? loadData.lv : 1;
-			this.maxExp = Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
+			this.maxExp = this.getMaxExp();
 			this.exp = loadData.exp ? loadData.exp : 0;
 			this.maxHp = loadData.maxHp ? loadData.maxHp : 100;
 			this.name = loadData.name ? loadData.name : "名前";

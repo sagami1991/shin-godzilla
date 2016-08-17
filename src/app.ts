@@ -1,7 +1,7 @@
 /// <reference path="./custom-typings.d.ts" />
 require("expose?humane!humane-js");
 require("!style!css!humane-js/themes/libnotify.css");
-require("./main.scss");
+require("./scss/main.scss");
 import {MainCanvas} from "./game/canvas";
 import {ChatComponent} from "./chatComponent";
 import {WSService} from "./WebSocketService";

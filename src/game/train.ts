@@ -1,6 +1,7 @@
 import {MainCanvas, Zahyou} from "./canvas";
 import {Gozzila} from "./gozzila";
 import {BaseMonster} from "./BaseMonster";
+import {ImageLoader} from "./ImageLoader";
 
 enum TrainMode {
 	ikiteru,
@@ -37,7 +38,7 @@ export class Train extends BaseMonster {
 			this.isDead = this.x < 0 - Train.WIDTH || 800 < this.x;
 			if (this.gozzila.x + 100 < this.x ) {
 				this.mode = TrainMode.bakuhatu;
-				this.image = MainCanvas.images.bakuhatu;
+				this.image = ImageLoader.IMAGES.bakuhatu;
 				this.bakuhatuCount = MainCanvas.FRAME * Train.BAKUHATU_SEC;
 				if (this.isMy) {
 					this.gozzila.isDamege = true;

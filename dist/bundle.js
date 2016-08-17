@@ -55,7 +55,7 @@
 	/// <reference path="./custom-typings.d.ts" />
 	__webpack_require__(2);
 	__webpack_require__(4);
-	__webpack_require__(8);
+	__webpack_require__(150);
 	var canvas_1 = __webpack_require__(10);
 	var chatComponent_1 = __webpack_require__(18);
 	var WebSocketService_1 = __webpack_require__(11);
@@ -678,46 +678,8 @@
 
 
 /***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(9);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(7)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./main.scss", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./main.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(6)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "@charset \"UTF-8\";\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(146) + "); }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0; }\n\n.canvas-wrapper {\n  background-color: #f9f9f9;\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative;\n  border-radius: 10px; }\n\n.chat-area {\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n.key-pad {\n  width: 100%;\n  display: flex;\n  margin-bottom: 140px;\n  padding-left: 20px; }\n\n.pad {\n  margin-top: 40px;\n  margin-right: 20px;\n  border: none;\n  cursor: pointer;\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA';\n  background-color: #f9f9f9;\n  color: rgba(2, 33, 2, 0.68);\n  height: 120px;\n  margin-top: 6px;\n  border-radius: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.footer {\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
-	
-	// exports
-
-
-/***/ },
+/* 8 */,
+/* 9 */,
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -726,6 +688,8 @@
 	var evil_1 = __webpack_require__(13);
 	var myEvil_1 = __webpack_require__(16);
 	var gozzila_1 = __webpack_require__(17);
+	var ImageLoader_1 = __webpack_require__(148);
+	var keyset_1 = __webpack_require__(149);
 	/** canvasの総合操作クラス */
 	var MainCanvas = (function () {
 	    function MainCanvas(ws) {
@@ -742,17 +706,17 @@
 	        this.canvasElm.width = MainCanvas.WIDTH;
 	        this.canvasElm.height = MainCanvas.HEIGHT;
 	        this.ctx = this.canvasElm.getContext('2d');
-	        this.keyset();
+	        keyset_1.Keyset.keyset();
 	        this.ws.addOnReceiveMsgListener(function (type) {
 	            if (type === WebSocketService_1.WSDataType.personId) {
-	                _this.loadImage().then(function () { return _this.onImageLoaded(); });
+	                ImageLoader_1.ImageLoader.load().then(function () { return _this.onImageLoaded(); });
 	            }
 	        });
 	    };
 	    MainCanvas.prototype.onImageLoaded = function () {
 	        var _this = this;
 	        this.gozzila = new gozzila_1.Gozzila(this.ctx, {
-	            image: MainCanvas.images.gozzila,
+	            image: ImageLoader_1.ImageLoader.IMAGES.gozzila,
 	            x: 550,
 	            y: MainCanvas.Y0,
 	            isMigiMuki: false,
@@ -760,7 +724,7 @@
 	        });
 	        MainCanvas.GOZZILA = this.gozzila;
 	        this.myEvil = new myEvil_1.Ebiruai(this.ctx, {
-	            image: MainCanvas.images.evilHidari,
+	            image: ImageLoader_1.ImageLoader.IMAGES.evilHidari,
 	            x: Math.round(Math.random() * 500),
 	            y: MainCanvas.Y0,
 	            isMigiMuki: true,
@@ -831,89 +795,10 @@
 	        }
 	        this.befSendData = JSON.parse(JSON.stringify(sendData));
 	    };
-	    /** ボタンやキーを設定 */
-	    MainCanvas.prototype.keyset = function () {
-	        this.canvasElm.addEventListener("click", function () {
-	            MainCanvas.KeyEvent.atk = true;
-	        });
-	        MainCanvas.KEYSET.forEach(function (keyset) {
-	            window.addEventListener("keydown", function (e) {
-	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
-	                    MainCanvas.KeyEvent[keyset.eventName] = true;
-	                    if (e.keyCode === 32 && document.activeElement === document.body) {
-	                        e.preventDefault();
-	                    }
-	                }
-	            });
-	            window.addEventListener("keyup", function (e) {
-	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
-	                    MainCanvas.KeyEvent[keyset.eventName] = false;
-	                }
-	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("mousedown", function () {
-	                MainCanvas.KeyEvent[keyset.eventName] = true;
-	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("touchstart", function (e) {
-	                MainCanvas.KeyEvent[keyset.eventName] = true;
-	                var elem = e.target;
-	                elem.className = elem.className + " hover";
-	                e.preventDefault();
-	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("mouseup", function () {
-	                MainCanvas.KeyEvent[keyset.eventName] = false;
-	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("touchend", function (e) {
-	                MainCanvas.KeyEvent[keyset.eventName] = false;
-	                var elem = e.target;
-	                elem.className = elem.className.replace(" hover", "");
-	                e.preventDefault();
-	            });
-	        });
-	    };
-	    /** 画像を読み込む */
-	    MainCanvas.prototype.loadImage = function () {
-	        var images = [
-	            "./assets/ebiruai.png",
-	            "./assets/ebiruai_.png",
-	            "./assets/densya.png",
-	            "./assets/bakuhatu.png",
-	            "./assets/gozzila.png",
-	            "./assets/gozzila_attack.png",
-	            "./assets/evil_sinda.png",
-	            "./assets/gozzila_bef_atk.png",
-	        ];
-	        return Promise.all(images.map(function (src) {
-	            return new Promise(function (reslve) {
-	                var image = new Image();
-	                image.addEventListener("load", function () {
-	                    reslve(image);
-	                });
-	                image.src = src;
-	            });
-	        })).then(function (imageElms) {
-	            MainCanvas.images.evilHidari = imageElms[0];
-	            MainCanvas.images.evilmigi = imageElms[1];
-	            MainCanvas.images.densya = imageElms[2];
-	            MainCanvas.images.bakuhatu = imageElms[3];
-	            MainCanvas.images.gozzila = imageElms[4];
-	            MainCanvas.images.gozzila_atk = imageElms[5];
-	            MainCanvas.images.evilSinda = imageElms[6];
-	            MainCanvas.images.gozzilaBefAtk = imageElms[7];
-	        });
-	    };
 	    MainCanvas.FRAME = 30;
 	    MainCanvas.HEIGHT = 500;
 	    MainCanvas.WIDTH = 800;
 	    MainCanvas.Y0 = 150;
-	    MainCanvas.KeyEvent = {
-	        ue: false,
-	        migi: false,
-	        sita: false,
-	        hidari: false,
-	        jump: false,
-	        atk: false
-	    };
-	    MainCanvas.images = {};
 	    MainCanvas.KEYSET = [
 	        { keycode: [68, 39], eventName: "migi" },
 	        // {keycode: [87, 38], eventName: "ue"},
@@ -1056,6 +941,7 @@
 	var canvas_1 = __webpack_require__(10);
 	var train_1 = __webpack_require__(14);
 	var BaseMonster_1 = __webpack_require__(15);
+	var ImageLoader_1 = __webpack_require__(148);
 	/** 人間が操作する機能の入っていないエビルアイ */
 	var SimpleEvil = (function (_super) {
 	    __extends(SimpleEvil, _super);
@@ -1069,9 +955,9 @@
 	    }
 	    SimpleEvil.prototype.draw = function () {
 	        this.action();
-	        this.image = this.isDead ? canvas_1.MainCanvas.images.evilSinda :
-	            this.isMigiMuki ? canvas_1.MainCanvas.images.evilmigi :
-	                canvas_1.MainCanvas.images.evilHidari;
+	        this.image = this.isDead ? ImageLoader_1.ImageLoader.IMAGES.evilSinda :
+	            this.isMigiMuki ? ImageLoader_1.ImageLoader.IMAGES.evilmigi :
+	                ImageLoader_1.ImageLoader.IMAGES.evilHidari;
 	        this.ctx.drawImage(this.image, this.x, canvas_1.MainCanvas.convY(this.y, SimpleEvil.HEIGHT));
 	        this.trainDraw();
 	        this.lvDraw();
@@ -1093,7 +979,7 @@
 	    SimpleEvil.prototype.atk = function () {
 	        this.isAtk = false;
 	        var train = new train_1.Train(this.ctx, {
-	            image: canvas_1.MainCanvas.images.densya,
+	            image: ImageLoader_1.ImageLoader.IMAGES.densya,
 	            x: this.x,
 	            y: this.y,
 	            isMigiMuki: this.isMigiMuki,
@@ -1121,6 +1007,7 @@
 	};
 	var canvas_1 = __webpack_require__(10);
 	var BaseMonster_1 = __webpack_require__(15);
+	var ImageLoader_1 = __webpack_require__(148);
 	var TrainMode;
 	(function (TrainMode) {
 	    TrainMode[TrainMode["ikiteru"] = 0] = "ikiteru";
@@ -1150,7 +1037,7 @@
 	                this.isDead = this.x < 0 - Train.WIDTH || 800 < this.x;
 	                if (this.gozzila.x + 100 < this.x) {
 	                    this.mode = TrainMode.bakuhatu;
-	                    this.image = canvas_1.MainCanvas.images.bakuhatu;
+	                    this.image = ImageLoader_1.ImageLoader.IMAGES.bakuhatu;
 	                    this.bakuhatuCount = canvas_1.MainCanvas.FRAME * Train.BAKUHATU_SEC;
 	                    if (this.isMy) {
 	                        this.gozzila.isDamege = true;
@@ -1210,6 +1097,7 @@
 	var canvas_1 = __webpack_require__(10);
 	var evil_1 = __webpack_require__(13);
 	var StatusBar_1 = __webpack_require__(147);
+	var keyset_1 = __webpack_require__(149);
 	/** 自分が操作する機能をもつエビルアイ */
 	var Ebiruai = (function (_super) {
 	    __extends(Ebiruai, _super);
@@ -1217,15 +1105,15 @@
 	        _super.call(this, ctx, zahyou);
 	        this.lv = 1;
 	        this.exp = 0;
-	        this.maxHp = 100;
-	        this.hp = this.maxHp;
-	        this.jump = Ebiruai.BASE_JUMP;
+	        this.maxHp = Ebiruai.INIT_MAX_HP;
+	        this.jumpValue = Ebiruai.BASE_JUMP;
 	        this.speed = Ebiruai.BASE_SPEED;
 	        this.maxExp = Ebiruai.INIT_MAX_EXP;
+	        this.hp = this.maxHp;
 	        this.name = "名前";
 	        this.loadLocalStrage();
 	        this.gozzila = zahyou.gozzila;
-	        this.initHukkatuButton();
+	        this.initButtons();
 	        this.initStatusBar();
 	    }
 	    Ebiruai.prototype.initStatusBar = function () {
@@ -1235,70 +1123,84 @@
 	            _this.name = name;
 	            _this.saveLocalStrage();
 	        });
+	        this.refreshStatusBar();
+	    };
+	    Ebiruai.prototype.refreshStatusBar = function () {
 	        this.statusBar.setExp(this.exp, this.maxExp);
 	        this.statusBar.setLv(this.lv);
 	        this.statusBar.setName(this.name);
 	    };
-	    Ebiruai.prototype.initHukkatuButton = function () {
+	    Ebiruai.prototype.initButtons = function () {
 	        var _this = this;
-	        this.hukkatuButton = document.querySelector(".hukkatu");
-	        this.hukkatuButton.addEventListener("click", function () {
-	            if (_this.hukkatuButton.className.indexOf("disabled") !== -1)
+	        this.rebirthButton = document.querySelector(".hukkatu");
+	        this.rebirthButton.addEventListener("click", function () {
+	            if (_this.rebirthButton.className.indexOf("disabled") !== -1)
 	                return;
 	            _this.hp = _this.maxHp;
 	            _this.isDead = false;
-	            _this.hukkatuButton.className += " disabled";
+	            _this.rebirthButton.className += " disabled";
+	        });
+	        this.resetButton = document.querySelector(".reset-button");
+	        this.resetButton.addEventListener("click", function () {
+	            if (window.confirm("レベルをリセットしますか？")) {
+	                _this.lv = 1;
+	                _this.maxExp = _this.getMaxExp();
+	                _this.exp = 0;
+	                _this.saveLocalStrage();
+	                _this.refreshStatusBar();
+	            }
 	        });
 	    };
 	    /** 毎フレーム実行される動作 */
 	    Ebiruai.prototype.action = function () {
 	        this.drawHp();
 	        if (this.isDead) {
-	            if (this.rebornTimeCount >= 0)
-	                this.rebornTimeCount--;
-	            this.ctx.fillStyle = "black";
-	            this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
-	            this.ctx.fillText("\u6B7B\u306B\u307E\u3057\u305F\u3002" + Math.ceil(this.rebornTimeCount / 30) + "\u79D2\u5F8C\u306B\u5FA9\u6D3B\u30DC\u30BF\u30F3\u304C\u4F7F\u7528\u53EF\u80FD\u306B\u306A\u308A\u307E\u3059", 80, 180);
+	            this.drawRespawnCount();
 	        }
 	        else {
-	            if (canvas_1.MainCanvas.KeyEvent.hidari) {
-	                this.x -= this.speed;
-	                this.isMigiMuki = false;
-	            }
-	            if (canvas_1.MainCanvas.KeyEvent.migi) {
-	                this.x += this.speed;
-	                this.isMigiMuki = true;
-	            }
-	            if (canvas_1.MainCanvas.KeyEvent.jump) {
-	                if (!this.isJump) {
-	                    this.jumpF = 0;
-	                    this.isJump = true;
-	                }
-	            }
-	            if (this.isJump) {
-	                this.jumpF++;
-	                this.y = canvas_1.MainCanvas.Y0 + this.jump * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
-	            }
-	            if (this.isJump && this.y < canvas_1.MainCanvas.Y0) {
-	                this.y = canvas_1.MainCanvas.Y0;
-	                this.isJump = false;
-	            }
-	            if (canvas_1.MainCanvas.KeyEvent.atk && this.myTrains.length < 3) {
-	                this.atksita = true;
-	                this.atk();
-	            }
-	            this.hp -= this.gozzila.calcBeamDamege(this.x, this.x + evil_1.SimpleEvil.WIDTH, this.y, this.y + evil_1.SimpleEvil.HEIGHT);
-	            this.hp -= this.gozzila.sessyoku(this.x, this.y) ? 12 : 0;
-	            if (this.hp <= 0) {
-	                this.dead();
-	            }
-	            canvas_1.MainCanvas.KeyEvent.atk = false;
+	            this.move();
+	            this.jump();
+	            this.beforeAtk();
+	            this.damegeCalc();
+	            this.deadOnce();
 	        }
 	    };
-	    Ebiruai.prototype.atk = function () {
+	    Ebiruai.prototype.damegeCalc = function () {
+	        this.hp -= this.gozzila.calcBeamDamege(this.x, this.x + evil_1.SimpleEvil.WIDTH, this.y, this.y + evil_1.SimpleEvil.HEIGHT);
+	        this.hp -= this.gozzila.sessyoku(this.x, this.y) ? 12 : 0;
+	    };
+	    Ebiruai.prototype.move = function () {
+	        if (keyset_1.Keyset.KeyEvent.hidari) {
+	            this.x -= this.speed;
+	            this.isMigiMuki = false;
+	        }
+	        if (keyset_1.Keyset.KeyEvent.migi) {
+	            this.x += this.speed;
+	            this.isMigiMuki = true;
+	        }
+	    };
+	    Ebiruai.prototype.jump = function () {
+	        if (keyset_1.Keyset.KeyEvent.jump && !this.isJumping) {
+	            this.jumpF = 0;
+	            this.isJumping = true;
+	        }
+	        if (this.isJumping) {
+	            this.jumpF++;
+	            this.y = canvas_1.MainCanvas.Y0 + this.jumpValue * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
+	        }
+	        if (this.isJumping && this.y < canvas_1.MainCanvas.Y0) {
+	            this.y = canvas_1.MainCanvas.Y0;
+	            this.isJumping = false;
+	        }
+	    };
+	    Ebiruai.prototype.beforeAtk = function () {
 	        var _this = this;
-	        _super.prototype.atk.call(this);
-	        this.myTrains[this.myTrains.length - 1].setOnAtked(function () { return _this.increaseExp(); });
+	        if (keyset_1.Keyset.KeyEvent.atk && this.myTrains.length < 3) {
+	            keyset_1.Keyset.KeyEvent.atk = false;
+	            this.atksita = true;
+	            _super.prototype.atk.call(this);
+	            this.myTrains[this.myTrains.length - 1].setOnAtked(function () { return _this.increaseExp(); });
+	        }
 	    };
 	    Ebiruai.prototype.increaseExp = function () {
 	        this.exp += 2;
@@ -1306,25 +1208,33 @@
 	        if (this.maxExp <= this.exp) {
 	            this.lv++;
 	            this.exp = 0;
-	            this.maxExp = Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
-	            this.statusBar.setExp(this.exp, this.maxExp);
-	            this.statusBar.setLv(this.lv);
+	            this.maxExp = this.getMaxExp();
+	            this.refreshStatusBar();
 	            this.saveLocalStrage();
 	        }
 	    };
+	    Ebiruai.prototype.drawRespawnCount = function () {
+	        if (this.rebornTimeCount >= 0)
+	            this.rebornTimeCount--;
+	        this.ctx.fillStyle = "black";
+	        this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
+	        this.ctx.fillText("\u6B7B\u306B\u307E\u3057\u305F\u3002" + Math.ceil(this.rebornTimeCount / 30) + "\u79D2\u5F8C\u306B\u5FA9\u6D3B\u30DC\u30BF\u30F3\u304C\u4F7F\u7528\u53EF\u80FD\u306B\u306A\u308A\u307E\u3059", 80, 180);
+	    };
 	    /** 死んだとき一度だけ実行される */
-	    Ebiruai.prototype.dead = function () {
+	    Ebiruai.prototype.deadOnce = function () {
 	        var _this = this;
-	        this.hp = 0;
-	        this.isDead = true;
-	        this.rebornTimeCount = canvas_1.MainCanvas.FRAME * 8;
-	        setTimeout(function () {
-	            _this.hukkatuButton.className = _this.hukkatuButton.className.replace(" disabled", "");
-	        }, 8000);
-	        this.exp -= Math.floor(this.maxExp / 8);
-	        this.exp = this.exp < 0 ? 0 : this.exp;
-	        this.statusBar.setExp(this.exp, this.maxExp);
-	        this.saveLocalStrage();
+	        if (this.hp <= 0) {
+	            this.hp = 0;
+	            this.isDead = true;
+	            this.rebornTimeCount = canvas_1.MainCanvas.FRAME * 8;
+	            setTimeout(function () {
+	                _this.rebirthButton.className = _this.rebirthButton.className.replace(" disabled", "");
+	            }, 8000);
+	            this.exp -= Math.floor(this.maxExp / 8);
+	            this.exp = this.exp < 0 ? 0 : this.exp;
+	            this.statusBar.setExp(this.exp, this.maxExp);
+	            this.saveLocalStrage();
+	        }
 	    };
 	    Ebiruai.prototype.drawHp = function () {
 	        this.ctx.fillStyle = "#000";
@@ -1333,6 +1243,9 @@
 	        this.ctx.fillRect(this.x + 10 + 1, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEvil.HEIGHT + 1, 8), 80, 8);
 	        this.ctx.fillStyle = "#e60c0c";
 	        this.ctx.fillRect(this.x + 10 + 1, canvas_1.MainCanvas.convY(this.y + evil_1.SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp, 8);
+	    };
+	    Ebiruai.prototype.getMaxExp = function () {
+	        return Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
 	    };
 	    /** TODO DBに変える */
 	    Ebiruai.prototype.saveLocalStrage = function () {
@@ -1349,7 +1262,7 @@
 	        var loadData = JSON.parse(localStorage.getItem("saveDataVer0.0"));
 	        if (loadData) {
 	            this.lv = loadData.lv ? loadData.lv : 1;
-	            this.maxExp = Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
+	            this.maxExp = this.getMaxExp();
 	            this.exp = loadData.exp ? loadData.exp : 0;
 	            this.maxHp = loadData.maxHp ? loadData.maxHp : 100;
 	            this.name = loadData.name ? loadData.name : "名前";
@@ -1359,6 +1272,7 @@
 	    Ebiruai.BASE_SPEED = 5;
 	    Ebiruai.EXP_BAIRITU = 1.2;
 	    Ebiruai.INIT_MAX_EXP = 50;
+	    Ebiruai.INIT_MAX_HP = 100;
 	    return Ebiruai;
 	}(evil_1.SimpleEvil));
 	exports.Ebiruai = Ebiruai;
@@ -1376,6 +1290,7 @@
 	};
 	var canvas_1 = __webpack_require__(10);
 	var BaseMonster_1 = __webpack_require__(15);
+	var ImageLoader_1 = __webpack_require__(148);
 	(function (GozzilaMode) {
 	    GozzilaMode[GozzilaMode["init"] = 0] = "init";
 	    GozzilaMode[GozzilaMode["beforeAtk"] = 1] = "beforeAtk";
@@ -1414,13 +1329,13 @@
 	    Gozzila.prototype.action = function () {
 	        switch (this.mode) {
 	            case GozzilaMode.init:
-	                this.image = canvas_1.MainCanvas.images.gozzila;
+	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzila;
 	                break;
 	            case GozzilaMode.beforeAtk:
-	                this.image = canvas_1.MainCanvas.images.gozzilaBefAtk;
+	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzilaBefAtk;
 	                break;
 	            case GozzilaMode.atk:
-	                this.image = canvas_1.MainCanvas.images.gozzila_atk;
+	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzila_atk;
 	                this.atk();
 	                break;
 	            default:
@@ -1561,21 +1476,21 @@
 	            }, 2000);
 	        }
 	    };
-	    ChatComponent.IS_TABLET = (function (u) {
-	        return (u.indexOf("windows") !== -1 && u.indexOf("touch") !== -1 && u.indexOf("tablet pc") == -1)
-	            || u.indexOf("ipad") !== -1
-	            || (u.indexOf("android") !== -1 && u.indexOf("mobile") === -1)
-	            || (u.indexOf("firefox") !== -1 && u.indexOf("tablet") !== -1)
-	            || u.indexOf("kindle") !== -1
-	            || u.indexOf("silk") !== -1
-	            || u.indexOf("playbook") !== -1
-	            || (u.indexOf("windows") !== -1 && u.indexOf("phone") !== -1)
-	            || u.indexOf("iphone") !== -1
-	            || u.indexOf("ipod") !== -1
-	            || (u.indexOf("android") !== -1 && u.indexOf("mobile") !== -1)
-	            || (u.indexOf("firefox") !== -1 && u.indexOf("mobile") !== -1)
-	            || u.indexOf("blackberry") !== -1;
-	    })(window.navigator.userAgent.toLowerCase());
+	    // private static IS_TABLET = (u => {
+	    // 	return (u.indexOf("windows") !== -1 && u.indexOf("touch") !== -1 && u.indexOf("tablet pc") == -1)
+	    // 		|| u.indexOf("ipad") !== -1
+	    // 		|| (u.indexOf("android") !== -1 && u.indexOf("mobile") === -1)
+	    // 		|| (u.indexOf("firefox") !== -1 && u.indexOf("tablet") !== -1)
+	    // 		|| u.indexOf("kindle") !== -1
+	    // 		|| u.indexOf("silk") !== -1
+	    // 		|| u.indexOf("playbook") !== -1
+	    // 		|| (u.indexOf("windows") !== -1 && u.indexOf("phone") !== -1)
+	    // 		|| u.indexOf("iphone") !== -1
+	    // 		|| u.indexOf("ipod") !== -1
+	    // 		|| (u.indexOf("android") !== -1 && u.indexOf("mobile") !== -1)
+	    // 		|| (u.indexOf("firefox") !== -1 && u.indexOf("mobile") !== -1)
+	    // 		|| u.indexOf("blackberry") !== -1;
+	    // })(window.navigator.userAgent.toLowerCase());
 	    ChatComponent.MAX_LINE = 7;
 	    ChatComponent.logsTmpl = Handlebars.compile("\n\t\t{{#logs}}\n\t\t\t<li class=\"chat-log\">{{msg}}</li>\n\t\t{{/logs}}\n\t");
 	    return ChatComponent;
@@ -4479,6 +4394,182 @@
 	    return StatusBar;
 	}());
 	exports.StatusBar = StatusBar;
+
+
+/***/ },
+/* 148 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var ImageLoader = (function () {
+	    function ImageLoader() {
+	    }
+	    ImageLoader.load = function () {
+	        //こっちは非同期で
+	        this.animeImageLoad();
+	        return this.commonImageLoad();
+	    };
+	    ImageLoader.animeImageLoad = function () {
+	        var hoge = ImageLoader.AnimationPath[0];
+	        return Promise.all(Array.from(new Array(hoge.length)).map(function (val, i) {
+	            return new Promise(function (reslve) {
+	                return ImageLoader.imageLoad("" + ImageLoader.PREFIX_PATH + hoge.baseName + i + ".png", reslve);
+	            });
+	        })).then(function (imageElms) {
+	            ImageLoader.ANIME_IMAGE = {
+	                lvup: imageElms
+	            };
+	        });
+	    };
+	    ImageLoader.commonImageLoad = function () {
+	        return Promise.all(ImageLoader.IMAGE_PATHS.map(function (src) {
+	            return new Promise(function (reslve) {
+	                return ImageLoader.imageLoad("" + ImageLoader.PREFIX_PATH + src, reslve);
+	            });
+	        })).then(function (imageElms) {
+	            ImageLoader.IMAGES = {
+	                evilHidari: imageElms[0],
+	                evilmigi: imageElms[1],
+	                densya: imageElms[2],
+	                bakuhatu: imageElms[3],
+	                gozzila: imageElms[4],
+	                gozzila_atk: imageElms[5],
+	                evilSinda: imageElms[6],
+	                gozzilaBefAtk: imageElms[7],
+	            };
+	        });
+	    };
+	    ImageLoader.imageLoad = function (path, resolve) {
+	        var image = new Image();
+	        image.addEventListener("load", function () { return resolve(image); });
+	        image.src = path;
+	    };
+	    ImageLoader.PREFIX_PATH = "./assets/";
+	    ImageLoader.IMAGE_PATHS = [
+	        "ebiruai.png",
+	        "ebiruai_.png",
+	        "densya.png",
+	        "bakuhatu.png",
+	        "gozzila.png",
+	        "gozzila_attack.png",
+	        "evil_sinda.png",
+	        "gozzila_bef_atk.png",
+	    ];
+	    ImageLoader.AnimationPath = [
+	        { baseName: "lvup/LevelUp.", length: 21 }
+	    ];
+	    return ImageLoader;
+	}());
+	exports.ImageLoader = ImageLoader;
+
+
+/***/ },
+/* 149 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/** ボタンやキーを設定 */
+	var Keyset = (function () {
+	    function Keyset() {
+	    }
+	    /** ボタンやキーを設定 */
+	    Keyset.keyset = function () {
+	        document.querySelector("#canvas").addEventListener("click", function () {
+	            Keyset.KeyEvent.atk = true;
+	        });
+	        Keyset.KEYSET.forEach(function (keyset) {
+	            window.addEventListener("keydown", function (e) {
+	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
+	                    Keyset.KeyEvent[keyset.eventName] = true;
+	                    if (e.keyCode === 32 && document.activeElement === document.body) {
+	                        e.preventDefault();
+	                    }
+	                }
+	            });
+	            window.addEventListener("keyup", function (e) {
+	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
+	                    Keyset.KeyEvent[keyset.eventName] = false;
+	                }
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("mousedown", function () {
+	                Keyset.KeyEvent[keyset.eventName] = true;
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("touchstart", function (e) {
+	                Keyset.KeyEvent[keyset.eventName] = true;
+	                var elem = e.target;
+	                elem.className = elem.className + " hover";
+	                e.preventDefault();
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("mouseup", function () {
+	                Keyset.KeyEvent[keyset.eventName] = false;
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("touchend", function (e) {
+	                Keyset.KeyEvent[keyset.eventName] = false;
+	                var elem = e.target;
+	                elem.className = elem.className.replace(" hover", "");
+	                e.preventDefault();
+	            });
+	        });
+	    };
+	    Keyset.KeyEvent = {
+	        // ue: false,
+	        migi: false,
+	        // sita: false,
+	        hidari: false,
+	        jump: false,
+	        atk: false
+	    };
+	    Keyset.KEYSET = [
+	        // {keycode: [87, 38], eventName: "ue"},
+	        { keycode: [68, 39], eventName: "migi" },
+	        // {keycode: [83, 40], eventName: "sita"},
+	        { keycode: [65, 37], eventName: "hidari" },
+	        { keycode: [32, 87, 67], eventName: "jump" },
+	        { keycode: [88], eventName: "atk" }
+	    ];
+	    return Keyset;
+	}());
+	exports.Keyset = Keyset;
+
+
+/***/ },
+/* 150 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(151);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(7)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./main.scss", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./main.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 151 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(6)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "@charset \"UTF-8\";\n.key-pad {\n  width: 100%;\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 140px; }\n  .key-pad button {\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n    margin-top: 40px;\n    border: none;\n    cursor: pointer; }\n  .key-pad .func-button {\n    height: 46px;\n    margin-left: 30px;\n    line-height: 46px;\n    font-size: 16px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    padding: 0 20px;\n    font-weight: 500;\n    color: #00897b; }\n    .key-pad .func-button:hover, .key-pad .func-button.hover {\n      background-color: #e0e0e0; }\n\n.pad {\n  margin-left: 18px;\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  background-color: #fdfdfd;\n  color: rgba(2, 33, 2, 0.68);\n  height: 120px;\n  margin-top: 6px;\n  border-radius: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.chat-area {\n  font-family: sans-serif;\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody, button {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA'; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(146) + "); }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0;\n  padding: 0; }\n\n.canvas-wrapper {\n  background-color: #f9f9f9;\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative;\n  border-radius: 10px; }\n\n.footer {\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
+	
+	// exports
 
 
 /***/ }

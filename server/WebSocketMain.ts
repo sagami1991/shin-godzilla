@@ -19,6 +19,10 @@ enum GozzilaMode {
 	atk,
 	dead
 }
+interface GameData {
+	gozzila: GozzilaInfo,
+	evils: Zahyou[];
+}
 interface ChatLog {
 	msg: string;
 	date: string;
@@ -55,7 +59,7 @@ export class MainWebSocket {
 	private wss: WebSocket.Server;
 	private collection: Collection;
 	private evils: Zahyou[] = [];
-	private befSendData: Zahyou[] = [];
+	private befSendData: GameData;
 	private gozzila: GozzilaInfo;
 	constructor(wss: WebSocket.Server, db: Db) {
 		this.wss = wss;
@@ -90,7 +94,8 @@ export class MainWebSocket {
 		}, 10 * 1000);
 
 		this.wss.on('connection', (ws) => {
-			ws.send(JSON.stringify({type: WSResType.personId, value: this.getPersonId(ws)}));
+			// ws.upgradeReq.rawHeaders;
+			ws.send(JSON.stringify({type: WSResType.personId, value: this.getSercretKey(ws)}));
 			this.sendInitLog(ws);
 			this.sendAll({
 				myWs: ws,
@@ -156,11 +161,12 @@ export class MainWebSocket {
 		}
 		this.befSendData = JSON.parse(JSON.stringify(sendData));
 	}
-	private getPersonId(ws: WebSocket) {
+	// TODO このキー普通にデータにのせて大丈夫か
+	private getSercretKey(ws: WebSocket) {
 		return ws.upgradeReq.headers["sec-websocket-key"];
 	}
 	private onClose(closeWs: WebSocket) {
-		const targetIdx = this.evils.findIndex(zahyou => zahyou.personId === this.getPersonId(closeWs));
+		const targetIdx = this.evils.findIndex(zahyou => zahyou.personId === this.getSercretKey(closeWs));
 		this.evils.splice(targetIdx, 1);
 	}
 
@@ -222,30 +228,31 @@ export class MainWebSocket {
 	}
 	private accessCountPer10Sec: any = {};
 	private receiveGozzilaDamege(ws: WebSocket) {
-		const personId = this.getPersonId(ws)
-		if (this.accessCountPer10Sec[personId]) {
-			this.accessCountPer10Sec[personId] ++;
+		const skey = this.getSercretKey(ws);
+		if (this.accessCountPer10Sec[skey]) {
+			this.accessCountPer10Sec[skey] ++;
 		} else {
-			this.accessCountPer10Sec[personId] = 1;
+			this.accessCountPer10Sec[skey] = 1;
 		}
-		if (this.accessCountPer10Sec[personId] > 100) {
+		if (this.accessCountPer10Sec[skey] > 100) {
 			ws.close();
 		}
 		this.gozzila.hp -= 2;
 	}
+
 	private receiveZahyou(nowWs: WebSocket, resData: ResData) {
-		const evilInfo = this.evils.find(zahyou => zahyou.personId === this.getPersonId(nowWs));
+		const evilInfo = this.evils.find(zahyou => zahyou.personId === this.getSercretKey(nowWs));
 		if (evilInfo) {
 			Object.assign(evilInfo, resData.value);
 		} else {
-			this.evils.push(Object.assign({personId: this.getPersonId(nowWs)}, resData.value));
+			this.evils.push(Object.assign({personId: this.getSercretKey(nowWs)}, resData.value));
 		}
 	}
 
 	private receiveMsg(nowWs: WebSocket, resData: ResData) {
 		const log = {
 			msg: resData.value,
-			personId: this.getPersonId(nowWs),
+			personId: this.getSercretKey(nowWs),
 			//date: dateFormat(new Date(), "m/dd HH:MM")
 		};
 		try {
@@ -277,7 +284,7 @@ export class MainWebSocket {
 				for (let num of [evilInfo.lv, evilInfo.x, evilInfo.y, evilInfo.maxExp]){
 					if (typeof num !== "number") return false;
 				}
-				if (evilInfo.y < 140 ||  400 < evilInfo.y ) return false;
+				if (evilInfo.y < 140 ||  300 < evilInfo.y ) return false;
 
 				// バグの原因
 				if (evilInfo.maxExp !== Math.floor(50 * Math.pow(1.2, evilInfo.lv - 1))) {

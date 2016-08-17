@@ -4,7 +4,7 @@ var express = require('express');
 var ws_1 = require('ws');
 var mongodb_1 = require('mongodb');
 var WebSocketMain_1 = require("./WebSocketMain");
-var ranking_1 = require("./ranking");
+var UserController_1 = require("./UserController");
 /** DBに接続 */
 function connectDB() {
     return new Promise(function (resolve) {
@@ -29,7 +29,7 @@ connectDB().then(function (db) {
     var app = express();
     app.use(express.static(__dirname + '/../dist'));
     new WebSocketMain_1.MainWebSocket(new ws_1.Server({ server: server }), db).init();
-    new ranking_1.Ranking(db.collection("ranking"), app).init();
+    new UserController_1.UserController(app, db.collection("users")).init();
     server.on('request', app);
     server.listen(process.env.PORT || 3000, function () {
         console.log('Server listening on port %s', server.address().port);

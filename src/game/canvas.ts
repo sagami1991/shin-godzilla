@@ -2,6 +2,8 @@ import {WSService, WSDataType} from "../WebSocketService";
 import {SimpleEvil} from "./evil";
 import {Ebiruai} from "./myEvil";
 import {Gozzila} from "./gozzila";
+import {ImageLoader} from "./ImageLoader";
+import {Keyset} from "./keyset";
 
 /** TODO いい加減送信用インターフェースに分ける */
 export interface Zahyou {
@@ -45,25 +47,6 @@ export class MainCanvas {
 	private otherPersonEvils: SimpleEvil[] = [];
 	private receiveMyEvilInfo: Zahyou;
 	private befSendData: Zahyou;
-	public static KeyEvent = {
-		ue: false,
-		migi: false,
-		sita: false,
-		hidari: false,
-		jump: false,
-		atk: false
-	};
-	public static images: {
-		densya?: HTMLImageElement,
-		bakuhatu?: HTMLImageElement,
-		evilmigi?: HTMLImageElement,
-		evilHidari?: HTMLImageElement,
-		gozzila?: HTMLImageElement,
-		gozzila_atk?: HTMLImageElement,
-		evilSinda?: HTMLImageElement
-		gozzilaBefAtk?: HTMLImageElement
-		lvup?: HTMLImageElement[];
-	} = {};
 
 	constructor(ws: WSService) {
 		this.ws = ws;
@@ -73,17 +56,17 @@ export class MainCanvas {
 		this.canvasElm.width = MainCanvas.WIDTH;
 		this.canvasElm.height = MainCanvas.HEIGHT;
 		this.ctx = this.canvasElm.getContext('2d');
-		this.keyset();
+		Keyset.keyset();
 		this.ws.addOnReceiveMsgListener((type) => {
 			if (type === WSDataType.personId) {
-				this.loadImage().then(() => this.onImageLoaded());
+				ImageLoader.load().then(() => this.onImageLoaded());
 			}
 		});
 	}
 
 	private onImageLoaded() {
 		this.gozzila = new Gozzila(this.ctx, {
-			image: MainCanvas.images.gozzila,
+			image: ImageLoader.IMAGES.gozzila,
 			x: 550,
 			y: MainCanvas.Y0,
 			isMigiMuki: false,
@@ -91,7 +74,7 @@ export class MainCanvas {
 		});
 		MainCanvas.GOZZILA = this.gozzila;
 		this.myEvil = new Ebiruai(this.ctx, {
-			image: MainCanvas.images.evilHidari,
+			image: ImageLoader.IMAGES.evilHidari,
 			x: Math.round(Math.random() * 500),
 			y: MainCanvas.Y0,
 			isMigiMuki: true,
@@ -172,81 +155,4 @@ export class MainCanvas {
 		{keycode: [32, 87, 67], eventName: "jump"},
 		{keycode: [88], eventName: "atk"}
 	];
-
-	/** ボタンやキーを設定 */
-	private keyset() {
-		this.canvasElm.addEventListener("click", () => {
-			MainCanvas.KeyEvent.atk = true;
-		});
-		MainCanvas.KEYSET.forEach((keyset) => {
-			window.addEventListener("keydown", e => {
-				if (keyset.keycode.find(keycode => e.keyCode === keycode)) {
-					(<any>MainCanvas.KeyEvent)[keyset.eventName] = true;
-					if (e.keyCode === 32 && document.activeElement === document.body) {
-						e.preventDefault();
-					}
-				}
-			});
-			window.addEventListener("keyup", e => {
-				if (keyset.keycode.find(keycode => e.keyCode === keycode)) {
-					(<any>MainCanvas.KeyEvent)[keyset.eventName] = false;
-				}
-			});
-
-			document.querySelector(`.${keyset.eventName}`).addEventListener("mousedown", () => {
-				(<any>MainCanvas.KeyEvent)[keyset.eventName] = true;
-			});
-
-			document.querySelector(`.${keyset.eventName}`).addEventListener("touchstart", e => {
-				(<any>MainCanvas.KeyEvent)[keyset.eventName] = true;
-				const elem = (<HTMLElement> e.target);
-				elem.className = elem.className + " hover";
-				e.preventDefault();
-			});
-
-			document.querySelector(`.${keyset.eventName}`).addEventListener("mouseup", () => {
-				(<any>MainCanvas.KeyEvent)[keyset.eventName] = false;
-			});
-			document.querySelector(`.${keyset.eventName}`).addEventListener("touchend", e => {
-				(<any>MainCanvas.KeyEvent)[keyset.eventName] = false;
-				const elem = (<HTMLElement> e.target);
-				elem.className = elem.className.replace(" hover", "");
-				e.preventDefault();
-			});
-		});
-
-	}
-
-	/** 画像を読み込む */
-	private loadImage(): Promise<void> {
-		const images = [
-			"./assets/ebiruai.png",
-			"./assets/ebiruai_.png",
-			"./assets/densya.png",
-			"./assets/bakuhatu.png",
-			"./assets/gozzila.png",
-			"./assets/gozzila_attack.png",
-			"./assets/evil_sinda.png",
-			"./assets/gozzila_bef_atk.png",
-		];
-
-		return Promise.all(images.map((src) => {
-			return new Promise<HTMLImageElement>(reslve => {
-				const image = new Image();
-				image.addEventListener("load", () => {
-					reslve(image);
-				});
-				image.src = src;
-			});
-		})).then((imageElms) => {
-			MainCanvas.images.evilHidari = imageElms[0];
-			MainCanvas.images.evilmigi = imageElms[1];
-			MainCanvas.images.densya = imageElms[2];
-			MainCanvas.images.bakuhatu = imageElms[3];
-			MainCanvas.images.gozzila = imageElms[4];
-			MainCanvas.images.gozzila_atk = imageElms[5];
-			MainCanvas.images.evilSinda = imageElms[6];
-			MainCanvas.images.gozzilaBefAtk = imageElms[7];
-		});
-	}
 }

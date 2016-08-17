@@ -6,7 +6,7 @@
   "scripts": {
     "build:client": "webpack --progress --colors --watch --config ./webpack.config.dev.js",
     "build:server": "gulp",
-    "server": "lite-server"
+    "localserver": "set MONGODB_URI=mongodb://localhost:27017 && node server/server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,9 +16,9 @@
     "dateformat": "^1.0.12",
     "express": "^4.14.0",
     "handlebars": "^4.0.5",
-    "http": "0.0.0",
     "humane-js": "^3.2.2",
     "mongodb": "^2.2.5",
+    "shortid": "^2.2.6",
     "ws": "^1.1.1"
   },
   "devDependencies": {

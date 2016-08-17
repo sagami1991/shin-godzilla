@@ -3,7 +3,7 @@ import * as express from 'express';
 import {Server as WebSocketServer} from 'ws';
 import {MongoClient, Db} from 'mongodb';
 import {MainWebSocket} from "./WebSocketMain";
-import {Ranking} from "./ranking";
+import {UserController} from "./UserController";
 
 /** DBに接続 */
 function connectDB(): Promise<Db> {
@@ -28,7 +28,7 @@ connectDB().then((db) => {
 	const app = express();
 	app.use(express.static(__dirname + '/../dist'));
 	new MainWebSocket(new WebSocketServer({ server: server }), db).init();
-	new Ranking(db.collection("ranking"), app).init();
+	new UserController(app, db.collection("users")).init();
 	server.on('request', app);
 	server.listen(process.env.PORT || 3000, () => {
 		console.log('Server listening on port %s', server.address().port);

@@ -1,5 +1,7 @@
 import {MainCanvas, Zahyou} from "./canvas";
 import {BaseMonster} from "./BaseMonster";
+import {ImageLoader} from "./ImageLoader";
+
 export enum GozzilaMode {
 	init,
 	beforeAtk,
@@ -60,13 +62,13 @@ export class Gozzila extends BaseMonster {
 	private action() {
 		switch (this.mode) {
 		case GozzilaMode.init:
-			this.image = MainCanvas.images.gozzila;
+			this.image = ImageLoader.IMAGES.gozzila;
 			break;
 		case GozzilaMode.beforeAtk:
-			this.image = MainCanvas.images.gozzilaBefAtk;
+			this.image = ImageLoader.IMAGES.gozzilaBefAtk;
 			break;
 		case GozzilaMode.atk:
-			this.image = MainCanvas.images.gozzila_atk;
+			this.image = ImageLoader.IMAGES.gozzila_atk;
 			this.atk();
 			break;
 		default:

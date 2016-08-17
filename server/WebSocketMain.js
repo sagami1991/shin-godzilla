@@ -21,7 +21,6 @@ var GozzilaMode;
 var MainWebSocket = (function () {
     function MainWebSocket(wss, db) {
         this.evils = [];
-        this.befSendData = [];
         this.intervalCount = 0;
         this.accessCountPer10Sec = {};
         this.wss = wss;
@@ -47,7 +46,8 @@ var MainWebSocket = (function () {
             _this.accessCountPer10Sec = {};
         }, 10 * 1000);
         this.wss.on('connection', function (ws) {
-            ws.send(JSON.stringify({ type: WSResType.personId, value: _this.getPersonId(ws) }));
+            // ws.upgradeReq.rawHeaders;
+            ws.send(JSON.stringify({ type: WSResType.personId, value: _this.getSercretKey(ws) }));
             _this.sendInitLog(ws);
             _this.sendAll({
                 myWs: ws,
@@ -111,12 +111,13 @@ var MainWebSocket = (function () {
         }
         this.befSendData = JSON.parse(JSON.stringify(sendData));
     };
-    MainWebSocket.prototype.getPersonId = function (ws) {
+    // TODO このキー普通にデータにのせて大丈夫か
+    MainWebSocket.prototype.getSercretKey = function (ws) {
         return ws.upgradeReq.headers["sec-websocket-key"];
     };
     MainWebSocket.prototype.onClose = function (closeWs) {
         var _this = this;
-        var targetIdx = this.evils.findIndex(function (zahyou) { return zahyou.personId === _this.getPersonId(closeWs); });
+        var targetIdx = this.evils.findIndex(function (zahyou) { return zahyou.personId === _this.getSercretKey(closeWs); });
         this.evils.splice(targetIdx, 1);
     };
     /** 全員に送る */
@@ -181,32 +182,32 @@ var MainWebSocket = (function () {
         }
     };
     MainWebSocket.prototype.receiveGozzilaDamege = function (ws) {
-        var personId = this.getPersonId(ws);
-        if (this.accessCountPer10Sec[personId]) {
-            this.accessCountPer10Sec[personId]++;
+        var skey = this.getSercretKey(ws);
+        if (this.accessCountPer10Sec[skey]) {
+            this.accessCountPer10Sec[skey]++;
         }
         else {
-            this.accessCountPer10Sec[personId] = 1;
+            this.accessCountPer10Sec[skey] = 1;
         }
-        if (this.accessCountPer10Sec[personId] > 100) {
+        if (this.accessCountPer10Sec[skey] > 100) {
             ws.close();
         }
         this.gozzila.hp -= 2;
     };
     MainWebSocket.prototype.receiveZahyou = function (nowWs, resData) {
         var _this = this;
-        var evilInfo = this.evils.find(function (zahyou) { return zahyou.personId === _this.getPersonId(nowWs); });
+        var evilInfo = this.evils.find(function (zahyou) { return zahyou.personId === _this.getSercretKey(nowWs); });
         if (evilInfo) {
             Object.assign(evilInfo, resData.value);
         }
         else {
-            this.evils.push(Object.assign({ personId: this.getPersonId(nowWs) }, resData.value));
+            this.evils.push(Object.assign({ personId: this.getSercretKey(nowWs) }, resData.value));
         }
     };
     MainWebSocket.prototype.receiveMsg = function (nowWs, resData) {
         var log = {
             msg: resData.value,
-            personId: this.getPersonId(nowWs),
+            personId: this.getSercretKey(nowWs),
         };
         try {
             this.collection.insert(log);
@@ -236,7 +237,7 @@ var MainWebSocket = (function () {
                     if (typeof num !== "number")
                         return false;
                 }
-                if (evilInfo.y < 140 || 400 < evilInfo.y)
+                if (evilInfo.y < 140 || 300 < evilInfo.y)
                     return false;
                 // バグの原因
                 if (evilInfo.maxExp !== Math.floor(50 * Math.pow(1.2, evilInfo.lv - 1))) {

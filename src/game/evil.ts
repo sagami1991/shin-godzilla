@@ -1,6 +1,7 @@
 import {MainCanvas, Zahyou} from "./canvas";
 import {Train} from "./train";
 import {BaseMonster} from "./BaseMonster";
+import {ImageLoader} from "./ImageLoader";
 
 /** 人間が操作する機能の入っていないエビルアイ */
 export class SimpleEvil extends BaseMonster {
@@ -19,9 +20,9 @@ export class SimpleEvil extends BaseMonster {
 	}
 	public draw() {
 		this.action();
-		this.image = this.isDead ? 		MainCanvas.images.evilSinda :
-					 this.isMigiMuki ? 	MainCanvas.images.evilmigi :
-										MainCanvas.images.evilHidari;
+		this.image = this.isDead ? 		ImageLoader.IMAGES.evilSinda :
+					 this.isMigiMuki ? 	ImageLoader.IMAGES.evilmigi :
+										ImageLoader.IMAGES.evilHidari;
 		this.ctx.drawImage(this.image , this.x, MainCanvas.convY(this.y, SimpleEvil.HEIGHT));
 		this.trainDraw();
 		this.lvDraw();
@@ -43,7 +44,7 @@ export class SimpleEvil extends BaseMonster {
 	protected atk() {
 		this.isAtk = false;
 		const train = new Train(this.ctx, {
-			image: MainCanvas.images.densya,
+			image: ImageLoader.IMAGES.densya,
 			x: this.x,
 			y: this.y,
 			isMigiMuki: this.isMigiMuki,
