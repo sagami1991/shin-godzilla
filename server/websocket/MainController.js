@@ -66,7 +66,7 @@ var MainController = (function () {
         if (flags.binary)
             return;
         var reqData = JSON.parse(data);
-        this.onMsgListners.forEach(function (msgLister) { reqData.type === msgLister.type ? msgLister.cb(ws, reqData) : null; });
+        this.onMsgListners.forEach(function (msgLister) { reqData.type === msgLister.type ? msgLister.cb(ws, reqData.value) : null; });
     };
     MainController.prototype.validateReqData = function (data, isBinary) {
         if (!isBinary) {

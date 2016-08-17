@@ -12,9 +12,9 @@ export class ChatController {
 		this.main.addMsgListner(SocketType.chatLog, (ws, reqData) => this.onReceiveMsg(ws, reqData));
 	}
 
-	private onReceiveMsg(ws: WebSocket, reqData: ReqData) {
+	private onReceiveMsg(ws: WebSocket, reqData: String) {
 		const chatMsg = {
-			msg: reqData.value,
+			msg: reqData,
 		};
 		try {
 			this.collection.insert(chatMsg);

@@ -33,8 +33,8 @@ export class ChatComponent {
 				this.inputElem.focus();
 			}
 		});
-		this.wsService.addOnReceiveMsgListener(SocketType.chatLog, (value) => this.onReceiveInitLog(value));
-		this.wsService.addOnReceiveMsgListener(SocketType.initlog, (value) => this.onReceiveMsg(value));
+		this.wsService.addOnReceiveMsgListener(SocketType.initlog, (value) => this.onReceiveInitLog(value));
+		this.wsService.addOnReceiveMsgListener(SocketType.chatLog, (value) => this.onReceiveMsg(value));
 		this.wsService.addOnOpenListener(() => this.onOpen());
 		this.wsService.addOnCloseListener(() => this.onClose());
 	}
@@ -44,8 +44,8 @@ export class ChatComponent {
 		if (this.logs.length > ChatComponent.MAX_LINE) this.logs.shift();
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
 	}
-	private onReceiveInitLog(value: any) {
-		this.logs = <ChatLog[]> value;
+	private onReceiveInitLog(logs: ChatLog[]) {
+		this.logs = logs;
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
 	}
 

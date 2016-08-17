@@ -12,7 +12,7 @@ var ChatController = (function () {
     };
     ChatController.prototype.onReceiveMsg = function (ws, reqData) {
         var chatMsg = {
-            msg: reqData.value,
+            msg: reqData,
         };
         try {
             this.collection.insert(chatMsg);

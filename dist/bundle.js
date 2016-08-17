@@ -746,17 +746,17 @@
 	    };
 	    MainCanvas.prototype.init = function () {
 	        var _this = this;
-	        ImageLoader_1.ImageLoader.load().then(function () {
-	            _this.canvasElm = document.querySelector("#canvas");
-	            _this.canvasElm.width = MainCanvas.WIDTH;
-	            _this.canvasElm.height = MainCanvas.HEIGHT;
-	            _this.ctx = _this.canvasElm.getContext('2d');
-	            keyset_1.Keyset.setKeyAndButton();
-	            _this.ws.addOnReceiveMsgListener(share_1.SocketType.init, function (resData) { return _this.onReceiveInitData(resData); });
-	            _this.ws.addOnOpenListener(function () {
+	        this.ws.addOnReceiveMsgListener(share_1.SocketType.init, function (resData) { return _this.onReceiveInitData(resData); });
+	        this.ws.addOnOpenListener(function () {
+	            ImageLoader_1.ImageLoader.load().then(function () {
 	                _this.ws.send(share_1.SocketType.init, { _id: localStorage.getItem("dbId") });
 	            });
 	        });
+	        this.canvasElm = document.querySelector("#canvas");
+	        this.canvasElm.width = MainCanvas.WIDTH;
+	        this.canvasElm.height = MainCanvas.HEIGHT;
+	        this.ctx = this.canvasElm.getContext('2d');
+	        keyset_1.Keyset.setKeyAndButton();
 	    };
 	    MainCanvas.prototype.onReceiveInitData = function (resData) {
 	        var _this = this;
@@ -768,7 +768,7 @@
 	            isMigiMuki: false
 	        });
 	        MainCanvas.GOZZILA = this.gozzila;
-	        this.myEvil = new myEvil_1.Ebiruai(this.ctx, {
+	        this.myEvil = new myEvil_1.Ebiruai(this.ctx, this.ws, {
 	            image: ImageLoader_1.ImageLoader.IMAGES.evilHidari,
 	            x: Math.round(Math.random() * 500),
 	            y: MainCanvas.Y0,
@@ -867,6 +867,7 @@
 	    __extends(SimpleEvil, _super);
 	    function SimpleEvil(ctx, option) {
 	        _super.call(this, ctx, option);
+	        this.ctx = ctx;
 	        this.myTrains = [];
 	        this.lv = option.lv;
 	        this.isDead = option.isDead;
@@ -991,8 +992,8 @@
 	/** ゴジラやエビルアイ、電車などの基底クラス */
 	var BaseMonster = (function () {
 	    function BaseMonster(ctx, option) {
-	        this.image = option.image;
 	        this.ctx = ctx;
+	        this.image = option.image;
 	        this.x = option.x;
 	        this.y = option.y;
 	        this.isMigiMuki = option.isMigiMuki;
@@ -1084,20 +1085,22 @@
 	var StatusBar_1 = __webpack_require__(17);
 	var keyset_1 = __webpack_require__(18);
 	var main_1 = __webpack_require__(11);
+	var share_1 = __webpack_require__(20);
 	/** 自分が操作する機能をもつエビルアイ */
 	var Ebiruai = (function (_super) {
 	    __extends(Ebiruai, _super);
-	    function Ebiruai(ctx, option) {
+	    function Ebiruai(ctx, ws, option) {
 	        _super.call(this, ctx, option);
+	        this.ctx = ctx;
+	        this.ws = ws;
 	        this.lv = option.lv;
-	        this.exp = 0;
+	        this.exp = option.exp;
+	        this.name = option.name;
 	        this.maxHp = Ebiruai.INIT_MAX_HP;
 	        this.jumpValue = Ebiruai.BASE_JUMP;
 	        this.speed = Ebiruai.BASE_SPEED;
-	        this.maxExp = Ebiruai.INIT_MAX_EXP;
+	        this.maxExp = this.getMaxExp();
 	        this.hp = this.maxHp;
-	        this.name = "名前";
-	        this.loadLocalStrage();
 	        this.gozzila = option.gozzila;
 	        this.initButtons();
 	        this.initStatusBar();
@@ -1122,7 +1125,7 @@
 	        this.statusBar = new StatusBar_1.StatusBar();
 	        this.statusBar.addOnNameEditListner(function (name) {
 	            _this.name = name;
-	            _this.saveLocalStrage();
+	            _this.saveMyData();
 	        });
 	        this.refreshStatusBar();
 	    };
@@ -1147,7 +1150,7 @@
 	                _this.lv = 1;
 	                _this.maxExp = _this.getMaxExp();
 	                _this.exp = 0;
-	                _this.saveLocalStrage();
+	                _this.saveMyData();
 	                _this.refreshStatusBar();
 	            }
 	        });
@@ -1197,7 +1200,7 @@
 	            this.exp = 0;
 	            this.maxExp = this.getMaxExp();
 	            this.refreshStatusBar();
-	            this.saveLocalStrage();
+	            this.saveMyData();
 	        }
 	    };
 	    Ebiruai.prototype.drawRespawnCount = function () {
@@ -1219,7 +1222,7 @@
 	        this.exp -= Math.floor(this.maxExp / 8);
 	        this.exp = this.exp < 0 ? 0 : this.exp;
 	        this.statusBar.setExp(this.exp, this.maxExp);
-	        this.saveLocalStrage();
+	        this.saveMyData();
 	    };
 	    Ebiruai.prototype.drawHp = function () {
 	        this.ctx.fillStyle = "#000";
@@ -1230,28 +1233,15 @@
 	        this.ctx.fillRect(this.x + 10 + 1, main_1.MainCanvas.convY(this.y + evil_1.SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp, 8);
 	    };
 	    Ebiruai.prototype.getMaxExp = function () {
-	        return Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
+	        return Math.floor(Ebiruai.INIT_MAX_EXP * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
 	    };
-	    /** TODO DBに変える */
-	    Ebiruai.prototype.saveLocalStrage = function () {
-	        var saveData = {
-	            date: new Date(),
+	    Ebiruai.prototype.saveMyData = function () {
+	        this.ws.send(share_1.SocketType.save, {
+	            _id: localStorage.getItem("dbId"),
+	            name: this.name,
 	            lv: this.lv,
-	            exp: this.exp,
-	            maxHp: this.maxHp,
-	            name: this.name
-	        };
-	        localStorage.setItem("saveDataVer0.0", JSON.stringify(saveData));
-	    };
-	    Ebiruai.prototype.loadLocalStrage = function () {
-	        var loadData = JSON.parse(localStorage.getItem("saveDataVer0.0"));
-	        if (loadData) {
-	            this.lv = loadData.lv ? loadData.lv : 1;
-	            this.maxExp = this.getMaxExp();
-	            this.exp = loadData.exp ? loadData.exp : 0;
-	            this.maxHp = loadData.maxHp ? loadData.maxHp : 100;
-	            this.name = loadData.name ? loadData.name : "名前";
-	        }
+	            exp: this.exp
+	        });
 	    };
 	    Ebiruai.BASE_JUMP = 10;
 	    Ebiruai.BASE_SPEED = 5;
@@ -1518,6 +1508,7 @@
 	    SocketType[SocketType["init"] = 5] = "init";
 	    SocketType[SocketType["closePerson"] = 6] = "closePerson";
 	    SocketType[SocketType["gozzilaDamege"] = 7] = "gozzilaDamege";
+	    SocketType[SocketType["save"] = 8] = "save";
 	})(exports.SocketType || (exports.SocketType = {}));
 	var SocketType = exports.SocketType;
 
@@ -1544,8 +1535,8 @@
 	                _this.inputElem.focus();
 	            }
 	        });
-	        this.wsService.addOnReceiveMsgListener(share_1.SocketType.chatLog, function (value) { return _this.onReceiveInitLog(value); });
-	        this.wsService.addOnReceiveMsgListener(share_1.SocketType.initlog, function (value) { return _this.onReceiveMsg(value); });
+	        this.wsService.addOnReceiveMsgListener(share_1.SocketType.initlog, function (value) { return _this.onReceiveInitLog(value); });
+	        this.wsService.addOnReceiveMsgListener(share_1.SocketType.chatLog, function (value) { return _this.onReceiveMsg(value); });
 	        this.wsService.addOnOpenListener(function () { return _this.onOpen(); });
 	        this.wsService.addOnCloseListener(function () { return _this.onClose(); });
 	    };
@@ -1556,8 +1547,8 @@
 	            this.logs.shift();
 	        this.logElem.innerHTML = ChatComponent.logsTmpl({ logs: this.logs });
 	    };
-	    ChatComponent.prototype.onReceiveInitLog = function (value) {
-	        this.logs = value;
+	    ChatComponent.prototype.onReceiveInitLog = function (logs) {
+	        this.logs = logs;
 	        this.logElem.innerHTML = ChatComponent.logsTmpl({ logs: this.logs });
 	    };
 	    ChatComponent.prototype.onOpen = function () {
@@ -1698,7 +1689,7 @@
 	    };
 	    WSService.prototype.onReceiveMsg = function (msgEvent) {
 	        var resData = JSON.parse(msgEvent.data);
-	        this.onReceiveMsgEvents.forEach(function (msgLister) { resData.type === msgLister.type ? msgLister.cb(resData) : null; });
+	        this.onReceiveMsgEvents.forEach(function (msgLister) { resData.type === msgLister.type ? msgLister.cb(resData.value) : null; });
 	    };
 	    WSService.URL = location.origin.replace(/^http/, 'ws');
 	    return WSService;

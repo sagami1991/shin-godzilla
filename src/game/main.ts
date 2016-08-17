@@ -4,7 +4,7 @@ import {Ebiruai} from "./myEvil";
 import {Gozzila} from "./gozzila";
 import {ImageLoader} from "./ImageLoader";
 import {Keyset} from "./keyset";
-import {SocketType, InitialUserData} from "../../server/share/share";
+import {SocketType, InitialUserData, ReqEvilData} from "../../server/share/share";
 
 /** TODO いい加減送信用インターフェースに分ける */
 export interface Zahyou {
@@ -56,17 +56,17 @@ export class MainCanvas {
 	}
 
 	public init() {
-		ImageLoader.load().then(() => {
-			this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
-			this.canvasElm.width = MainCanvas.WIDTH;
-			this.canvasElm.height = MainCanvas.HEIGHT;
-			this.ctx = this.canvasElm.getContext('2d');
-			Keyset.setKeyAndButton();
-			this.ws.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
-			this.ws.addOnOpenListener(() => {
+		this.ws.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
+		this.ws.addOnOpenListener(() => {
+			ImageLoader.load().then(() => {
 				this.ws.send(SocketType.init, {_id: localStorage.getItem("dbId")});
 			});
 		});
+		this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
+		this.canvasElm.width = MainCanvas.WIDTH;
+		this.canvasElm.height = MainCanvas.HEIGHT;
+		this.ctx = this.canvasElm.getContext('2d');
+		Keyset.setKeyAndButton();
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
@@ -78,7 +78,7 @@ export class MainCanvas {
 			isMigiMuki: false
 		});
 		MainCanvas.GOZZILA = this.gozzila;
-		this.myEvil = new Ebiruai(this.ctx, {
+		this.myEvil = new Ebiruai(this.ctx, this.ws, {
 			image: ImageLoader.IMAGES.evilHidari,
 			x: Math.round(Math.random() * 500),
 			y: MainCanvas.Y0,
@@ -131,7 +131,7 @@ export class MainCanvas {
 		this.ctx.fillText(`接続数:${this.otherPersonEvils.length + 1}`, 736, 18);
 	}
 	private sendServer() {
-		const sendData = {
+		const sendData: ReqEvilData = {
 			isMigiMuki: this.myEvil.isMigiMuki,
 			x: this.myEvil.x,
 			y: this.myEvil.y,

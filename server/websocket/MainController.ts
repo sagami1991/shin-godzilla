@@ -93,7 +93,7 @@ export class MainController {
 		}
 		if (flags.binary) return;
 		const reqData = <ReqData> JSON.parse(data);
-		this.onMsgListners.forEach(msgLister => {reqData.type === msgLister.type ? msgLister.cb(ws, reqData) : null; });
+		this.onMsgListners.forEach(msgLister => {reqData.type === msgLister.type ? msgLister.cb(ws, reqData.value) : null; });
 
 	}
 

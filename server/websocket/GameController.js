@@ -18,37 +18,43 @@ var GameController = (function () {
         this.main.addCloseListner(function (ws) { return _this.deleteClosedEvil(ws); });
         this.main.addMsgListner(share_1.SocketType.init, function (ws, reqData) { return _this.onReceiveUserId(ws, reqData); });
         this.main.addMsgListner(share_1.SocketType.zahyou, function (ws, reqData) { return _this.updateEvils(ws, reqData); });
+        this.main.addMsgListner(share_1.SocketType.save, function (ws, reqData) { return _this.saveUserData(ws, reqData); });
         setInterval(function () { return _this.intervalAction(); }, 1000 / GameController.FRAME);
+    };
+    GameController.prototype.saveUserData = function (ws, reqData) {
+        this.userService.updateUser(reqData);
     };
     GameController.prototype.onReceiveUserId = function (ws, reqData) {
         var _this = this;
         if (!reqData._id) {
-            this.createInitUser(ws);
+            this.sendInitUserData(ws, this.createInitUser());
         }
         else {
             this.userService.getUser(reqData._id).then(function (user) {
-                console.log(user);
                 if (user) {
-                    _this.main.send(ws, share_1.SocketType.init, user);
+                    _this.sendInitUserData(ws, user);
                 }
                 else {
-                    _this.createInitUser(ws);
+                    _this.sendInitUserData(ws, _this.createInitUser());
                 }
             });
         }
     };
-    GameController.prototype.createInitUser = function (ws) {
+    GameController.prototype.createInitUser = function () {
         var initialData = {
             _id: shortid.generate(),
             exp: 0,
             lv: 1,
             name: "名前"
         };
+        this.userService.createUser(initialData);
+        return initialData;
+    };
+    GameController.prototype.sendInitUserData = function (ws, user) {
         this.main.send(ws, share_1.SocketType.init, {
             personId: this.main.getSercretKey(ws),
-            userData: initialData
+            userData: user
         });
-        this.userService.createUser(initialData);
     };
     GameController.prototype.deleteClosedEvil = function (ws) {
         var _this = this;
@@ -76,10 +82,10 @@ var GameController = (function () {
         var _this = this;
         var evilInfo = this.evils.find(function (zahyou) { return zahyou.personId === _this.main.getSercretKey(nowWs); });
         if (evilInfo) {
-            Object.assign(evilInfo, reqData.value);
+            Object.assign(evilInfo, reqData);
         }
         else {
-            this.evils.push(Object.assign({ personId: this.main.getSercretKey(nowWs) }, reqData.value));
+            this.evils.push(Object.assign({ personId: this.main.getSercretKey(nowWs) }, reqData));
         }
     };
     GameController.FRAME = 30;

@@ -3,6 +3,8 @@ import {Gozzila} from "./gozzila";
 import {StatusBar} from "./StatusBar";
 import {Keyset} from "./keyset";
 import {MainCanvas, Zahyou} from "./main";
+import {WSService} from "../WebSocketService";
+import {SocketType, DbUserData} from "../../server/share/share";
 
 interface StrageData {
 	date: Date;
@@ -39,17 +41,18 @@ export class Ebiruai extends SimpleEvil {
 	private exp: number;
 	private name: string;
 
-	constructor(ctx: CanvasRenderingContext2D, option: MyEvilOption) {
+	constructor(protected ctx: CanvasRenderingContext2D,
+				private ws: WSService,
+				option: MyEvilOption) {
 		super(ctx, option);
 		this.lv = option.lv;
-		this.exp = 0;
+		this.exp = option.exp;
+		this.name = option.name;
 		this.maxHp = Ebiruai.INIT_MAX_HP;
 		this.jumpValue = Ebiruai.BASE_JUMP;
 		this.speed = Ebiruai.BASE_SPEED;
-		this.maxExp = Ebiruai.INIT_MAX_EXP;
+		this.maxExp = this.getMaxExp();
 		this.hp = this.maxHp;
-		this.name = "名前";
-		this.loadLocalStrage();
 		this.gozzila = option.gozzila;
 		this.initButtons();
 		this.initStatusBar();
@@ -73,7 +76,7 @@ export class Ebiruai extends SimpleEvil {
 		this.statusBar = new StatusBar();
 		this.statusBar.addOnNameEditListner((name) => {
 			this.name = name;
-			this.saveLocalStrage();
+			this.saveMyData();
 		});
 		this.refreshStatusBar();
 	}
@@ -99,7 +102,7 @@ export class Ebiruai extends SimpleEvil {
 				this.lv = 1;
 				this.maxExp = this.getMaxExp();
 				this.exp = 0;
-				this.saveLocalStrage();
+				this.saveMyData();
 				this.refreshStatusBar();
 			}
 		});
@@ -153,7 +156,7 @@ export class Ebiruai extends SimpleEvil {
 			this.exp = 0;
 			this.maxExp = this.getMaxExp();
 			this.refreshStatusBar();
-			this.saveLocalStrage();
+			this.saveMyData();
 		}
 	}
 
@@ -175,7 +178,7 @@ export class Ebiruai extends SimpleEvil {
 		this.exp -= Math.floor(this.maxExp / 8);
 		this.exp = this.exp < 0 ? 0 : this.exp;
 		this.statusBar.setExp(this.exp, this.maxExp);
-		this.saveLocalStrage();
+		this.saveMyData();
 	}
 
 	private drawHp() {
@@ -187,28 +190,15 @@ export class Ebiruai extends SimpleEvil {
 		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp , 8);
 	}
 	private getMaxExp() {
-		return Math.floor(50 * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
+		return Math.floor(Ebiruai.INIT_MAX_EXP * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
 	}
 
-	/** TODO DBに変える */
-	private saveLocalStrage() {
-		const saveData: StrageData = {
-			date: new Date(),
+	private saveMyData() {
+		this.ws.send(SocketType.save, <DbUserData> {
+			_id: localStorage.getItem("dbId"),
+			name: this.name,
 			lv: this.lv,
-			exp: this.exp,
-			maxHp: this.maxHp,
-			name: this.name
-		};
-		localStorage.setItem("saveDataVer0.0", JSON.stringify(saveData));
-	}
-	private loadLocalStrage() {
-		const loadData = <StrageData> JSON.parse(localStorage.getItem("saveDataVer0.0"));
-		if (loadData) {
-			this.lv = loadData.lv ? loadData.lv : 1;
-			this.maxExp = this.getMaxExp();
-			this.exp = loadData.exp ? loadData.exp : 0;
-			this.maxHp = loadData.maxHp ? loadData.maxHp : 100;
-			this.name = loadData.name ? loadData.name : "名前";
-		}
+			exp: this.exp
+		});
 	}
 }

@@ -10,7 +10,6 @@ export interface BaseMobOption {
 
 /** ゴジラやエビルアイ、電車などの基底クラス */
 export class BaseMonster {
-	protected ctx: CanvasRenderingContext2D;
 	protected image: HTMLImageElement;
 	protected isMy: boolean;
 	public isDead: boolean;
@@ -19,9 +18,8 @@ export class BaseMonster {
 	public maxHp: number;
 	public hp: number;
 	public isMigiMuki: boolean;
-	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {
+	constructor(protected ctx: CanvasRenderingContext2D, option: BaseMobOption) {
 		this.image = option.image;
-		this.ctx = ctx;
 		this.x = option.x;
 		this.y = option.y;
 		this.isMigiMuki = option.isMigiMuki;

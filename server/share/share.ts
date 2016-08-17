@@ -10,6 +10,7 @@ export enum SocketType {
 	init,
 	closePerson,
 	gozzilaDamege,
+	save
 }
 
 export interface InitialUserData {
@@ -23,4 +24,14 @@ export interface DbUserData {
 	name: string;
 	exp: number;
 	date?: Date;
+}
+
+export interface ReqEvilData {
+	isMigiMuki: boolean;
+	x: number;
+	y: number;
+	isAtk: boolean;
+	isDead: boolean;
+	lv: number;
+	maxExp: number;
 }

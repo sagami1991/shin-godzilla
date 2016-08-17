@@ -18,7 +18,7 @@ export class SimpleEvil extends BaseMonster {
 	public isAtk: boolean;
 	protected myTrains: Train[] = [];
 	public lv: number;
-	constructor(ctx: CanvasRenderingContext2D, option: EvilOption) {
+	constructor(protected ctx: CanvasRenderingContext2D, option: EvilOption) {
 		super(ctx, option);
 		this.lv = option.lv;
 		this.isDead = option.isDead;

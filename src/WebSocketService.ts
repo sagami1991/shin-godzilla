@@ -74,6 +74,6 @@ export class WSService {
 
 	private onReceiveMsg(msgEvent: MessageEvent) {
 		const resData = <ResData> JSON.parse(msgEvent.data);
-		this.onReceiveMsgEvents.forEach(msgLister => {resData.type === msgLister.type ? msgLister.cb(resData) : null; });
+		this.onReceiveMsgEvents.forEach(msgLister => {resData.type === msgLister.type ? msgLister.cb(resData.value) : null; });
 	}
 }
