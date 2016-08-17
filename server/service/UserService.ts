@@ -1,21 +1,45 @@
 import {Collection} from 'mongodb';
-import {Express, Request, Response} from 'express';
+
+export interface DbUserData {
+	_id: string;
+	lv: number;
+	name: string;
+	exp: number;
+	date?: Date;
+}
+
 export class UserService {
-	private collection: Collection;
-
-	constructor(collection: Collection) {
-		this.collection = collection;
+	constructor(private collection: Collection) {
 	}
 
-	public init() {
-
+	public getUser(id: string): Promise<DbUserData> {
+		return this.collection.findOne({_id: id});
 	}
 
-	private saveUser() {
-		// this.collection.save({})
+	/** 上位20人を返す */
+	public getRanker(): Promise<DbUserData[]> {
+		return this.collection.find().limit(20).sort({ lv: -1 }).toArray();
 	}
 
-	private getUserAll(req: Request, res: Response) {
+	public createUser(user: DbUserData) {
+		this.collection.insert(this.filterUserData(user));
+	}
 
+	public updateUser(user: DbUserData) {
+		this.collection.update({_id: user._id}, this.filterUserData(user));
+	}
+
+	public deleteUser(id: string) {
+		this.collection.deleteOne({_id: id});
+	}
+
+	private filterUserData(user: DbUserData): DbUserData {
+		return {
+			_id: user._id,
+			lv: user.lv,
+			name: user.name,
+			exp: user.exp,
+			date: new Date()
+		};
 	}
 }

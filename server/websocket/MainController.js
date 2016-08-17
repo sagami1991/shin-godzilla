@@ -41,9 +41,6 @@ var MainController = (function () {
     MainController.prototype.getSercretKey = function (ws) {
         return ws.upgradeReq.headers["sec-websocket-key"];
     };
-    MainController.prototype.onClose = function (closeWs) {
-        this.onCloseListners.forEach(function (cb) { return cb(closeWs); });
-    };
     /** 全員に送る */
     MainController.prototype.sendAll = function (opt) {
         this.wss.clients.forEach(function (ws) {
@@ -60,6 +57,9 @@ var MainController = (function () {
                 console.error(err);
             }
         });
+    };
+    MainController.prototype.onClose = function (closeWs) {
+        this.onCloseListners.forEach(function (cb) { return cb(closeWs); });
     };
     /**
      * でーた受け取り時

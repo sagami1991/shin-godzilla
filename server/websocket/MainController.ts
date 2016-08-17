@@ -34,22 +34,23 @@ interface SendAllOption {
 export class MainController {
 	private wss: WebSocket.Server;
 	private collection: Collection;
+	private onConnectListners: Array<(ws: WebSocket) => void > = [];
+	private onMsgListners: Msglistner[] = [];
+	private onCloseListners: Array<(ws: WebSocket) => void > = [];
 
 	constructor(wss: WebSocket.Server, db: Db) {
 		this.wss = wss;
 		this.collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
 	}
 
-	private onConnectListners: Array<(ws: WebSocket) => void > = [];
-	private onMsgListners: Msglistner[] = [];
-	private onCloseListners: Array<(ws: WebSocket) => void > = [];
-
 	public addConnectListner(cb: (ws: WebSocket) => void) {
 		this.onConnectListners.push(cb);
 	}
+
 	public addMsgListner(msglistner: Msglistner) {
 		this.onMsgListners.push(msglistner);
 	}
+
 	public addCloseListner(cb: (ws: WebSocket) => void) {
 		this.onCloseListners.push(cb);
 	}
@@ -66,9 +67,6 @@ export class MainController {
 	// TODO このキー普通にデータにのせて大丈夫か
 	public getSercretKey(ws: WebSocket) {
 		return ws.upgradeReq.headers["sec-websocket-key"];
-	}
-	private onClose(closeWs: WebSocket) {
-		this.onCloseListners.forEach(cb => cb(closeWs));
 	}
 
 	/** 全員に送る */
@@ -88,6 +86,9 @@ export class MainController {
 		});
 	}
 
+	private onClose(closeWs: WebSocket) {
+		this.onCloseListners.forEach(cb => cb(closeWs));
+	}
 	/**
 	 * でーた受け取り時
 	 */

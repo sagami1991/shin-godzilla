@@ -32,21 +32,22 @@ export class MainCanvas {
 	public static HEIGHT = 500;
 	public static WIDTH = 800;
 	public static Y0 = 150;
+	public static GOZZILA: Gozzila;
 
-	/** 下からのY座標を上からのY座標に変更 */
-	public static convY(y: number, height: number) {
-		return MainCanvas.HEIGHT - y - height;
-	}
 	private ws: WSService;
 	private canvasElm: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
 	private timer: number;
 	private myEvil: Ebiruai;
 	private gozzila: Gozzila;
-	public static GOZZILA: Gozzila;
 	private otherPersonEvils: SimpleEvil[] = [];
 	private receiveMyEvilInfo: Zahyou;
 	private befSendData: Zahyou;
+
+	/** 下からのY座標を上からのY座標に変更 */
+	public static convY(y: number, height: number) {
+		return MainCanvas.HEIGHT - y - height;
+	}
 
 	constructor(ws: WSService) {
 		this.ws = ws;

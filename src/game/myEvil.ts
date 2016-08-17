@@ -49,6 +49,20 @@ export class Ebiruai extends SimpleEvil {
 		this.initStatusBar();
 	}
 
+	/** 毎フレーム実行される動作 */
+	protected action() {
+		this.drawHp();
+		if (this.isDead) {
+			this.drawRespawnCount();
+		} else {
+			this.move();
+			this.jump();
+			this.beforeAtk();
+			this.damegeCalc();
+			if (this.hp <= 0) this.deadOnce();
+		}
+	}
+
 	private initStatusBar() {
 		this.statusBar = new StatusBar();
 		this.statusBar.addOnNameEditListner((name) => {
@@ -57,6 +71,7 @@ export class Ebiruai extends SimpleEvil {
 		});
 		this.refreshStatusBar();
 	}
+
 	private refreshStatusBar() {
 		this.statusBar.setExp(this.exp, this.maxExp);
 		this.statusBar.setLv(this.lv);
@@ -82,20 +97,6 @@ export class Ebiruai extends SimpleEvil {
 				this.refreshStatusBar();
 			}
 		});
-	}
-
-	/** 毎フレーム実行される動作 */
-	protected action() {
-		this.drawHp();
-		if (this.isDead) {
-			this.drawRespawnCount();
-		} else {
-			this.move();
-			this.jump();
-			this.beforeAtk();
-			this.damegeCalc();
-			if (this.hp <= 0) this.deadOnce();
-		}
 	}
 
 	private damegeCalc() {

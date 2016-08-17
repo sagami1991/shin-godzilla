@@ -1107,6 +1107,21 @@
 	        this.initButtons();
 	        this.initStatusBar();
 	    }
+	    /** 毎フレーム実行される動作 */
+	    Ebiruai.prototype.action = function () {
+	        this.drawHp();
+	        if (this.isDead) {
+	            this.drawRespawnCount();
+	        }
+	        else {
+	            this.move();
+	            this.jump();
+	            this.beforeAtk();
+	            this.damegeCalc();
+	            if (this.hp <= 0)
+	                this.deadOnce();
+	        }
+	    };
 	    Ebiruai.prototype.initStatusBar = function () {
 	        var _this = this;
 	        this.statusBar = new StatusBar_1.StatusBar();
@@ -1141,21 +1156,6 @@
 	                _this.refreshStatusBar();
 	            }
 	        });
-	    };
-	    /** 毎フレーム実行される動作 */
-	    Ebiruai.prototype.action = function () {
-	        this.drawHp();
-	        if (this.isDead) {
-	            this.drawRespawnCount();
-	        }
-	        else {
-	            this.move();
-	            this.jump();
-	            this.beforeAtk();
-	            this.damegeCalc();
-	            if (this.hp <= 0)
-	                this.deadOnce();
-	        }
 	    };
 	    Ebiruai.prototype.damegeCalc = function () {
 	        this.hp -= this.gozzila.calcBeamDamege(this.x, this.x + evil_1.SimpleEvil.WIDTH, this.y, this.y + evil_1.SimpleEvil.HEIGHT);

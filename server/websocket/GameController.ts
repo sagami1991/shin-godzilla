@@ -6,13 +6,6 @@ interface GameData {
 	gozzila: GodzillaInfo;
 	evils: Zahyou[];
 }
-export interface DbUserData {
-	_id: string;
-	lv: number;
-	name: string;
-	exp: number;
-	date: Date;
-}
 
 export interface Zahyou {
 	personId: string;

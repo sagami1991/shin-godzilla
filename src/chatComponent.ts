@@ -8,17 +8,17 @@ interface ChatLog {
 }
 export class ChatComponent {
 	private static MAX_LINE = 7;
+	private static logsTmpl = Handlebars.compile(`
+		{{#logs}}
+			<li class="chat-log">{{msg}}</li>
+		{{/logs}}
+	`);
 	private wsService: WSService;
 	private logs: ChatLog[] = [];
 	private logElem: HTMLElement;
 	private inputElem: HTMLTextAreaElement;
 	private sendElem: HTMLElement;
 	private isSended: boolean;
-	private static logsTmpl = Handlebars.compile(`
-		{{#logs}}
-			<li class="chat-log">{{msg}}</li>
-		{{/logs}}
-	`);
 	constructor(wsService: WSService) {
 		this.wsService = wsService;
 	}
