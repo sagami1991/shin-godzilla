@@ -783,7 +783,6 @@
 	            lv: this.myEvil.lv,
 	            maxExp: this.myEvil.maxExp
 	        };
-	        // TODO エラー出てる
 	        if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
 	            !this.receiveMyEvilInfo || this.receiveMyEvilInfo.isDead !== sendData.isDead) {
 	            this.ws.send(WebSocketService_1.WSDataType.zahyou, sendData);
@@ -799,14 +798,6 @@
 	    MainCanvas.HEIGHT = 500;
 	    MainCanvas.WIDTH = 800;
 	    MainCanvas.Y0 = 150;
-	    MainCanvas.KEYSET = [
-	        { keycode: [68, 39], eventName: "migi" },
-	        // {keycode: [87, 38], eventName: "ue"},
-	        // {keycode: [83, 40], eventName: "sita"},
-	        { keycode: [65, 37], eventName: "hidari" },
-	        { keycode: [32, 87, 67], eventName: "jump" },
-	        { keycode: [88], eventName: "atk" }
-	    ];
 	    return MainCanvas;
 	}());
 	exports.MainCanvas = MainCanvas;
@@ -1162,7 +1153,8 @@
 	            this.jump();
 	            this.beforeAtk();
 	            this.damegeCalc();
-	            this.deadOnce();
+	            if (this.hp <= 0)
+	                this.deadOnce();
 	        }
 	    };
 	    Ebiruai.prototype.damegeCalc = function () {
@@ -1223,18 +1215,16 @@
 	    /** 死んだとき一度だけ実行される */
 	    Ebiruai.prototype.deadOnce = function () {
 	        var _this = this;
-	        if (this.hp <= 0) {
-	            this.hp = 0;
-	            this.isDead = true;
-	            this.rebornTimeCount = canvas_1.MainCanvas.FRAME * 8;
-	            setTimeout(function () {
-	                _this.rebirthButton.className = _this.rebirthButton.className.replace(" disabled", "");
-	            }, 8000);
-	            this.exp -= Math.floor(this.maxExp / 8);
-	            this.exp = this.exp < 0 ? 0 : this.exp;
-	            this.statusBar.setExp(this.exp, this.maxExp);
-	            this.saveLocalStrage();
-	        }
+	        this.hp = 0;
+	        this.isDead = true;
+	        this.rebornTimeCount = canvas_1.MainCanvas.FRAME * 8;
+	        setTimeout(function () {
+	            _this.rebirthButton.className = _this.rebirthButton.className.replace(" disabled", "");
+	        }, 8000);
+	        this.exp -= Math.floor(this.maxExp / 8);
+	        this.exp = this.exp < 0 ? 0 : this.exp;
+	        this.statusBar.setExp(this.exp, this.maxExp);
+	        this.saveLocalStrage();
 	    };
 	    Ebiruai.prototype.drawHp = function () {
 	        this.ctx.fillStyle = "#000";
@@ -1421,21 +1411,18 @@
 	            }
 	        });
 	        this.wsService.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveInitLog(type, value); });
-	        this.wsService.addOnReceiveMsgListener(function (type, value) {
-	            if (type !== WebSocketService_1.WSDataType.log)
-	                return;
-	            var log = value;
-	            _this.logs.push(log);
-	            if (_this.logs.length > ChatComponent.MAX_LINE)
-	                _this.logs.shift();
-	            // if (!ChatComponent.IS_TABLET && log.personId !== this.wsService.personId) {
-	            // 	Notification.requestPermission();
-	            // 	new Notification("", {body: log.msg});
-	            // }
-	            _this.logElem.innerHTML = ChatComponent.logsTmpl({ logs: _this.logs });
-	        });
+	        this.wsService.addOnReceiveMsgListener(function (type, value) { return _this.onReceiveMsg(type, value); });
 	        this.wsService.addOnOpenListener(function () { return _this.onOpen(); });
 	        this.wsService.addOnCloseListener(function () { return _this.onClose(); });
+	    };
+	    ChatComponent.prototype.onReceiveMsg = function (type, value) {
+	        if (type !== WebSocketService_1.WSDataType.log)
+	            return;
+	        var log = value;
+	        this.logs.push(log);
+	        if (this.logs.length > ChatComponent.MAX_LINE)
+	            this.logs.shift();
+	        this.logElem.innerHTML = ChatComponent.logsTmpl({ logs: this.logs });
 	    };
 	    ChatComponent.prototype.onReceiveInitLog = function (type, value) {
 	        if (type !== WebSocketService_1.WSDataType.initlog)
@@ -1476,21 +1463,6 @@
 	            }, 2000);
 	        }
 	    };
-	    // private static IS_TABLET = (u => {
-	    // 	return (u.indexOf("windows") !== -1 && u.indexOf("touch") !== -1 && u.indexOf("tablet pc") == -1)
-	    // 		|| u.indexOf("ipad") !== -1
-	    // 		|| (u.indexOf("android") !== -1 && u.indexOf("mobile") === -1)
-	    // 		|| (u.indexOf("firefox") !== -1 && u.indexOf("tablet") !== -1)
-	    // 		|| u.indexOf("kindle") !== -1
-	    // 		|| u.indexOf("silk") !== -1
-	    // 		|| u.indexOf("playbook") !== -1
-	    // 		|| (u.indexOf("windows") !== -1 && u.indexOf("phone") !== -1)
-	    // 		|| u.indexOf("iphone") !== -1
-	    // 		|| u.indexOf("ipod") !== -1
-	    // 		|| (u.indexOf("android") !== -1 && u.indexOf("mobile") !== -1)
-	    // 		|| (u.indexOf("firefox") !== -1 && u.indexOf("mobile") !== -1)
-	    // 		|| u.indexOf("blackberry") !== -1;
-	    // })(window.navigator.userAgent.toLowerCase());
 	    ChatComponent.MAX_LINE = 7;
 	    ChatComponent.logsTmpl = Handlebars.compile("\n\t\t{{#logs}}\n\t\t\t<li class=\"chat-log\">{{msg}}</li>\n\t\t{{/logs}}\n\t");
 	    return ChatComponent;

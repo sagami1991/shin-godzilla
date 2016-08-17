@@ -94,7 +94,7 @@ export class Ebiruai extends SimpleEvil {
 			this.jump();
 			this.beforeAtk();
 			this.damegeCalc();
-			this.deadOnce();
+			if (this.hp <= 0) this.deadOnce();
 		}
 	}
 
@@ -159,18 +159,16 @@ export class Ebiruai extends SimpleEvil {
 
 	/** 死んだとき一度だけ実行される */
 	private deadOnce() {
-		if (this.hp <= 0) {
-			this.hp = 0;
-			this.isDead = true;
-			this.rebornTimeCount = MainCanvas.FRAME * 8;
-			setTimeout(() => {
-				this.rebirthButton.className = this.rebirthButton.className.replace(" disabled", "");
-			}, 8000);
-			this.exp -= Math.floor(this.maxExp / 8);
-			this.exp = this.exp < 0 ? 0 : this.exp;
-			this.statusBar.setExp(this.exp, this.maxExp);
-			this.saveLocalStrage();
-		}
+		this.hp = 0;
+		this.isDead = true;
+		this.rebornTimeCount = MainCanvas.FRAME * 8;
+		setTimeout(() => {
+			this.rebirthButton.className = this.rebirthButton.className.replace(" disabled", "");
+		}, 8000);
+		this.exp -= Math.floor(this.maxExp / 8);
+		this.exp = this.exp < 0 ? 0 : this.exp;
+		this.statusBar.setExp(this.exp, this.maxExp);
+		this.saveLocalStrage();
 	}
 
 	private drawHp() {

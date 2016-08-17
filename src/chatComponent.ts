@@ -7,22 +7,6 @@ interface ChatLog {
 	date: string;
 }
 export class ChatComponent {
-	// private static IS_TABLET = (u => {
-	// 	return (u.indexOf("windows") !== -1 && u.indexOf("touch") !== -1 && u.indexOf("tablet pc") == -1)
-	// 		|| u.indexOf("ipad") !== -1
-	// 		|| (u.indexOf("android") !== -1 && u.indexOf("mobile") === -1)
-	// 		|| (u.indexOf("firefox") !== -1 && u.indexOf("tablet") !== -1)
-	// 		|| u.indexOf("kindle") !== -1
-	// 		|| u.indexOf("silk") !== -1
-	// 		|| u.indexOf("playbook") !== -1
-	// 		|| (u.indexOf("windows") !== -1 && u.indexOf("phone") !== -1)
-	// 		|| u.indexOf("iphone") !== -1
-	// 		|| u.indexOf("ipod") !== -1
-	// 		|| (u.indexOf("android") !== -1 && u.indexOf("mobile") !== -1)
-	// 		|| (u.indexOf("firefox") !== -1 && u.indexOf("mobile") !== -1)
-	// 		|| u.indexOf("blackberry") !== -1;
-	// })(window.navigator.userAgent.toLowerCase());
-
 	private static MAX_LINE = 7;
 	private wsService: WSService;
 	private logs: ChatLog[] = [];
@@ -49,24 +33,18 @@ export class ChatComponent {
 			}
 		});
 		this.wsService.addOnReceiveMsgListener((type, value) => this.onReceiveInitLog(type, value));
-		this.wsService.addOnReceiveMsgListener((type, value) => {
-			if (type !== WSDataType.log) return;
-			const log = <ChatLog>value;
-			this.logs.push(log);
-			if (this.logs.length > ChatComponent.MAX_LINE) this.logs.shift();
-			// if (!ChatComponent.IS_TABLET && log.personId !== this.wsService.personId) {
-			// 	Notification.requestPermission();
-			// 	new Notification("", {body: log.msg});
-			// }
-
-			this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
-		});
-
+		this.wsService.addOnReceiveMsgListener((type, value) => this.onReceiveMsg(type, value));
 		this.wsService.addOnOpenListener(() => this.onOpen());
 		this.wsService.addOnCloseListener(() => this.onClose());
 	}
-
-	private onReceiveInitLog(type: number, value: any) {
+	private onReceiveMsg(type: WSDataType, value: any) {
+		if (type !== WSDataType.log) return;
+		const log = <ChatLog>value;
+		this.logs.push(log);
+		if (this.logs.length > ChatComponent.MAX_LINE) this.logs.shift();
+		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
+	}
+	private onReceiveInitLog(type: WSDataType, value: any) {
 		if (type !== WSDataType.initlog) return;
 		this.logs = <ChatLog[]> value;
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});

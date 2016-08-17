@@ -134,7 +134,6 @@ export class MainCanvas {
 			lv: this.myEvil.lv,
 			maxExp: this.myEvil.maxExp
 		};
-		// TODO エラー出てる
 		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
 			!this.receiveMyEvilInfo || this.receiveMyEvilInfo.isDead !== sendData.isDead) {
 			this.ws.send(WSDataType.zahyou, sendData);
@@ -146,13 +145,4 @@ export class MainCanvas {
 		}
 		this.befSendData = JSON.parse(JSON.stringify(sendData));
 	}
-
-	private static KEYSET = [
-		{keycode: [68, 39], eventName: "migi"},
-		// {keycode: [87, 38], eventName: "ue"},
-		// {keycode: [83, 40], eventName: "sita"},
-		{keycode: [65, 37], eventName: "hidari"},
-		{keycode: [32, 87, 67], eventName: "jump"},
-		{keycode: [88], eventName: "atk"}
-	];
 }
