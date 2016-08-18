@@ -4859,7 +4859,7 @@
 	        }
 	    };
 	    FieldComponent.FIELD_LIST = [
-	        { type: "henesys", label: "通常" },
+	        { type: "henesys", label: "草原" },
 	        { type: "risu", label: "町並み" },
 	        { type: "kaning", label: "スラム街" },
 	    ];

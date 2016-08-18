@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import {SocketType, ReqEvilData, FieldType} from "../share/share";
-
+import {UserService} from "../service/UserService";
 interface Msglistner {
 	type: SocketType;
 	cb: (ws: WebSocket, data: any) => void;
@@ -19,13 +19,11 @@ interface SendAllOption {
 }
 
 export class MainController {
-	private wss: WebSocket.Server;
 	private onConnectListners: Array<(ws: WebSocket) => void > = [];
 	private onMsgListners: Msglistner[] = [];
 	private onCloseListners: Array<(ws: WebSocket) => void > = [];
 
-	constructor(wss: WebSocket.Server) {
-		this.wss = wss;
+	constructor(private wss: WebSocket.Server, private userService: UserService) {
 	}
 
 	public addConnectListner(cb: (ws: WebSocket) => void) {
@@ -88,9 +86,9 @@ export class MainController {
 	 * でーた受け取り時
 	 */
 	private onReqData(ws: WebSocket, data: any, flags: {binary: boolean}) {
-		if (!this.validateReqData(data, flags.binary)) {
-			ws.close(1008, "不正なデータ検出");
-			console.log(this.getSercretKey(ws));
+		const ipAddr = this.getIpAddr(ws);
+		if (!this.validateReqData(data, flags.binary, ipAddr)) {
+			ws.close(1008, `不正なデータ検出 ${ipAddr}`);
 			return;
 		}
 		if (flags.binary) return;
@@ -99,7 +97,7 @@ export class MainController {
 
 	}
 
-	private validateReqData(data: string, isBinary: boolean) {
+	private validateReqData(data: string, isBinary: boolean, ipAddr: string) {
 		if (!isBinary) {
 			if (typeof data === "string" && data.length > 500) return false;
 			const resData = <ReqData> JSON.parse(data);
@@ -118,9 +116,10 @@ export class MainController {
 				for (let num of [evilInfo.lv, evilInfo.x, evilInfo.y, evilInfo.maxExp]){
 					if (typeof num !== "number") return false;
 				}
-				if (evilInfo.y < 140 ||  300 < evilInfo.y ) return false;
-
-				// バグの原因
+				if (evilInfo.y < 140 ||  300 < evilInfo.y ) {
+					this.userService.insertBanList(ipAddr);
+					return false;
+				}
 				if (evilInfo.maxExp !== Math.floor(50 * Math.pow(1.2, evilInfo.lv - 1))) {
 					return false;
 				}

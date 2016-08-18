@@ -46,7 +46,7 @@ connectDB().then(function (db) {
     var app = express();
     app.use(express.static(__dirname + '/../dist'));
     var userService = new UserService_1.UserService(mongo);
-    var main = new MainController_1.MainController(new ws_1.Server({ server: server }));
+    var main = new MainController_1.MainController(new ws_1.Server({ server: server }), userService);
     main.init();
     new ChatController_1.ChatController(main, mongo).init();
     var field = new FieldController_1.FieldController(main);

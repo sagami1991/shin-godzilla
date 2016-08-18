@@ -1,11 +1,12 @@
 "use strict";
 var share_1 = require("../share/share");
 var MainController = (function () {
-    function MainController(wss) {
+    function MainController(wss, userService) {
+        this.wss = wss;
+        this.userService = userService;
         this.onConnectListners = [];
         this.onMsgListners = [];
         this.onCloseListners = [];
-        this.wss = wss;
     }
     MainController.prototype.addConnectListner = function (cb) {
         this.onConnectListners.push(cb);
@@ -63,9 +64,9 @@ var MainController = (function () {
      * でーた受け取り時
      */
     MainController.prototype.onReqData = function (ws, data, flags) {
-        if (!this.validateReqData(data, flags.binary)) {
-            ws.close(1008, "不正なデータ検出");
-            console.log(this.getSercretKey(ws));
+        var ipAddr = this.getIpAddr(ws);
+        if (!this.validateReqData(data, flags.binary, ipAddr)) {
+            ws.close(1008, "\u4E0D\u6B63\u306A\u30C7\u30FC\u30BF\u691C\u51FA " + ipAddr);
             return;
         }
         if (flags.binary)
@@ -73,7 +74,7 @@ var MainController = (function () {
         var reqData = JSON.parse(data);
         this.onMsgListners.forEach(function (msgLister) { reqData.type === msgLister.type ? msgLister.cb(ws, reqData.value) : null; });
     };
-    MainController.prototype.validateReqData = function (data, isBinary) {
+    MainController.prototype.validateReqData = function (data, isBinary, ipAddr) {
         if (!isBinary) {
             if (typeof data === "string" && data.length > 500)
                 return false;
@@ -94,9 +95,10 @@ var MainController = (function () {
                     if (typeof num !== "number")
                         return false;
                 }
-                if (evilInfo.y < 140 || 300 < evilInfo.y)
+                if (evilInfo.y < 140 || 300 < evilInfo.y) {
+                    this.userService.insertBanList(ipAddr);
                     return false;
-                // バグの原因
+                }
                 if (evilInfo.maxExp !== Math.floor(50 * Math.pow(1.2, evilInfo.lv - 1))) {
                     return false;
                 }

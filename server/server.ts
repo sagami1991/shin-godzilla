@@ -42,7 +42,7 @@ connectDB().then((db) => {
 	const app = express();
 	app.use(express.static(__dirname + '/../dist'));
 	const userService = new UserService(mongo);
-	const main = new MainController(new WebSocketServer({ server: server }));
+	const main = new MainController(new WebSocketServer({ server: server }), userService);
 	main.init();
 	new ChatController(main, mongo).init();
 	const field = new FieldController(main);
