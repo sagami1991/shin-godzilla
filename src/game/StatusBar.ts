@@ -1,7 +1,7 @@
 
 
 export class StatusBar {
-	private static STATUS_TMPL = `
+	private static HTML = `
 		<div class="lv-panel">
 			<span class="label">Lv </span><span class="value"></span>
 		</div>
@@ -30,7 +30,7 @@ export class StatusBar {
 	private onNameEditeds: Array<(name: string) => void> = [];
 	constructor() {
 		this.statusBarElem = <HTMLElement> document.querySelector(".status-bar");
-		this.statusBarElem.innerHTML = StatusBar.STATUS_TMPL;
+		this.statusBarElem.innerHTML = StatusBar.HTML;
 		this.lvElem = <HTMLElement> this.statusBarElem.querySelector(".lv-panel .value");
 		this.nameElem = <HTMLElement> document.querySelector(".name-panel .name");
 		this.nameDisplayElem = <HTMLElement> document.querySelector(".name-panel .display");

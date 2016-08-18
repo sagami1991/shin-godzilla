@@ -23,24 +23,38 @@ body {
 }
 
 a {
-    color: #2156a5;
-    text-decoration: underline;
-    line-height: inherit;
+	color: #2156a5;
+	text-decoration: underline;
+	line-height: inherit;
 }
 button {
 	outline: 0;
 	padding: 0;
 }
+
+.h2 {
+	display: flex;
+	align-items: center;
+	font-weight: 500;
+	.material-icons {
+		// font-size: 36px;
+		margin-right: 8px;
+	}
+}
 .canvas-wrapper {
-	background-color: #f9f9f9;
 	margin-top: 40px;
 	width: 800px;
 	height: 500px;
 	position: relative;
-	border-radius: 10px;
 }
 
+.base-panel {
+	background-color: #fdfdfd;
+	color: rgba(2, 33, 2, 0.68);
+	border-radius: 6px;
+}
 .footer {
+	margin-top: 50px;
 	background-color: rgba(29, 45, 23, 0.64);
 	padding: 30px;
 	color: rgba(255, 255, 255, 0.541176);

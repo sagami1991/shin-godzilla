@@ -11,6 +11,7 @@
     SocketType[SocketType["closePerson"] = 6] = "closePerson";
     SocketType[SocketType["gozzilaDamege"] = 7] = "gozzilaDamege";
     SocketType[SocketType["save"] = 8] = "save";
+    SocketType[SocketType["ranking"] = 9] = "ranking";
 })(exports.SocketType || (exports.SocketType = {}));
 var SocketType = exports.SocketType;
 

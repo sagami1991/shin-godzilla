@@ -22,14 +22,12 @@ interface SendAllOption {
 
 export class MainController {
 	private wss: WebSocket.Server;
-	private collection: Collection;
 	private onConnectListners: Array<(ws: WebSocket) => void > = [];
 	private onMsgListners: Msglistner[] = [];
 	private onCloseListners: Array<(ws: WebSocket) => void > = [];
 
-	constructor(wss: WebSocket.Server, db: Db) {
+	constructor(wss: WebSocket.Server) {
 		this.wss = wss;
-		this.collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
 	}
 
 	public addConnectListner(cb: (ws: WebSocket) => void) {

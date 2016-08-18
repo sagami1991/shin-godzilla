@@ -1,9 +1,9 @@
 "use strict";
 var share_1 = require("../share/share");
 var ChatController = (function () {
-    function ChatController(main, collection) {
+    function ChatController(main, mongo) {
         this.main = main;
-        this.collection = collection;
+        this.mongo = mongo;
     }
     ChatController.prototype.init = function () {
         var _this = this;
@@ -11,20 +11,15 @@ var ChatController = (function () {
         this.main.addMsgListner(share_1.SocketType.chatLog, function (ws, reqData) { return _this.onReceiveMsg(ws, reqData); });
     };
     ChatController.prototype.onReceiveMsg = function (ws, reqData) {
-        var chatMsg = {
-            msg: reqData,
-        };
-        try {
-            this.collection.insert(chatMsg);
-        }
-        catch (e) { }
+        var chatMsg = { msg: reqData };
         this.main.sendAll({ type: share_1.SocketType.chatLog, value: chatMsg });
+        this.mongo.getCollection(ChatController.C_NAME).insert(chatMsg);
     };
     /**
      * DBから新しい順に数行分のログ取り出して送信
      */
     ChatController.prototype.sendInitLog = function (ws) {
-        this.collection.find().limit(7).sort({ $natural: -1 })
+        this.mongo.getCollection(ChatController.C_NAME).find().limit(7).sort({ $natural: -1 })
             .toArray(function (err, arr) {
             if (err)
                 console.log(err);
@@ -39,6 +34,7 @@ var ChatController = (function () {
             }
         });
     };
+    ChatController.C_NAME = process.env.COLLECTION_NAME || "maplechatlog";
     return ChatController;
 }());
 exports.ChatController = ChatController;

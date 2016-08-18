@@ -10,7 +10,8 @@ export enum SocketType {
 	init,
 	closePerson,
 	gozzilaDamege,
-	save
+	save,
+	ranking
 }
 
 export interface InitialUserData {
@@ -34,4 +35,9 @@ export interface ReqEvilData {
 	isDead: boolean;
 	lv: number;
 	maxExp: number;
+}
+
+export interface RankingInfo {
+	lv: number,
+	name: string
 }

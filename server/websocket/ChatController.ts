@@ -1,10 +1,12 @@
 import * as WebSocket from 'ws';
 import {Collection} from 'mongodb';
-import {MainController, ReqData} from "./MainController";
+import {MainController} from "./MainController";
 import {SocketType} from "../share/share";
+import {MongoWrapper} from "../server";
 
 export class ChatController {
-	constructor(private main: MainController, private collection: Collection) {
+	private static C_NAME = process.env.COLLECTION_NAME || "maplechatlog";
+	constructor(private main: MainController, private mongo: MongoWrapper) {
 	}
 
 	public init() {
@@ -13,20 +15,16 @@ export class ChatController {
 	}
 
 	private onReceiveMsg(ws: WebSocket, reqData: String) {
-		const chatMsg = {
-			msg: reqData,
-		};
-		try {
-			this.collection.insert(chatMsg);
-		} catch (e) {}
+		const chatMsg = {msg: reqData};
 		this.main.sendAll({type: SocketType.chatLog, value: chatMsg});
+		this.mongo.getCollection(ChatController.C_NAME).insert(chatMsg);
 	}
 
 	/**
 	 * DBから新しい順に数行分のログ取り出して送信
 	 */
 	private sendInitLog(ws: WebSocket) {
-		this.collection.find().limit(7).sort({ $natural: -1 })
+		this.mongo.getCollection(ChatController.C_NAME).find().limit(7).sort({ $natural: -1 })
 		.toArray((err, arr) => {
 			if (err) console.log(err);
 			try {

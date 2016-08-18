@@ -53,25 +53,30 @@
 
 	"use strict";
 	/// <reference path="./custom-typings.d.ts" />
+	__webpack_require__(25);
+	__webpack_require__(108);
+	__webpack_require__(119);
 	__webpack_require__(2);
 	__webpack_require__(4);
 	__webpack_require__(8);
 	var main_1 = __webpack_require__(11);
 	var chatComponent_1 = __webpack_require__(21);
 	var WebSocketService_1 = __webpack_require__(23);
-	__webpack_require__(25);
-	__webpack_require__(108);
-	__webpack_require__(119);
+	var RankingComponent_1 = __webpack_require__(151);
+	var Handlebars = __webpack_require__(22);
 	var MainComponent = (function () {
 	    function MainComponent() {
 	        var wsService = new WebSocketService_1.WSService();
 	        wsService.init();
 	        this.canvas = new main_1.MainCanvas(wsService);
 	        this.chat = new chatComponent_1.ChatComponent(wsService);
+	        this.ranking = new RankingComponent_1.RankingComponent(wsService);
 	    }
 	    MainComponent.prototype.init = function () {
 	        this.canvas.init();
 	        this.chat.init();
+	        this.ranking.init();
+	        Handlebars.registerHelper("addOne", function (index) { return index + 1; });
 	    };
 	    return MainComponent;
 	}());
@@ -712,7 +717,7 @@
 	
 	
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\n.key-pad {\n  width: 100%;\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 140px; }\n  .key-pad button {\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n    margin-top: 40px;\n    border: none;\n    cursor: pointer; }\n  .key-pad .func-button {\n    height: 46px;\n    margin-left: 30px;\n    line-height: 46px;\n    font-size: 16px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    padding: 0 20px;\n    font-weight: 500;\n    color: #00897b; }\n    .key-pad .func-button:hover, .key-pad .func-button.hover {\n      background-color: #e0e0e0; }\n\n.pad {\n  margin-left: 18px;\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  background-color: #fdfdfd;\n  color: rgba(2, 33, 2, 0.68);\n  height: 120px;\n  margin-top: 6px;\n  border-radius: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.chat-area {\n  font-family: sans-serif;\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody, button {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA'; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(10) + "); }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0;\n  padding: 0; }\n\n.canvas-wrapper {\n  background-color: #f9f9f9;\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative;\n  border-radius: 10px; }\n\n.footer {\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\n.key-pad {\n  width: 100%;\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 60px; }\n  .key-pad button {\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n    margin-top: 40px;\n    border: none;\n    cursor: pointer; }\n  .key-pad .func-button {\n    height: 46px;\n    margin-left: 30px;\n    line-height: 46px;\n    font-size: 16px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    padding: 0 20px;\n    font-weight: 500;\n    color: #00897b; }\n    .key-pad .func-button:hover, .key-pad .func-button.hover {\n      background-color: #e0e0e0; }\n\n.pad {\n  margin-left: 18px;\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  height: 120px;\n  margin-top: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.chat-area {\n  font-family: sans-serif;\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody, button {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA'; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(10) + "); }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0;\n  padding: 0; }\n\n.h2 {\n  display: flex;\n  align-items: center;\n  font-weight: 500; }\n  .h2 .material-icons {\n    margin-right: 8px; }\n\n.canvas-wrapper {\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative; }\n\n.base-panel {\n  background-color: #fdfdfd;\n  color: rgba(2, 33, 2, 0.68);\n  border-radius: 6px; }\n\n.footer {\n  margin-top: 50px;\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
 	
 	// exports
 
@@ -1146,7 +1151,7 @@
 	        });
 	        this.resetButton = document.querySelector(".reset-button");
 	        this.resetButton.addEventListener("click", function () {
-	            if (window.confirm("レベルをリセットしますか？")) {
+	            if (window.confirm("レベルが1に戻ります。元に戻せませんがよろしいですか？")) {
 	                _this.lv = 1;
 	                _this.maxExp = _this.getMaxExp();
 	                _this.exp = 0;
@@ -1263,7 +1268,7 @@
 	        var _this = this;
 	        this.onNameEditeds = [];
 	        this.statusBarElem = document.querySelector(".status-bar");
-	        this.statusBarElem.innerHTML = StatusBar.STATUS_TMPL;
+	        this.statusBarElem.innerHTML = StatusBar.HTML;
 	        this.lvElem = this.statusBarElem.querySelector(".lv-panel .value");
 	        this.nameElem = document.querySelector(".name-panel .name");
 	        this.nameDisplayElem = document.querySelector(".name-panel .display");
@@ -1298,7 +1303,7 @@
 	        this.nameDisplayElem.innerText = name;
 	        this.nameInputElem.value = name;
 	    };
-	    StatusBar.STATUS_TMPL = "\n\t\t<div class=\"lv-panel\">\n\t\t\t<span class=\"label\">Lv </span><span class=\"value\"></span>\n\t\t</div>\n\t\t<div class=\"name-panel\">\n\t\t\t<div class=\"name\">\n\t\t\t\t<span class=\"display\"></span>\n\t\t\t\t<i class=\"material-icons edit\">mode_edit</i>\n\t\t\t</div>\n\t\t\t<input type=\"text\" class=\"name-input\" value=\"Edit\" maxlength=\"8\"></input>\n\t\t\t<div class=\"job\">\u521D\u5FC3\u8005</div>\n\t\t</div>\n\t\t<div class=\"graph-panel\">\n\t\t\t<div class=\"graph-info\">Exp</div>\n\t\t\t<div class=\"graph-bar\">\n\t\t\t\t<div class=\"value-bar exp-bar\"></div>\n\t\t\t</div>\n\t\t</div>\n\t";
+	    StatusBar.HTML = "\n\t\t<div class=\"lv-panel\">\n\t\t\t<span class=\"label\">Lv </span><span class=\"value\"></span>\n\t\t</div>\n\t\t<div class=\"name-panel\">\n\t\t\t<div class=\"name\">\n\t\t\t\t<span class=\"display\"></span>\n\t\t\t\t<i class=\"material-icons edit\">mode_edit</i>\n\t\t\t</div>\n\t\t\t<input type=\"text\" class=\"name-input\" value=\"Edit\" maxlength=\"8\"></input>\n\t\t\t<div class=\"job\">\u521D\u5FC3\u8005</div>\n\t\t</div>\n\t\t<div class=\"graph-panel\">\n\t\t\t<div class=\"graph-info\">Exp</div>\n\t\t\t<div class=\"graph-bar\">\n\t\t\t\t<div class=\"value-bar exp-bar\"></div>\n\t\t\t</div>\n\t\t</div>\n\t";
 	    return StatusBar;
 	}());
 	exports.StatusBar = StatusBar;
@@ -1315,6 +1320,7 @@
 	    }
 	    /** ボタンやキーを設定 */
 	    Keyset.setKeyAndButton = function () {
+	        document.querySelector(".key-pad").innerHTML = this.HTML;
 	        document.querySelector("#canvas").addEventListener("click", function () {
 	            Keyset.KeyEvent.atk = true;
 	        });
@@ -1360,6 +1366,7 @@
 	        jump: false,
 	        atk: false
 	    };
+	    Keyset.HTML = "\n\t\t<button class=\"pad hidari\"><i class=\"material-icons\">chevron_left</i></button>\n\t\t<button class=\"pad migi\"><i class=\"material-icons\">chevron_right</i></button>\n\t\t<button class=\"pad jump\">\u30B8\u30E3\u30F3\u30D7</button>\n\t\t<button class=\"pad atk\">\u653B\u6483</button>\n\t\t<button class=\"pad hukkatu disabled\">\u5FA9\u6D3B</button>\n\t\t<button class=\"func-button reset-button\">\u30EA\u30BB\u30C3\u30C8</button>\n\t";
 	    Keyset.KEYSET = [
 	        // {keycode: [87, 38], eventName: "ue"},
 	        { keycode: [68, 39], eventName: "migi" },
@@ -1509,6 +1516,7 @@
 	    SocketType[SocketType["closePerson"] = 6] = "closePerson";
 	    SocketType[SocketType["gozzilaDamege"] = 7] = "gozzilaDamege";
 	    SocketType[SocketType["save"] = 8] = "save";
+	    SocketType[SocketType["ranking"] = 9] = "ranking";
 	})(exports.SocketType || (exports.SocketType = {}));
 	var SocketType = exports.SocketType;
 
@@ -1527,6 +1535,7 @@
 	    }
 	    ChatComponent.prototype.init = function () {
 	        var _this = this;
+	        document.querySelector(".chat-area").innerHTML = ChatComponent.HTML;
 	        this.logElem = document.querySelector(".chat-logs");
 	        this.inputElem = document.querySelector("#chat");
 	        this.sendElem = document.querySelector(".chat-send");
@@ -1540,9 +1549,8 @@
 	        this.wsService.addOnOpenListener(function () { return _this.onOpen(); });
 	        this.wsService.addOnCloseListener(function () { return _this.onClose(); });
 	    };
-	    ChatComponent.prototype.onReceiveMsg = function (value) {
-	        var log = value;
-	        this.logs.push(log);
+	    ChatComponent.prototype.onReceiveMsg = function (msg) {
+	        this.logs.push(msg);
 	        if (this.logs.length > ChatComponent.MAX_LINE)
 	            this.logs.shift();
 	        this.logElem.innerHTML = ChatComponent.logsTmpl({ logs: this.logs });
@@ -1585,6 +1593,7 @@
 	        }
 	    };
 	    ChatComponent.MAX_LINE = 7;
+	    ChatComponent.HTML = "\n\t\t<ul class=\"chat-logs\"></ul>\n\t\t<div class=\"chat-input\">\n\t\t\t<textarea id=\"chat\" maxlength=\"50\"></textarea>\n\t\t\t<div class=\"chat-send\"><i class=\"material-icons\">send</i></div>\n\t\t</div>\n\t";
 	    ChatComponent.logsTmpl = Handlebars.compile("\n\t\t{{#logs}}\n\t\t\t<li class=\"chat-log\">{{msg}}</li>\n\t\t{{/logs}}\n\t");
 	    return ChatComponent;
 	}());
@@ -4529,6 +4538,73 @@
 	    }({}, false) : undefined),
 	  check: check
 	};
+
+/***/ },
+/* 151 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Handlebars = __webpack_require__(22);
+	var share_1 = __webpack_require__(20);
+	__webpack_require__(152);
+	var RankingComponent = (function () {
+	    function RankingComponent(wsService) {
+	        this.wsService = wsService;
+	    }
+	    RankingComponent.prototype.init = function () {
+	        var _this = this;
+	        document.querySelector(".ranking-area").innerHTML = RankingComponent.HTML;
+	        this.wsService.addOnReceiveMsgListener(share_1.SocketType.ranking, function (resData) { return _this.parseRanking(resData); });
+	    };
+	    RankingComponent.prototype.parseRanking = function (ranks) {
+	        document.querySelector(".rank-tbody").innerHTML = RankingComponent.RANK_TEMPL({ rankInfos: ranks });
+	    };
+	    RankingComponent.HTML = "\n\t\t<h2 class=\"h2\"><i class=\"material-icons\">school</i>\u30E9\u30F3\u30AD\u30F3\u30B0</h2>\n\t\t<table class=\"rank-table\">\n\t\t\t<thead>\n\t\t\t\t<tr>\n\t\t\t\t\t<th class=\"rank-th\">Rank</th>\n\t\t\t\t\t<th>Name</th>\n\t\t\t\t\t<th>Lv</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t<tbody class=\"rank-tbody\">\n\n\t\t\t</tbody>\n\t\t</table>\n\t";
+	    RankingComponent.RANK_TEMPL = Handlebars.compile("\n\t\t{{#rankInfos}}\n\t\t\t<tr>\n\t\t\t\t<td><span class=\"rank-bold\">{{addOne @index}}</span> \u4F4D</td>\n\t\t\t\t<td><div class=\"rank-name\">\n\t\t\t\t\t{{#unless @index}}<i class=\"material-icons\">stars</i>{{/unless}}\n\t\t\t\t\t{{name}}\n\t\t\t\t</div></td>\n\t\t\t\t<td>Lv. <span class=\"rank-bold\">{{lv}}</span></td>\n\t\t\t</tr>\n\t\t{{/rankInfos}}\n\t");
+	    return RankingComponent;
+	}());
+	exports.RankingComponent = RankingComponent;
+
+
+/***/ },
+/* 152 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(153);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(7)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./ranking.scss", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./ranking.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 153 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(6)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".ranking-area {\n  padding: 1.5em; }\n  .ranking-area .h2 {\n    padding-bottom: 4px;\n    font-size: 30px;\n    border-bottom: 1px solid rgba(29, 45, 23, 0.28);\n    margin-bottom: 20px; }\n  .ranking-area .rank-table {\n    width: 80%;\n    margin: 0 auto;\n    border-collapse: collapse;\n    border-spacing: 0px; }\n    .ranking-area .rank-table tr {\n      border-bottom: 1px solid #e0e0e0; }\n    .ranking-area .rank-table th, .ranking-area .rank-table td {\n      align-items: center;\n      padding: 0 24px; }\n    .ranking-area .rank-table th {\n      text-align: left;\n      font-weight: 500;\n      height: 50px; }\n      .ranking-area .rank-table th.rank-th {\n        width: 100px; }\n    .ranking-area .rank-table td {\n      height: 48px; }\n      .ranking-area .rank-table td .rank-name {\n        display: flex;\n        align-items: center; }\n        .ranking-area .rank-table td .rank-name .material-icons {\n          margin-right: 6px; }\n    .ranking-area .rank-table .rank-bold {\n      font-size: 18px;\n      font-weight: 500; }\n", ""]);
+	
+	// exports
+
 
 /***/ }
 /******/ ]);

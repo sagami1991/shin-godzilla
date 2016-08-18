@@ -7,6 +7,7 @@ import {MainController} from "./websocket/MainController";
 import {ChatController} from "./websocket/ChatController";
 import {InfoMsgController} from "./websocket/InfoMsgController";
 import {GameController} from "./websocket/GameController";
+import {RankingController} from "./websocket/RankingController";
 import {UserService} from "./service/UserService";
 
 /** DBに接続 */
@@ -27,19 +28,32 @@ function connectDB(): Promise<Db> {
 	});
 }
 
+export class MongoWrapper {
+	constructor(private db: Db) {}
+	public getCollection(collectionName: string) {
+		return this.db.collection(collectionName);
+	}
+}
+
 connectDB().then((db) => {
+	const mongo = new MongoWrapper(db);
 	const server = createServer();
 	const app = express();
 	app.use(express.static(__dirname + '/../dist'));
-	const userService = new UserService(db.collection("users"));
-	const main = new MainController(new WebSocketServer({ server: server }), db);
+	const userService = new UserService(mongo);
+	const main = new MainController(new WebSocketServer({ server: server }));
 	main.init();
-	new ChatController(main, db.collection(process.env.COLLECTION_NAME || "maplechatlog")).init();
+	new ChatController(main, mongo).init();
 	new GameController(main, userService).init();
+	new RankingController(main, userService).init();
 	new InfoMsgController(main).init();
 
 	server.on('request', app);
 	server.listen(process.env.PORT || 3000, () => {
 		console.log('Server listening on port %s', server.address().port);
 	});
+
+	setInterval( () => {
+		console.log(`memory log: ${process.memoryUsage().heapUsed} byte of Heap`);
+	}, 60 * 1000);
 });

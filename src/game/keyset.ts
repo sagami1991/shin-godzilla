@@ -8,6 +8,14 @@ export class Keyset {
 		jump: false,
 		atk: false
 	};
+	private static HTML = `
+		<button class="pad hidari"><i class="material-icons">chevron_left</i></button>
+		<button class="pad migi"><i class="material-icons">chevron_right</i></button>
+		<button class="pad jump">ジャンプ</button>
+		<button class="pad atk">攻撃</button>
+		<button class="pad hukkatu disabled">復活</button>
+		<button class="func-button reset-button">リセット</button>
+	`;
 	private static KEYSET = [
 		// {keycode: [87, 38], eventName: "ue"},
 		{keycode: [68, 39], eventName: "migi"},
@@ -19,6 +27,7 @@ export class Keyset {
 
 	/** ボタンやキーを設定 */
 	public static setKeyAndButton() {
+		document.querySelector(".key-pad").innerHTML = this.HTML;
 		document.querySelector("#canvas").addEventListener("click", () => {
 			Keyset.KeyEvent.atk = true;
 		});

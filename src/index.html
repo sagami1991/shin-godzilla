@@ -3,32 +3,20 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=900, user-scalable=no">
+	<meta name="description" content="最新技術を駆使した、ブラウザで動作するスマホ対応高画質横スクロールMMOオンラインゲーム">
 	<title>Jupiter Story</title>
 	<link rel="shortcut icon" type="image/x-icon" href="./assets/favicon.ico">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
 	<div class="container">
-		<div class="canvas-wrapper">
-			<canvas id="canvas">
-			</canvas>
-			<div class="chat-area">
-				<ul class="chat-logs"></ul>
-				<div class="chat-input">
-					<textarea id="chat" maxlength="50"></textarea>
-					<div class="chat-send"><i class="material-icons">send</i></div>
-				</div>
-			</div>
+		<div class="base-panel canvas-wrapper">
+			<canvas id="canvas"></canvas>
+			<div class="chat-area"></div>
 		</div>
-		<div class="status-bar"></div>
-		<div class="key-pad">
-			<button class="pad hidari"><i class="material-icons">chevron_left</i></button>
-			<button class="pad migi"><i class="material-icons">chevron_right</i></button>
-			<button class="pad jump">ジャンプ</button>
-			<button class="pad atk">攻撃</button>
-			<button class="pad hukkatu disabled">復活</button>
-			<button class="func-button reset-button">リセット</button>
-		</div>
+		<div class="base-panel status-bar"></div>
+		<div class="key-pad"></div>
+		<div class="base-panel ranking-area"></div>
 	</div>
 	<div class="footer">
 		<div>シンゴジラ絵 provide by <a href="http://www.pixiv.net/member_illust.php?mode=medium&illust_id=58279496" target="_blank">harine</a></div>

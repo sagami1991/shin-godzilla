@@ -1,12 +1,11 @@
 "use strict";
 var share_1 = require("../share/share");
 var MainController = (function () {
-    function MainController(wss, db) {
+    function MainController(wss) {
         this.onConnectListners = [];
         this.onMsgListners = [];
         this.onCloseListners = [];
         this.wss = wss;
-        this.collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
     }
     MainController.prototype.addConnectListner = function (cb) {
         this.onConnectListners.push(cb);

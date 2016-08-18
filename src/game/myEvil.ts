@@ -98,7 +98,7 @@ export class Ebiruai extends SimpleEvil {
 		});
 		this.resetButton = <HTMLButtonElement> document.querySelector(".reset-button");
 		this.resetButton.addEventListener("click", () => {
-			if (window.confirm("レベルをリセットしますか？")) {
+			if (window.confirm("レベルが1に戻ります。元に戻せませんがよろしいですか？")) {
 				this.lv = 1;
 				this.maxExp = this.getMaxExp();
 				this.exp = 0;

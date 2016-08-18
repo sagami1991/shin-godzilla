@@ -2,20 +2,25 @@ import {WSService} from "./WebSocketService";
 import * as Handlebars from "handlebars";
 import {SocketType} from "../server/share/share";
 
-interface ChatLog {
-	personId: string;
+interface ChatMsg {
 	msg: string;
-	date: string;
 }
 export class ChatComponent {
 	private static MAX_LINE = 7;
+	private static HTML = `
+		<ul class="chat-logs"></ul>
+		<div class="chat-input">
+			<textarea id="chat" maxlength="50"></textarea>
+			<div class="chat-send"><i class="material-icons">send</i></div>
+		</div>
+	`;
 	private static logsTmpl = Handlebars.compile(`
 		{{#logs}}
 			<li class="chat-log">{{msg}}</li>
 		{{/logs}}
 	`);
 	private wsService: WSService;
-	private logs: ChatLog[] = [];
+	private logs: ChatMsg[] = [];
 	private logElem: HTMLElement;
 	private inputElem: HTMLTextAreaElement;
 	private sendElem: HTMLElement;
@@ -25,6 +30,7 @@ export class ChatComponent {
 	}
 
 	public init() {
+		document.querySelector(".chat-area").innerHTML = ChatComponent.HTML;
 		this.logElem = <HTMLElement> document.querySelector(".chat-logs");
 		this.inputElem = <HTMLTextAreaElement> document.querySelector("#chat");
 		this.sendElem = <HTMLElement> document.querySelector(".chat-send");
@@ -38,13 +44,12 @@ export class ChatComponent {
 		this.wsService.addOnOpenListener(() => this.onOpen());
 		this.wsService.addOnCloseListener(() => this.onClose());
 	}
-	private onReceiveMsg(value: any) {
-		const log = <ChatLog>value;
-		this.logs.push(log);
+	private onReceiveMsg(msg: ChatMsg) {
+		this.logs.push(msg);
 		if (this.logs.length > ChatComponent.MAX_LINE) this.logs.shift();
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
 	}
-	private onReceiveInitLog(logs: ChatLog[]) {
+	private onReceiveInitLog(logs: ChatMsg[]) {
 		this.logs = logs;
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
 	}
