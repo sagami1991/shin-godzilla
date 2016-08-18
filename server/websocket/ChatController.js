@@ -19,7 +19,7 @@ var ChatController = (function () {
      * DBから新しい順に数行分のログ取り出して送信
      */
     ChatController.prototype.sendInitLog = function (ws) {
-        this.mongo.getCollection(ChatController.C_NAME).find().limit(7).sort({ $natural: -1 })
+        this.mongo.getCollection(ChatController.C_NAME).find().limit(30).sort({ $natural: -1 })
             .toArray(function (err, arr) {
             if (err)
                 console.log(err);

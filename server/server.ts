@@ -18,7 +18,7 @@ function connectDB(): Promise<Db> {
 			if (err) throw err;
 			const collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
 			collection.count({}, (err, cnt) => {
-				if (cnt <= 10)  return;
+				if (cnt <= 100)  return;
 				collection.find().limit(cnt - 10).sort({ $natural: 1 })
 				.toArray().then((records) => {
 					collection.remove({_id: {$in: records.map(record => record._id)}});

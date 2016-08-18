@@ -19,7 +19,7 @@ function connectDB() {
                 throw err;
             var collection = db.collection(process.env.COLLECTION_NAME || "maplechatlog");
             collection.count({}, function (err, cnt) {
-                if (cnt <= 10)
+                if (cnt <= 100)
                     return;
                 collection.find().limit(cnt - 10).sort({ $natural: 1 })
                     .toArray().then(function (records) {

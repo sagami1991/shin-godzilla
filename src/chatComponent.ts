@@ -6,7 +6,7 @@ interface ChatMsg {
 	msg: string;
 }
 export class ChatComponent {
-	private static MAX_LINE = 7;
+	private static MAX_LINE = 30;
 	private static HTML = `
 		<ul class="chat-logs"></ul>
 		<div class="chat-input">
@@ -48,10 +48,12 @@ export class ChatComponent {
 		this.logs.push(msg);
 		if (this.logs.length > ChatComponent.MAX_LINE) this.logs.shift();
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
+		this.logElem.scrollTop = this.logElem.scrollHeight;
 	}
 	private onReceiveInitLog(logs: ChatMsg[]) {
 		this.logs = logs;
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
+		this.logElem.scrollTop = this.logElem.scrollHeight;
 	}
 
 	private onOpen() {

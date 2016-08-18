@@ -1,0 +1,1 @@
+{"version":3,"sources":["websocket/UserDataController.ts"],"names":[],"mappings":";AACA;IACC;IAAc,CAAC;IAEhB,yBAAC;AAAD,CAHA,AAGC,IAAA;AAHY,0BAAkB,qBAG9B,CAAA","file":"websocket/UserDataController.js","sourcesContent":["\r\nexport class UserDataController {\r\n\tconstructor(){}\r\n\t\r\n}"],"sourceRoot":"/source/"}
