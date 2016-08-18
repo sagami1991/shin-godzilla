@@ -3602,7 +3602,8 @@
 	            exp: resData.userData.exp,
 	            name: resData.userData.name,
 	            isAtk: false,
-	            isDead: false
+	            isDead: false,
+	            dbId: resData.userData._id
 	        });
 	        this.gozzila.target = [0, 0].map(function () { return { x: _this.myEvil.x, y: _this.myEvil.y }; });
 	        this.timer = window.setInterval(function () { return _this.draw(); }, 1000 / MainCanvas.FRAME);
@@ -3947,6 +3948,7 @@
 	        this.gozzila = option.gozzila;
 	        this.initButtons();
 	        this.initStatusBar();
+	        this.dbId = option.dbId;
 	    }
 	    /** 毎フレーム実行される動作 */
 	    Ebiruai.prototype.action = function () {
@@ -4085,7 +4087,7 @@
 	    };
 	    Ebiruai.prototype.saveMyData = function () {
 	        this.ws.send(share_1.SocketType.save, {
-	            _id: localStorage.getItem("dbId"),
+	            _id: this.dbId,
 	            name: this.name,
 	            lv: this.lv,
 	            exp: this.exp
@@ -4645,7 +4647,7 @@
 	        var _this = this;
 	        this.pingTimer = window.setInterval(function () {
 	            _this.ws.send(new Uint8Array(1));
-	        }, 50000);
+	        }, 50 * 1000);
 	    };
 	    WSService.prototype.onClose = function () {
 	        this.onCloseEvents.forEach(function (cb) { return cb(); });

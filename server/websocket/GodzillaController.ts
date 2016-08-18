@@ -30,6 +30,7 @@ export class GodzillaController {
 		};
 		this.main.addMsgListner(SocketType.gozzilaDamege, (ws, reqData) => this.onAtkGodzilla(ws));
 		this.actionFrameCount = 0;
+		setInterval(() => this.atkCount = {}, 10 * 1000);
 	}
 
 	public roopAction() {
@@ -56,7 +57,9 @@ export class GodzillaController {
 	private onAtkGodzilla(ws: WebSocket) {
 		const skey = this.main.getSercretKey(ws);
 		this.atkCount[skey] = this.atkCount[skey] ? this.atkCount[skey] + 1 : 1;
-		if (this.atkCount[skey] > 100) ws.close();
+		if (this.atkCount[skey] > 100) {
+			ws.close(1008, "一定回数以上攻撃");
+		};
 		this._godzilla.hp -= 2;
 	}
 

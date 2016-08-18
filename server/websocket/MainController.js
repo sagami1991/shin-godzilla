@@ -21,7 +21,10 @@ var MainController = (function () {
         this.wss.on('connection', function (ws) {
             _this.onConnectListners.forEach(function (cb) { return cb(ws); });
             ws.on('message', function (data, flags) { return _this.onReqData(ws, data, flags); });
-            ws.on("close", function () { return _this.onCloseListners.forEach(function (cb) { return cb(ws); }); });
+            ws.on("close", function (code, message) {
+                console.log("onclose code: " + code + ", msg: " + message);
+                _this.onCloseListners.forEach(function (cb) { return cb(ws); });
+            });
         });
     };
     // TODO このキー普通にデータにのせて大丈夫か
@@ -58,8 +61,8 @@ var MainController = (function () {
      */
     MainController.prototype.onReqData = function (ws, data, flags) {
         if (!this.validateReqData(data, flags.binary)) {
-            console.log(data);
-            ws.close();
+            ws.close(1008, "不正なデータ検出");
+            console.log(this.getSercretKey(ws));
             return;
         }
         if (flags.binary)
@@ -72,7 +75,7 @@ var MainController = (function () {
             if (data.length > 500)
                 return false;
             var resData = JSON.parse(data);
-            if (!resData.type) {
+            if (typeof resData.type !== "number") {
                 return false;
             }
             if (resData.type === share_1.SocketType.gozzilaDamege) {

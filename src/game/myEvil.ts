@@ -11,6 +11,7 @@ export interface MyEvilOption extends EvilOption {
 	gozzila: Gozzila;
 	exp: number;
 	name: string;
+	dbId: string;
 }
 
 /** 自分が操作する機能をもつエビルアイ */
@@ -33,7 +34,7 @@ export class Ebiruai extends SimpleEvil {
 	private rebornTimeCount: number;
 	private exp: number;
 	private name: string;
-
+	private dbId: string;
 	constructor(protected ctx: CanvasRenderingContext2D,
 				private ws: WSService,
 				option: MyEvilOption) {
@@ -49,6 +50,7 @@ export class Ebiruai extends SimpleEvil {
 		this.gozzila = option.gozzila;
 		this.initButtons();
 		this.initStatusBar();
+		this.dbId = option.dbId;
 	}
 
 	/** 毎フレーム実行される動作 */
@@ -194,7 +196,7 @@ export class Ebiruai extends SimpleEvil {
 
 	private saveMyData() {
 		this.ws.send(SocketType.save, <DbUserData> {
-			_id: localStorage.getItem("dbId"),
+			_id: this.dbId,
 			name: this.name,
 			lv: this.lv,
 			exp: this.exp

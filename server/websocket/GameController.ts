@@ -32,7 +32,10 @@ export class GameController {
 	}
 
 	private saveUserData(ws: WebSocket, reqData: DbUserData) {
-		this.userService.updateUser(reqData);
+		this.userService.updateUser(reqData).catch(e => {
+			console.trace(e);
+			console.log(reqData);
+		});
 	}
 
 	private onReceiveUserId(ws: WebSocket, reqData: {_id: string}) {

@@ -19,15 +19,19 @@ export class UserService {
 
 	public createUser(user: DbUserData) {
 		return new Promise((resolve, reject) => {
+			this.mongo.getCollection(UserService.C_NAME).insert(this.filterUserData(user)).catch(e => {
+				console.trace(e);
+			});
 			this.validate(user) ? resolve() : reject();
-			this.mongo.getCollection(UserService.C_NAME).insert(this.filterUserData(user));
 		});
 	}
 
 	public updateUser(user: DbUserData) {
 		return new Promise((resolve, reject) => {
+			this.mongo.getCollection(UserService.C_NAME).update({_id: user._id}, this.filterUserData(user)).catch(e => {
+				console.trace(e);
+			});
 			this.validate(user) ? resolve() : reject();
-			this.mongo.getCollection(UserService.C_NAME).update({_id: user._id}, this.filterUserData(user));
 		});
 	}
 

@@ -45,7 +45,10 @@ export class MainController {
 		this.wss.on('connection', (ws) => {
 			this.onConnectListners.forEach(cb => cb(ws));
 			ws.on('message', (data, flags) => this.onReqData(ws, data, flags));
-			ws.on("close", () => this.onCloseListners.forEach(cb => cb(ws)));
+			ws.on("close", (code, message) => {
+				console.log(`onclose code: ${code}, msg: ${message}`);
+				this.onCloseListners.forEach(cb => cb(ws));
+			});
 		});
 	}
 
@@ -84,8 +87,8 @@ export class MainController {
 	 */
 	private onReqData(ws: WebSocket, data: any, flags: {binary: boolean}) {
 		if (!this.validateReqData(data, flags.binary)) {
-			console.log(data);
-			ws.close();
+			ws.close(1008, "不正なデータ検出");
+			console.log(this.getSercretKey(ws));
 			return;
 		}
 		if (flags.binary) return;
@@ -99,7 +102,7 @@ export class MainController {
 			if (data.length > 500) return false;
 			const resData = <ReqData> JSON.parse(data);
 
-			if (!resData.type) {
+			if (typeof resData.type !== "number") {
 				return false;
 			}
 			if (resData.type === SocketType.gozzilaDamege) {

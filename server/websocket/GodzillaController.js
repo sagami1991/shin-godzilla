@@ -23,6 +23,7 @@ var GodzillaController = (function () {
         };
         this.main.addMsgListner(share_1.SocketType.gozzilaDamege, function (ws, reqData) { return _this.onAtkGodzilla(ws); });
         this.actionFrameCount = 0;
+        setInterval(function () { return _this.atkCount = {}; }, 10 * 1000);
     };
     GodzillaController.prototype.roopAction = function () {
         this.actionFrameCount++;
@@ -49,8 +50,10 @@ var GodzillaController = (function () {
     GodzillaController.prototype.onAtkGodzilla = function (ws) {
         var skey = this.main.getSercretKey(ws);
         this.atkCount[skey] = this.atkCount[skey] ? this.atkCount[skey] + 1 : 1;
-        if (this.atkCount[skey] > 100)
-            ws.close();
+        if (this.atkCount[skey] > 100) {
+            ws.close(1008, "一定回数以上攻撃");
+        }
+        ;
         this._godzilla.hp -= 2;
     };
     GodzillaController.prototype.decideTarget = function () {

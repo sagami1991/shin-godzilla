@@ -22,7 +22,10 @@ var GameController = (function () {
         setInterval(function () { return _this.intervalAction(); }, 1000 / GameController.FRAME);
     };
     GameController.prototype.saveUserData = function (ws, reqData) {
-        this.userService.updateUser(reqData);
+        this.userService.updateUser(reqData).catch(function (e) {
+            console.trace(e);
+            console.log(reqData);
+        });
     };
     GameController.prototype.onReceiveUserId = function (ws, reqData) {
         var _this = this;

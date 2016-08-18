@@ -15,15 +15,19 @@ var UserService = (function () {
     UserService.prototype.createUser = function (user) {
         var _this = this;
         return new Promise(function (resolve, reject) {
+            _this.mongo.getCollection(UserService.C_NAME).insert(_this.filterUserData(user)).catch(function (e) {
+                console.trace(e);
+            });
             _this.validate(user) ? resolve() : reject();
-            _this.mongo.getCollection(UserService.C_NAME).insert(_this.filterUserData(user));
         });
     };
     UserService.prototype.updateUser = function (user) {
         var _this = this;
         return new Promise(function (resolve, reject) {
+            _this.mongo.getCollection(UserService.C_NAME).update({ _id: user._id }, _this.filterUserData(user)).catch(function (e) {
+                console.trace(e);
+            });
             _this.validate(user) ? resolve() : reject();
-            _this.mongo.getCollection(UserService.C_NAME).update({ _id: user._id }, _this.filterUserData(user));
         });
     };
     UserService.prototype.deleteUser = function (id) {

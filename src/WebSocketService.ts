@@ -63,7 +63,7 @@ export class WSService {
 	private pingInterval() {
 		this.pingTimer = window.setInterval(() => {
 			this.ws.send( new Uint8Array(1));
-		}, 50000);
+		}, 50 * 1000);
 	}
 	private onClose() {
 		this.onCloseEvents.forEach(cb => cb());

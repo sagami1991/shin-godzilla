@@ -81,7 +81,8 @@ export class MainCanvas {
 			exp: resData.userData.exp,
 			name: resData.userData.name,
 			isAtk: false,
-			isDead: false
+			isDead: false,
+			dbId: resData.userData._id
 		});
 		this.gozzila.target = [0, 0].map( () => {return{x: this.myEvil.x, y: this.myEvil.y}; });
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
