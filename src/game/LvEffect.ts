@@ -9,6 +9,6 @@ export class LvUpEffect {
 			const zahyou = LvUpEffect.LVUP;
 			const image = ImageLoader.ANIME_IMAGE.lvup[i];
 			ctx.drawImage(image , mob.x + 50 - zahyou[i].x, MainCanvas.convY(mob.y + zahyou[i].y, 0));
-		}, 4, 21);
+		}, 4, LvUpEffect.LVUP.length);
 	}
 }

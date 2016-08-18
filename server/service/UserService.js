@@ -33,9 +33,21 @@ var UserService = (function () {
     UserService.prototype.deleteUser = function (id) {
         this.mongo.getCollection(UserService.C_NAME).deleteOne({ _id: id });
     };
+    UserService.prototype.insertBanList = function (ipAddr) {
+        this.mongo.getCollection(UserService.BANS_COLLECTION).insertOne({ ip: ipAddr });
+    };
+    UserService.prototype.containBanList = function (ipAddr) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.mongo.getCollection(UserService.BANS_COLLECTION).findOne({ ip: ipAddr }).then(function (value) {
+                !value ? resolve() : reject();
+            });
+        });
+    };
     UserService.prototype.filterUserData = function (user) {
         return {
             _id: user._id,
+            ip: user.ip,
             lv: user.lv,
             name: user.name,
             exp: user.exp,
@@ -49,6 +61,7 @@ var UserService = (function () {
             typeof user.exp === "number");
     };
     UserService.C_NAME = "users";
+    UserService.BANS_COLLECTION = "banip";
     return UserService;
 }());
 exports.UserService = UserService;

@@ -13,6 +13,18 @@ export class ImageLoader {
 	public static ANIME_IMAGE: {
 		lvup: HTMLImageElement[];
 	};
+
+	public static FIELD_IMAGE: {
+		bg: HTMLImageElement;
+		asiba: HTMLImageElement;
+		sita: HTMLImageElement;
+	};
+
+	private static FIELD_PATH = [
+		"back.0.png",
+		"enH0.0.png",
+		"bsc.0.png"
+	]
 	private static PREFIX_PATH = "./assets/";
 	private static IMAGE_PATHS = [
 		"ebiruai.png",
@@ -32,6 +44,20 @@ export class ImageLoader {
 		//こっちは非同期で
 		this.animeImageLoad();
 		return this.commonImageLoad();
+	}
+
+	public static fieldImageLoad(type: string) {
+		return Promise.all(ImageLoader.FIELD_PATH.map((src) => {
+			return new Promise<HTMLImageElement>(reslve => {
+				return ImageLoader.imageLoad(`${ImageLoader.PREFIX_PATH}bg/${type}/${src}`, reslve);
+			});
+		})).then((imageElms) => {
+			ImageLoader.FIELD_IMAGE = {
+				bg : imageElms[0],
+				asiba : imageElms[1],
+				sita : imageElms[2],
+			};
+		});
 	}
 	private static animeImageLoad() {
 		const hoge = ImageLoader.AnimationPath[0];

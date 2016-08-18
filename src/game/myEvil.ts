@@ -23,6 +23,7 @@ export class Ebiruai extends SimpleEvil {
 	private static INIT_MAX_HP = 100;
 	public atksita: boolean;
 	public maxExp: number;
+	public isChangeName: boolean;
 	private jumpF: number;
 	private isJumping: boolean;
 	private gozzila: Gozzila;
@@ -33,7 +34,6 @@ export class Ebiruai extends SimpleEvil {
 	private speed: number;
 	private rebornTimeCount: number;
 	private exp: number;
-	private name: string;
 	private dbId: string;
 	constructor(protected ctx: CanvasRenderingContext2D,
 				private ws: WSService,
@@ -51,6 +51,7 @@ export class Ebiruai extends SimpleEvil {
 		this.initButtons();
 		this.initStatusBar();
 		this.dbId = option.dbId;
+		this.isChangeName = true;
 	}
 
 	/** 毎フレーム実行される動作 */
@@ -71,6 +72,7 @@ export class Ebiruai extends SimpleEvil {
 		this.statusBar = new StatusBar();
 		this.statusBar.addOnNameEditListner((name) => {
 			this.name = name;
+			this.isChangeName = true;
 			this.saveMyData();
 		});
 		this.refreshStatusBar();
@@ -163,7 +165,7 @@ export class Ebiruai extends SimpleEvil {
 
 	private drawRespawnCount() {
 		if (this.rebornTimeCount >= 0) this.rebornTimeCount--;
-		this.ctx.fillStyle = "black";
+		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
 		this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`死にました。${Math.ceil(this.rebornTimeCount / 30)}秒後に復活ボタンが使用可能になります`, 80, 180);
 	}

@@ -10,6 +10,7 @@ var InfoMsgController_1 = require("./websocket/InfoMsgController");
 var GameController_1 = require("./websocket/GameController");
 var RankingController_1 = require("./websocket/RankingController");
 var UserService_1 = require("./service/UserService");
+var FieldController_1 = require("./websocket/FieldController");
 /** DBに接続 */
 function connectDB() {
     return new Promise(function (resolve) {
@@ -48,7 +49,9 @@ connectDB().then(function (db) {
     var main = new MainController_1.MainController(new ws_1.Server({ server: server }));
     main.init();
     new ChatController_1.ChatController(main, mongo).init();
-    new GameController_1.GameController(main, userService).init();
+    var field = new FieldController_1.FieldController(main);
+    field.init();
+    new GameController_1.GameController(main, userService, field).init();
     new RankingController_1.RankingController(main, userService).init();
     new InfoMsgController_1.InfoMsgController(main).init();
     server.on('request', app);

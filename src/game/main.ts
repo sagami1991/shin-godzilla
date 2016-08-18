@@ -5,14 +5,16 @@ import {Gozzila} from "./gozzila";
 import {ImageLoader} from "./ImageLoader";
 import {GamePadComponent} from "./GamePadComponent";
 import {SocketType, InitialUserData, ReqEvilData, GameData} from "../../server/share/share";
-
+import {FieldComponent} from "./FieldComponent";
 /** ゲーム機能の総合操作クラス */
 export class MainCanvas {
+	public static MOJI_COLOR = "#fff";
 	public static FRAME = 30;
 	public static HEIGHT = 500;
 	public static WIDTH = 800;
 	public static Y0 = 150;
 	public static GOZZILA: Gozzila;
+	public static CTX: CanvasRenderingContext2D;
 	private static intervalActions: {
 		delay: number, //一回の処理のフレーム数
 		roopCount: number, //何回ループさせるか
@@ -57,10 +59,12 @@ export class MainCanvas {
 		this.canvasElm.width = MainCanvas.WIDTH;
 		this.canvasElm.height = MainCanvas.HEIGHT;
 		this.ctx = this.canvasElm.getContext('2d');
+		MainCanvas.CTX = this.ctx;
 		GamePadComponent.setKeyAndButton();
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
+		new FieldComponent(this.ws).init(resData.bgType);
 		localStorage.setItem("dbId", resData.userData._id);
 		this.gozzila = new Gozzila(this.ctx, {
 			image: ImageLoader.IMAGES.gozzila,
@@ -131,7 +135,7 @@ export class MainCanvas {
 		this.sendServer();
 	}
 	private drawNowPersonCount() {
-		this.ctx.fillStyle = "black";
+		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`接続数:${this.otherPersonEvils.length + 1}`, 736, 18);
 	}
@@ -144,7 +148,8 @@ export class MainCanvas {
 			isDead: this.myEvil.isDead,
 			lv: this.myEvil.lv,
 			maxExp: this.myEvil.maxExp,
-			isLvUp: this.myEvil.isLvUp
+			isLvUp: this.myEvil.isLvUp,
+			name: this.myEvil.isChangeName ? this.myEvil.name : undefined
 		};
 		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
 			!this.receiveMyEvilInfo || this.receiveMyEvilInfo.isDead !== sendData.isDead) {
@@ -156,6 +161,7 @@ export class MainCanvas {
 			this.ws.send(SocketType.gozzilaDamege, null);
 			this.gozzila.isDamege = false;
 		}
-		this.befSendData = JSON.parse(JSON.stringify(sendData));
+		this.befSendData = Object.assign({}, sendData);
+		this.myEvil.isChangeName = false;
 	}
 }

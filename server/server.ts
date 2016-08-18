@@ -9,6 +9,7 @@ import {InfoMsgController} from "./websocket/InfoMsgController";
 import {GameController} from "./websocket/GameController";
 import {RankingController} from "./websocket/RankingController";
 import {UserService} from "./service/UserService";
+import {FieldController} from "./websocket/FieldController";
 
 /** DBに接続 */
 function connectDB(): Promise<Db> {
@@ -44,7 +45,9 @@ connectDB().then((db) => {
 	const main = new MainController(new WebSocketServer({ server: server }));
 	main.init();
 	new ChatController(main, mongo).init();
-	new GameController(main, userService).init();
+	const field = new FieldController(main);
+	field.init();
+	new GameController(main, userService, field).init();
 	new RankingController(main, userService).init();
 	new InfoMsgController(main).init();
 

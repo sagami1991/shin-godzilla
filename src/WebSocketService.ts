@@ -38,16 +38,10 @@ export class WSService {
 		this.ws = new WebSocket(WSService.URL);
 		this.ws.onopen = () => this.onOpen();
 		this.ws.onmessage = (msgEvent) => this.onReceiveMsg(msgEvent);
-		this.ws.onclose = () => this.onClose();
+		this.ws.onclose = (ev) => this.onClose(ev);
 		this.pingInterval();
 		this.addOnReceiveMsgListener(SocketType.infolog, (value) => {
 			Notify.success(<string> value);
-		});
-
-		this.addOnCloseListener(() => {
-			this.isClose = true;
-			Notify.error("切断されました。サーバーが落ちた可能性があります");
-			window.clearInterval(this.pingTimer);
 		});
 	}
 
@@ -65,7 +59,11 @@ export class WSService {
 			this.ws.send( new Uint8Array(1));
 		}, 50 * 1000);
 	}
-	private onClose() {
+	private onClose(ev: CloseEvent) {
+		console.log(ev);
+		this.isClose = true;
+		Notify.error("切断されました。サーバーが落ちた可能性があります");
+		window.clearInterval(this.pingTimer);
 		this.onCloseEvents.forEach(cb => cb());
 	}
 	private onOpen() {

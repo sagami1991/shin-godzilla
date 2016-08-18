@@ -3,6 +3,7 @@ import {MongoWrapper} from "../server";
 
 export class UserService {
 	private static C_NAME = "users";
+	private static BANS_COLLECTION = "banip";
 	constructor(private mongo: MongoWrapper) {
 	}
 
@@ -39,9 +40,22 @@ export class UserService {
 		this.mongo.getCollection(UserService.C_NAME).deleteOne({_id: id});
 	}
 
+	public insertBanList(ipAddr: string) {
+		this.mongo.getCollection(UserService.BANS_COLLECTION).insertOne({ip: ipAddr});
+	}
+
+	public containBanList(ipAddr: string): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
+			this.mongo.getCollection(UserService.BANS_COLLECTION).findOne({ip: ipAddr}).then(value => {
+				!value ? resolve() : reject();
+			});
+		});
+	}
+
 	private filterUserData(user: DbUserData): DbUserData {
 		return {
 			_id: user._id,
+			ip: user.ip,
 			lv: user.lv,
 			name: user.name,
 			exp: user.exp,

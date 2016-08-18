@@ -6,7 +6,7 @@ import {GodzillaMode} from "../../server/share/share";
 export class Gozzila extends BaseMonster {
 	private static WIDTH = 64;
 	private static HEIGHT = 64;
-	private static BAIRITU = 5;
+	private static BAIRITU = 6;
 	private static MAX_HP = 4000;
 	private static HP_BAR_INFO = {
 		X: 30,
@@ -87,7 +87,7 @@ export class Gozzila extends BaseMonster {
 		this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH, Gozzila.HP_BAR_INFO.HEIGHT );
 		this.ctx.fillStyle = "#4f1ae8";
 		this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH * this.hp / this.maxHp , Gozzila.HP_BAR_INFO.HEIGHT );
-		this.ctx.fillStyle = "black";
+		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`${this.hp} / ${this.maxHp}`, this.x + 30, 40);
 	}

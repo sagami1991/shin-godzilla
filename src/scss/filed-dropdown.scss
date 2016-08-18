@@ -1,0 +1,27 @@
+.field-change-area {
+	position: relative;
+	.hide {
+		display: none;
+	}
+	.field-select-ul {
+		font-size: 16px;
+		font-weight: 500;
+		line-height: 46px;
+		position: absolute;
+		color: #00897b;
+		top: 90px;
+		left: -50px;
+		border-radius: 3px;
+		background-color: #fdfdfd;
+		box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+		li {
+			padding: 0 24px;
+			cursor: pointer;
+			border-bottom: 1px solid rgb(224, 224, 224);
+			white-space: nowrap;
+			&:hover {
+				background-color: #e0e0e0;
+			}
+		}
+	}
+}

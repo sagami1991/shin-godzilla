@@ -1,5 +1,4 @@
 
-
 export class StatusBar {
 	private static HTML = `
 		<div class="lv-panel">

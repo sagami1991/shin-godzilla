@@ -16,6 +16,8 @@ export class GamePadComponent {
 		<button class="pad hukkatu disabled">復活</button>
 		<button class="func-button reset-button">リセット</button>
 		<button class="func-button rank-button">ランキング</button>
+		<button class="func-button field-change-button">フィールドを変更</button>
+		<div class="field-change-area"></div>
 	`;
 	private static KEYSET = [
 		// {keycode: [87, 38], eventName: "ue"},

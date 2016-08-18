@@ -31,6 +31,9 @@ var MainController = (function () {
     MainController.prototype.getSercretKey = function (ws) {
         return ws.upgradeReq.headers["sec-websocket-key"];
     };
+    MainController.prototype.getIpAddr = function (ws) {
+        return ws.upgradeReq.socket.remoteAddress;
+    };
     MainController.prototype.send = function (ws, type, data) {
         try {
             ws.send(JSON.stringify({ type: type, value: data }));
@@ -72,7 +75,7 @@ var MainController = (function () {
     };
     MainController.prototype.validateReqData = function (data, isBinary) {
         if (!isBinary) {
-            if (data.length > 500)
+            if (typeof data === "string" && data.length > 500)
                 return false;
             var resData = JSON.parse(data);
             if (typeof resData.type !== "number") {
@@ -97,6 +100,9 @@ var MainController = (function () {
                 if (evilInfo.maxExp !== Math.floor(50 * Math.pow(1.2, evilInfo.lv - 1))) {
                     return false;
                 }
+            }
+            if (resData.type === share_1.SocketType.field) {
+                return typeof resData.value === "number" && resData.value < 3;
             }
         }
         return true;

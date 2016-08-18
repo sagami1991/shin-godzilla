@@ -12,8 +12,15 @@
     SocketType[SocketType["gozzilaDamege"] = 7] = "gozzilaDamege";
     SocketType[SocketType["save"] = 8] = "save";
     SocketType[SocketType["ranking"] = 9] = "ranking";
+    SocketType[SocketType["field"] = 10] = "field";
 })(exports.SocketType || (exports.SocketType = {}));
 var SocketType = exports.SocketType;
+(function (FieldType) {
+    FieldType[FieldType["henesys"] = 0] = "henesys";
+    FieldType[FieldType["risu"] = 1] = "risu";
+    FieldType[FieldType["kaning"] = 2] = "kaning";
+})(exports.FieldType || (exports.FieldType = {}));
+var FieldType = exports.FieldType;
 (function (GodzillaMode) {
     GodzillaMode[GodzillaMode["init"] = 0] = "init";
     GodzillaMode[GodzillaMode["beforeAtk"] = 1] = "beforeAtk";

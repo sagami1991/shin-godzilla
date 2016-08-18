@@ -3,9 +3,10 @@ var GodzillaController_1 = require("./GodzillaController");
 var share_1 = require("../share/share");
 var shortid = require("shortid");
 var GameController = (function () {
-    function GameController(main, userService) {
+    function GameController(main, userService, fieldController) {
         this.main = main;
         this.userService = userService;
+        this.fieldController = fieldController;
         this.evils = [];
         this.godzillaController = new GodzillaController_1.GodzillaController(main, this.evils);
         this.godzillaController.init();
@@ -16,37 +17,39 @@ var GameController = (function () {
     GameController.prototype.init = function () {
         var _this = this;
         this.main.addCloseListner(function (ws) { return _this.deleteClosedEvil(ws); });
-        this.main.addMsgListner(share_1.SocketType.init, function (ws, reqData) { return _this.onReceiveUserId(ws, reqData); });
+        this.main.addMsgListner(share_1.SocketType.init, function (ws, reqData) { return _this.loadUser(ws, reqData); });
         this.main.addMsgListner(share_1.SocketType.zahyou, function (ws, reqData) { return _this.updateEvils(ws, reqData); });
         this.main.addMsgListner(share_1.SocketType.save, function (ws, reqData) { return _this.saveUserData(ws, reqData); });
         setInterval(function () { return _this.intervalAction(); }, 1000 / GameController.FRAME);
     };
     GameController.prototype.saveUserData = function (ws, reqData) {
-        this.userService.updateUser(reqData).catch(function (e) {
-            console.trace(e);
-            console.log(reqData);
-        });
+        this.userService.updateUser(Object.assign(reqData, { ip: this.main.getIpAddr(ws) }));
     };
-    GameController.prototype.onReceiveUserId = function (ws, reqData) {
+    GameController.prototype.loadUser = function (ws, reqData) {
         var _this = this;
+        this.userService.containBanList(this.main.getIpAddr(ws)).catch(function () {
+            console.log("\u9055\u53CD\u8005\u63A5\u7D9A ip: " + _this.main.getIpAddr(ws));
+            ws.close(1008, "違反者リストに含まれています");
+        });
         if (!reqData._id) {
-            this.sendInitUserData(ws, this.createInitUser());
+            this.sendInitUserData(ws, this.createInitUser(this.main.getIpAddr(ws)));
         }
         else {
             this.userService.getUser(reqData._id).then(function (user) {
-                _this.sendInitUserData(ws, user ? user : _this.createInitUser());
+                _this.sendInitUserData(ws, user ? user : _this.createInitUser(_this.main.getIpAddr(ws)));
             });
         }
     };
-    GameController.prototype.createInitUser = function () {
-        var initialData = Object.assign({ _id: shortid.generate() }, GameController.INIT_USERDATA);
+    GameController.prototype.createInitUser = function (ipAddr) {
+        var initialData = Object.assign({ _id: shortid.generate(), ip: ipAddr }, GameController.INIT_USERDATA);
         this.userService.createUser(initialData);
         return initialData;
     };
     GameController.prototype.sendInitUserData = function (ws, user) {
         this.main.send(ws, share_1.SocketType.init, {
             personId: this.main.getSercretKey(ws),
-            userData: user
+            userData: user,
+            bgType: this.fieldController.bgType
         });
     };
     GameController.prototype.deleteClosedEvil = function (ws) {
@@ -80,6 +83,8 @@ var GameController = (function () {
         else {
             this.evils.push(Object.assign({ personId: this.main.getSercretKey(nowWs) }, reqData));
         }
+    };
+    GameController.prototype.filterEvilData = function () {
     };
     GameController.FRAME = 30;
     GameController.INIT_USERDATA = {

@@ -3524,7 +3524,7 @@
 	
 	
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\n.key-pad {\n  width: 100%;\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 60px; }\n  .key-pad button {\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n    margin-top: 40px;\n    border: none;\n    cursor: pointer; }\n  .key-pad .func-button {\n    height: 46px;\n    margin-left: 30px;\n    line-height: 46px;\n    font-size: 16px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    padding: 0 20px;\n    font-weight: 500;\n    color: #00897b; }\n    .key-pad .func-button:hover, .key-pad .func-button.hover {\n      background-color: #e0e0e0; }\n\n.pad {\n  margin-left: 18px;\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  height: 120px;\n  margin-top: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.chat-area {\n  font-family: sans-serif;\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody, button {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA'; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(136) + "); }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0;\n  padding: 0; }\n\n.h2 {\n  display: flex;\n  align-items: center;\n  font-weight: 500; }\n  .h2 .material-icons {\n    font-size: 30px;\n    margin-right: 8px; }\n\n.canvas-wrapper {\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative; }\n\n.base-panel {\n  background-color: #fdfdfd;\n  color: rgba(2, 33, 2, 0.68);\n  border-radius: 6px; }\n\n.footer {\n  margin-top: 50px;\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\n.key-pad {\n  width: 100%;\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 60px; }\n  .key-pad button {\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n    margin-top: 40px;\n    border: none;\n    cursor: pointer; }\n  .key-pad .func-button {\n    height: 46px;\n    margin-left: 30px;\n    line-height: 46px;\n    font-size: 16px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    padding: 0 20px;\n    font-weight: 500;\n    color: #00897b; }\n    .key-pad .func-button:hover, .key-pad .func-button.hover {\n      background-color: #e0e0e0; }\n\n.pad {\n  margin-left: 18px;\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  height: 120px;\n  margin-top: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.chat-area {\n  font-family: sans-serif;\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody, button {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA'; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(136) + "); }\n\nul {\n  margin: 0;\n  list-style: none;\n  padding: 0; }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0;\n  padding: 0; }\n\n.h2 {\n  display: flex;\n  align-items: center;\n  font-weight: 500; }\n  .h2 .material-icons {\n    font-size: 30px;\n    margin-right: 8px; }\n\n.canvas-wrapper {\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative;\n  overflow: hidden; }\n  .canvas-wrapper canvas {\n    border-radius: 6px;\n    position: absolute;\n    top: 0;\n    left: 0; }\n\n.base-panel {\n  background-color: #fdfdfd;\n  color: rgba(2, 33, 2, 0.68);\n  border-radius: 6px; }\n\n.footer {\n  margin-top: 50px;\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
 	
 	// exports
 
@@ -3546,6 +3546,7 @@
 	var ImageLoader_1 = __webpack_require__(141);
 	var GamePadComponent_1 = __webpack_require__(144);
 	var share_1 = __webpack_require__(145);
+	var FieldComponent_1 = __webpack_require__(157);
 	/** ゲーム機能の総合操作クラス */
 	var MainCanvas = (function () {
 	    function MainCanvas(ws) {
@@ -3578,10 +3579,12 @@
 	        this.canvasElm.width = MainCanvas.WIDTH;
 	        this.canvasElm.height = MainCanvas.HEIGHT;
 	        this.ctx = this.canvasElm.getContext('2d');
+	        MainCanvas.CTX = this.ctx;
 	        GamePadComponent_1.GamePadComponent.setKeyAndButton();
 	    };
 	    MainCanvas.prototype.onReceiveInitData = function (resData) {
 	        var _this = this;
+	        new FieldComponent_1.FieldComponent(this.ws).init(resData.bgType);
 	        localStorage.setItem("dbId", resData.userData._id);
 	        this.gozzila = new gozzila_1.Gozzila(this.ctx, {
 	            image: ImageLoader_1.ImageLoader.IMAGES.gozzila,
@@ -3648,7 +3651,7 @@
 	        this.sendServer();
 	    };
 	    MainCanvas.prototype.drawNowPersonCount = function () {
-	        this.ctx.fillStyle = "black";
+	        this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
 	        this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 	        this.ctx.fillText("\u63A5\u7D9A\u6570:" + (this.otherPersonEvils.length + 1), 736, 18);
 	    };
@@ -3661,7 +3664,8 @@
 	            isDead: this.myEvil.isDead,
 	            lv: this.myEvil.lv,
 	            maxExp: this.myEvil.maxExp,
-	            isLvUp: this.myEvil.isLvUp
+	            isLvUp: this.myEvil.isLvUp,
+	            name: this.myEvil.isChangeName ? this.myEvil.name : undefined
 	        };
 	        if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
 	            !this.receiveMyEvilInfo || this.receiveMyEvilInfo.isDead !== sendData.isDead) {
@@ -3673,8 +3677,10 @@
 	            this.ws.send(share_1.SocketType.gozzilaDamege, null);
 	            this.gozzila.isDamege = false;
 	        }
-	        this.befSendData = JSON.parse(JSON.stringify(sendData));
+	        this.befSendData = Object.assign({}, sendData);
+	        this.myEvil.isChangeName = false;
 	    };
+	    MainCanvas.MOJI_COLOR = "#fff";
 	    MainCanvas.FRAME = 30;
 	    MainCanvas.HEIGHT = 500;
 	    MainCanvas.WIDTH = 800;
@@ -3712,6 +3718,7 @@
 	        this.isAtk = option.isAtk;
 	        this.personId = option.personId;
 	        this.isLvUp = false;
+	        this.name = option.name;
 	    }
 	    SimpleEvil.prototype.draw = function () {
 	        this.action();
@@ -3720,7 +3727,7 @@
 	                ImageLoader_1.ImageLoader.IMAGES.evilHidari;
 	        this.ctx.drawImage(this.image, this.x, main_1.MainCanvas.convY(this.y, SimpleEvil.HEIGHT));
 	        this.trainDraw();
-	        this.lvDraw();
+	        this.drawLv();
 	    };
 	    SimpleEvil.prototype.action = function () {
 	        if (this.isAtk) {
@@ -3742,10 +3749,10 @@
 	        });
 	        this.myTrains.push(train);
 	    };
-	    SimpleEvil.prototype.lvDraw = function () {
-	        this.ctx.fillStyle = "black";
+	    SimpleEvil.prototype.drawLv = function () {
+	        this.ctx.fillStyle = main_1.MainCanvas.MOJI_COLOR;
 	        this.ctx.font = "14px 'ＭＳ Ｐゴシック'";
-	        this.ctx.fillText("Lv " + this.lv, this.x + 34, main_1.MainCanvas.convY(this.y - 10, 0));
+	        this.ctx.fillText(this.name + " Lv " + this.lv, this.x + 34, main_1.MainCanvas.convY(this.y - 10, 0));
 	    };
 	    SimpleEvil.prototype.trainDraw = function () {
 	        this.myTrains = this.myTrains.filter(function (train) { return !train.isDead; });
@@ -3860,6 +3867,19 @@
 	        this.animeImageLoad();
 	        return this.commonImageLoad();
 	    };
+	    ImageLoader.fieldImageLoad = function (type) {
+	        return Promise.all(ImageLoader.FIELD_PATH.map(function (src) {
+	            return new Promise(function (reslve) {
+	                return ImageLoader.imageLoad(ImageLoader.PREFIX_PATH + "bg/" + type + "/" + src, reslve);
+	            });
+	        })).then(function (imageElms) {
+	            ImageLoader.FIELD_IMAGE = {
+	                bg: imageElms[0],
+	                asiba: imageElms[1],
+	                sita: imageElms[2],
+	            };
+	        });
+	    };
 	    ImageLoader.animeImageLoad = function () {
 	        var hoge = ImageLoader.AnimationPath[0];
 	        return Promise.all(Array.from(new Array(hoge.length)).map(function (val, i) {
@@ -3895,6 +3915,11 @@
 	        image.addEventListener("load", function () { return resolve(image); });
 	        image.src = path;
 	    };
+	    ImageLoader.FIELD_PATH = [
+	        "back.0.png",
+	        "enH0.0.png",
+	        "bsc.0.png"
+	    ];
 	    ImageLoader.PREFIX_PATH = "./assets/";
 	    ImageLoader.IMAGE_PATHS = [
 	        "ebiruai.png",
@@ -3949,6 +3974,7 @@
 	        this.initButtons();
 	        this.initStatusBar();
 	        this.dbId = option.dbId;
+	        this.isChangeName = true;
 	    }
 	    /** 毎フレーム実行される動作 */
 	    Ebiruai.prototype.action = function () {
@@ -3970,6 +3996,7 @@
 	        this.statusBar = new StatusBar_1.StatusBar();
 	        this.statusBar.addOnNameEditListner(function (name) {
 	            _this.name = name;
+	            _this.isChangeName = true;
 	            _this.saveMyData();
 	        });
 	        this.refreshStatusBar();
@@ -4056,7 +4083,7 @@
 	    Ebiruai.prototype.drawRespawnCount = function () {
 	        if (this.rebornTimeCount >= 0)
 	            this.rebornTimeCount--;
-	        this.ctx.fillStyle = "black";
+	        this.ctx.fillStyle = main_1.MainCanvas.MOJI_COLOR;
 	        this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
 	        this.ctx.fillText("\u6B7B\u306B\u307E\u3057\u305F\u3002" + Math.ceil(this.rebornTimeCount / 30) + "\u79D2\u5F8C\u306B\u5FA9\u6D3B\u30DC\u30BF\u30F3\u304C\u4F7F\u7528\u53EF\u80FD\u306B\u306A\u308A\u307E\u3059", 80, 180);
 	    };
@@ -4211,7 +4238,7 @@
 	        jump: false,
 	        atk: false
 	    };
-	    GamePadComponent.HTML = "\n\t\t<button class=\"pad hidari\"><i class=\"material-icons\">chevron_left</i></button>\n\t\t<button class=\"pad migi\"><i class=\"material-icons\">chevron_right</i></button>\n\t\t<button class=\"pad jump\">\u30B8\u30E3\u30F3\u30D7</button>\n\t\t<button class=\"pad atk\">\u653B\u6483</button>\n\t\t<button class=\"pad hukkatu disabled\">\u5FA9\u6D3B</button>\n\t\t<button class=\"func-button reset-button\">\u30EA\u30BB\u30C3\u30C8</button>\n\t\t<button class=\"func-button rank-button\">\u30E9\u30F3\u30AD\u30F3\u30B0</button>\n\t";
+	    GamePadComponent.HTML = "\n\t\t<button class=\"pad hidari\"><i class=\"material-icons\">chevron_left</i></button>\n\t\t<button class=\"pad migi\"><i class=\"material-icons\">chevron_right</i></button>\n\t\t<button class=\"pad jump\">\u30B8\u30E3\u30F3\u30D7</button>\n\t\t<button class=\"pad atk\">\u653B\u6483</button>\n\t\t<button class=\"pad hukkatu disabled\">\u5FA9\u6D3B</button>\n\t\t<button class=\"func-button reset-button\">\u30EA\u30BB\u30C3\u30C8</button>\n\t\t<button class=\"func-button rank-button\">\u30E9\u30F3\u30AD\u30F3\u30B0</button>\n\t\t<button class=\"func-button field-change-button\">\u30D5\u30A3\u30FC\u30EB\u30C9\u3092\u5909\u66F4</button>\n\t\t<div class=\"field-change-area\"></div>\n\t";
 	    GamePadComponent.KEYSET = [
 	        // {keycode: [87, 38], eventName: "ue"},
 	        { keycode: [68, 39], eventName: "migi" },
@@ -4243,8 +4270,15 @@
 	    SocketType[SocketType["gozzilaDamege"] = 7] = "gozzilaDamege";
 	    SocketType[SocketType["save"] = 8] = "save";
 	    SocketType[SocketType["ranking"] = 9] = "ranking";
+	    SocketType[SocketType["field"] = 10] = "field";
 	})(exports.SocketType || (exports.SocketType = {}));
 	var SocketType = exports.SocketType;
+	(function (FieldType) {
+	    FieldType[FieldType["henesys"] = 0] = "henesys";
+	    FieldType[FieldType["risu"] = 1] = "risu";
+	    FieldType[FieldType["kaning"] = 2] = "kaning";
+	})(exports.FieldType || (exports.FieldType = {}));
+	var FieldType = exports.FieldType;
 	(function (GodzillaMode) {
 	    GodzillaMode[GodzillaMode["init"] = 0] = "init";
 	    GodzillaMode[GodzillaMode["beforeAtk"] = 1] = "beforeAtk";
@@ -4270,7 +4304,7 @@
 	            var zahyou = LvUpEffect.LVUP;
 	            var image = ImageLoader_1.ImageLoader.ANIME_IMAGE.lvup[i];
 	            ctx.drawImage(image, mob.x + 50 - zahyou[i].x, main_1.MainCanvas.convY(mob.y + zahyou[i].y, 0));
-	        }, 4, 21);
+	        }, 4, LvUpEffect.LVUP.length);
 	    };
 	    LvUpEffect.LVUP = __webpack_require__(147);
 	    return LvUpEffect;
@@ -4443,7 +4477,7 @@
 	        this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH, Gozzila.HP_BAR_INFO.HEIGHT);
 	        this.ctx.fillStyle = "#4f1ae8";
 	        this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH * this.hp / this.maxHp, Gozzila.HP_BAR_INFO.HEIGHT);
-	        this.ctx.fillStyle = "black";
+	        this.ctx.fillStyle = main_1.MainCanvas.MOJI_COLOR;
 	        this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 	        this.ctx.fillText(this.hp + " / " + this.maxHp, this.x + 30, 40);
 	    };
@@ -4465,7 +4499,7 @@
 	    };
 	    Gozzila.WIDTH = 64;
 	    Gozzila.HEIGHT = 64;
-	    Gozzila.BAIRITU = 5;
+	    Gozzila.BAIRITU = 6;
 	    Gozzila.MAX_HP = 4000;
 	    Gozzila.HP_BAR_INFO = {
 	        X: 30,
@@ -4623,15 +4657,10 @@
 	        this.ws = new WebSocket(WSService.URL);
 	        this.ws.onopen = function () { return _this.onOpen(); };
 	        this.ws.onmessage = function (msgEvent) { return _this.onReceiveMsg(msgEvent); };
-	        this.ws.onclose = function () { return _this.onClose(); };
+	        this.ws.onclose = function (ev) { return _this.onClose(ev); };
 	        this.pingInterval();
 	        this.addOnReceiveMsgListener(share_1.SocketType.infolog, function (value) {
 	            util_1.Notify.success(value);
-	        });
-	        this.addOnCloseListener(function () {
-	            _this.isClose = true;
-	            util_1.Notify.error("切断されました。サーバーが落ちた可能性があります");
-	            window.clearInterval(_this.pingTimer);
 	        });
 	    };
 	    WSService.prototype.send = function (type, value) {
@@ -4649,7 +4678,11 @@
 	            _this.ws.send(new Uint8Array(1));
 	        }, 50 * 1000);
 	    };
-	    WSService.prototype.onClose = function () {
+	    WSService.prototype.onClose = function (ev) {
+	        console.log(ev);
+	        this.isClose = true;
+	        util_1.Notify.error("切断されました。サーバーが落ちた可能性があります");
+	        window.clearInterval(this.pingTimer);
 	        this.onCloseEvents.forEach(function (cb) { return cb(); });
 	    };
 	    WSService.prototype.onOpen = function () {
@@ -4758,6 +4791,120 @@
 	
 	// module
 	exports.push([module.id, ".ranking-area {\n  padding: 1.5em;\n  opacity: 1;\n  transition: opacity 0.6s linear; }\n  .ranking-area.disabled {\n    opacity: 0;\n    max-height: 0;\n    overflow: hidden;\n    padding: 0; }\n  .ranking-area .h2 {\n    padding-bottom: 4px;\n    font-size: 30px;\n    border-bottom: 1px solid rgba(29, 45, 23, 0.28);\n    margin-bottom: 20px; }\n  .ranking-area .rank-table {\n    width: 80%;\n    margin: 0 auto;\n    border-collapse: collapse;\n    border-spacing: 0px; }\n    .ranking-area .rank-table tr {\n      border-bottom: 1px solid #e0e0e0; }\n    .ranking-area .rank-table th, .ranking-area .rank-table td {\n      align-items: center;\n      padding: 0 24px; }\n    .ranking-area .rank-table th {\n      text-align: left;\n      font-weight: 500;\n      height: 50px; }\n      .ranking-area .rank-table th.rank-th {\n        width: 100px; }\n    .ranking-area .rank-table td {\n      height: 48px; }\n      .ranking-area .rank-table td .rank-name {\n        display: flex;\n        align-items: center; }\n        .ranking-area .rank-table td .rank-name .material-icons {\n          margin-right: 6px; }\n    .ranking-area .rank-table .rank-bold {\n      font-size: 18px;\n      font-weight: 500; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 156 */,
+/* 157 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var main_1 = __webpack_require__(137);
+	var ImageLoader_1 = __webpack_require__(141);
+	var Handlebars = __webpack_require__(150);
+	var share_1 = __webpack_require__(145);
+	__webpack_require__(158);
+	var FieldComponent = (function () {
+	    function FieldComponent(wsService) {
+	        this.wsService = wsService;
+	    }
+	    FieldComponent.prototype.init = function (type) {
+	        var _this = this;
+	        var changeButton = document.querySelector(".field-change-button");
+	        document.querySelector(".field-change-area").innerHTML = FieldComponent.TEMPL({ fields: FieldComponent.FIELD_LIST });
+	        var dropDown = document.querySelector(".field-change-area .field-select-ul");
+	        changeButton.addEventListener("click", function () {
+	            dropDown.classList.toggle("hide");
+	        });
+	        document.addEventListener("click", function (e) {
+	            var target = e.target;
+	            if (target.className === "field-select") {
+	                var targetType_1 = target.getAttribute("data-field");
+	                var targetNum = FieldComponent.FIELD_LIST.findIndex(function (field) { return field.type === targetType_1; });
+	                _this.wsService.send(share_1.SocketType.field, targetNum);
+	                dropDown.classList.toggle("hide");
+	            }
+	            else if (target !== changeButton) {
+	                dropDown.classList.add("hide");
+	            }
+	        });
+	        ImageLoader_1.ImageLoader.fieldImageLoad(FieldComponent.FIELD_LIST[type].type).then(function () {
+	            _this.draw();
+	        });
+	        this.wsService.addOnReceiveMsgListener(share_1.SocketType.field, function (typeNum) {
+	            ImageLoader_1.ImageLoader.fieldImageLoad(FieldComponent.FIELD_LIST[typeNum].type).then(function () {
+	                _this.draw();
+	            });
+	        });
+	    };
+	    FieldComponent.prototype.draw = function () {
+	        var canvas = document.querySelector("#bg-canvas");
+	        var ctx = canvas.getContext('2d');
+	        ctx.beginPath();
+	        ctx.fillStyle = ctx.createPattern(ImageLoader_1.ImageLoader.FIELD_IMAGE.bg, 'repeat');
+	        ctx.rect(0, 0, 800, 500);
+	        ctx.fill();
+	        var asiba = ImageLoader_1.ImageLoader.FIELD_IMAGE.asiba;
+	        var y0 = main_1.MainCanvas.Y0 - asiba.height / 2;
+	        var jimen = ImageLoader_1.ImageLoader.FIELD_IMAGE.sita;
+	        for (var i = 0; i < main_1.MainCanvas.WIDTH / jimen.width; i++) {
+	            for (var j = 0; j < y0 / jimen.height + 1; j++) {
+	                ctx.drawImage(jimen, i * jimen.width, main_1.MainCanvas.HEIGHT - y0 + j * jimen.height);
+	            }
+	        }
+	        for (var i = 0; i < main_1.MainCanvas.WIDTH / asiba.width; i++) {
+	            ctx.drawImage(asiba, i * asiba.width, main_1.MainCanvas.convY(y0, asiba.height));
+	        }
+	    };
+	    FieldComponent.FIELD_LIST = [
+	        { type: "henesys", label: "通常" },
+	        { type: "risu", label: "町並み" },
+	        { type: "kaning", label: "スラム街" },
+	    ];
+	    FieldComponent.TEMPL = Handlebars.compile("\n\t\t<ul class=\"field-select-ul hide\">\n\t\t\t{{#fields}}\n\t\t\t\t<li class=\"field-select\" data-field=\"{{type}}\">{{label}}</li>\n\t\t\t{{/fields}}\n\t\t</ul>\n\t");
+	    return FieldComponent;
+	}());
+	exports.FieldComponent = FieldComponent;
+
+
+/***/ },
+/* 158 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(159);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(133)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./filed-dropdown.scss", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./filed-dropdown.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 159 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(132)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".field-change-area {\n  position: relative; }\n  .field-change-area .hide {\n    display: none; }\n  .field-change-area .field-select-ul {\n    font-size: 16px;\n    font-weight: 500;\n    line-height: 46px;\n    position: absolute;\n    color: #00897b;\n    top: 90px;\n    left: -50px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); }\n    .field-change-area .field-select-ul li {\n      padding: 0 24px;\n      cursor: pointer;\n      border-bottom: 1px solid #e0e0e0;\n      white-space: nowrap; }\n      .field-change-area .field-select-ul li:hover {\n        background-color: #e0e0e0; }\n", ""]);
 	
 	// exports
 

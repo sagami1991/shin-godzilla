@@ -11,16 +11,24 @@ export enum SocketType {
 	closePerson,
 	gozzilaDamege,
 	save,
-	ranking
+	ranking,
+	field
 }
 
+export enum FieldType {
+	henesys,
+	risu,
+	kaning
+}
 export interface InitialUserData {
 	personId: string;
 	userData: DbUserData;
+	bgType: number;
 }
 
 export interface DbUserData {
 	_id: string;
+	ip?: string;
 	lv: number;
 	name: string;
 	exp: number;
@@ -37,6 +45,7 @@ export interface ReqEvilData {
 	maxExp?: number;
 	personId?: string;
 	isLvUp?: boolean;
+	name: string;
 }
 
 export interface RankingInfo {

@@ -1,6 +1,5 @@
 import * as WebSocket from 'ws';
-import {Collection, Db} from 'mongodb';
-import {SocketType, ReqEvilData} from "../share/share";
+import {SocketType, ReqEvilData, FieldType} from "../share/share";
 
 interface Msglistner {
 	type: SocketType;
@@ -57,6 +56,9 @@ export class MainController {
 		return ws.upgradeReq.headers["sec-websocket-key"];
 	}
 
+	public getIpAddr(ws: WebSocket) {
+		return ws.upgradeReq.socket.remoteAddress;
+	}
 	public send(ws: WebSocket, type: SocketType, data: any) {
 		try {
 			ws.send(JSON.stringify({type: type, value: data}));
@@ -99,7 +101,7 @@ export class MainController {
 
 	private validateReqData(data: string, isBinary: boolean) {
 		if (!isBinary) {
-			if (data.length > 500) return false;
+			if (typeof data === "string" && data.length > 500) return false;
 			const resData = <ReqData> JSON.parse(data);
 
 			if (typeof resData.type !== "number") {
@@ -122,6 +124,10 @@ export class MainController {
 				if (evilInfo.maxExp !== Math.floor(50 * Math.pow(1.2, evilInfo.lv - 1))) {
 					return false;
 				}
+			}
+
+			if (resData.type === SocketType.field) {
+				return typeof resData.value === "number" && resData.value < 3;
 			}
 		}
 		return true;
