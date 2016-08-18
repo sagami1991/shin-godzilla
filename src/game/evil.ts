@@ -1,12 +1,12 @@
-import {MainCanvas, Zahyou} from "./main";
+import {MainCanvas} from "./main";
 import {Train} from "./train";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
 
 export interface EvilOption extends BaseMobOption {
 	lv: number;
-	isDead?: boolean;
-	isAtk?: boolean;
+	isDead: boolean;
+	isAtk: boolean;
 	personId: string;
 }
 

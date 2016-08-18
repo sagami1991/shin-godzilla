@@ -1,37 +1,20 @@
 import * as WebSocket from 'ws';
 import {MainController, ReqData} from "./MainController";
-import {GodzillaController, GodzillaInfo} from "./GodzillaController";
-import {SocketType, InitialUserData, DbUserData, ReqEvilData} from "../share/share";
+import {GodzillaController} from "./GodzillaController";
+import {SocketType, InitialUserData, DbUserData, ReqEvilData, GameData} from "../share/share";
 import {UserService} from "../service/UserService";
 import * as shortid from "shortid";
-
-interface GameData {
-	gozzila: GodzillaInfo;
-	evils: Zahyou[];
-}
-
-export interface Zahyou {
-	personId: string;
-	isMigiMuki: boolean;
-	x: number;
-	y: number;
-	isAtk: boolean;
-	isDead: boolean;
-	lv: number;
-	maxExp: number;
-}
 
 export class GameController {
 	public static FRAME = 30;
 	private static INIT_USERDATA = {
-		_id: "",
 		exp: 0,
 		lv: 1,
 		name: "名前"
 	};
 	private godzillaController: GodzillaController;
 	private befSendData: GameData;
-	private evils: Zahyou[] = [];
+	private evils: ReqEvilData[] = [];
 	public static getRandom<T>(arr: T[]): T  {
 		return arr ? arr[Math.floor(Math.random() * arr.length)] : null;
 	}
@@ -57,22 +40,13 @@ export class GameController {
 			this.sendInitUserData(ws, this.createInitUser());
 		} else {
 			this.userService.getUser(reqData._id).then((user) => {
-				if (user) {
-					this.sendInitUserData(ws, user);
-				} else {
-					this.sendInitUserData(ws, this.createInitUser());
-				}
+				this.sendInitUserData(ws, user ? user : this.createInitUser());
 			});
 		}
 	}
 
 	private createInitUser(): DbUserData {
-		const initialData = {
-			_id: shortid.generate(),
-			exp: 0,
-			lv: 1,
-			name: "名前"
-		};
+		const initialData = Object.assign({_id: shortid.generate()}, GameController.INIT_USERDATA);
 		this.userService.createUser(initialData);
 		return initialData;
 	}
@@ -96,7 +70,7 @@ export class GameController {
 	}
 
 	private sendGameData() {
-		const sendData = {
+		const sendData: GameData = {
 			gozzila: this.godzillaController.godzilla,
 			evils: this.evils
 		};

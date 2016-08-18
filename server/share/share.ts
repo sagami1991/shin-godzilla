@@ -34,10 +34,30 @@ export interface ReqEvilData {
 	isAtk: boolean;
 	isDead: boolean;
 	lv: number;
-	maxExp: number;
+	maxExp?: number;
+	personId?: string;
 }
 
 export interface RankingInfo {
-	lv: number,
-	name: string
+	lv: number;
+	name: string;
+}
+
+export interface GameData {
+	gozzila: GodzillaInfo;
+	evils: ReqEvilData[];
+}
+
+export interface GodzillaInfo {
+	hp: number;
+	mode: GodzillaMode;
+	target: {x: number, y: number}[];
+}
+
+export enum GodzillaMode {
+	init,
+	beforeAtk,
+	atk,
+	atkEnd,
+	dead
 }

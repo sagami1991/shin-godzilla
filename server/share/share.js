@@ -14,5 +14,13 @@
     SocketType[SocketType["ranking"] = 9] = "ranking";
 })(exports.SocketType || (exports.SocketType = {}));
 var SocketType = exports.SocketType;
+(function (GodzillaMode) {
+    GodzillaMode[GodzillaMode["init"] = 0] = "init";
+    GodzillaMode[GodzillaMode["beforeAtk"] = 1] = "beforeAtk";
+    GodzillaMode[GodzillaMode["atk"] = 2] = "atk";
+    GodzillaMode[GodzillaMode["atkEnd"] = 3] = "atkEnd";
+    GodzillaMode[GodzillaMode["dead"] = 4] = "dead";
+})(exports.GodzillaMode || (exports.GodzillaMode = {}));
+var GodzillaMode = exports.GodzillaMode;
 
 //# sourceMappingURL=share.js.map

@@ -1,5 +1,5 @@
 /** ボタンやキーを設定 */
-export class Keyset {
+export class GamePadComponent {
 	public static KeyEvent = {
 		// ue: false,
 		migi: false,
@@ -15,6 +15,7 @@ export class Keyset {
 		<button class="pad atk">攻撃</button>
 		<button class="pad hukkatu disabled">復活</button>
 		<button class="func-button reset-button">リセット</button>
+		<button class="func-button rank-button">ランキング</button>
 	`;
 	private static KEYSET = [
 		// {keycode: [87, 38], eventName: "ue"},
@@ -29,12 +30,16 @@ export class Keyset {
 	public static setKeyAndButton() {
 		document.querySelector(".key-pad").innerHTML = this.HTML;
 		document.querySelector("#canvas").addEventListener("click", () => {
-			Keyset.KeyEvent.atk = true;
+			GamePadComponent.KeyEvent.atk = true;
 		});
-		Keyset.KEYSET.forEach((keyset) => {
+		const rankArea = <HTMLElement> document.querySelector(".ranking-area");
+		document.querySelector(".rank-button").addEventListener("click", () => {
+			rankArea.classList.toggle("disabled");
+		});
+		GamePadComponent.KEYSET.forEach((keyset) => {
 			window.addEventListener("keydown", e => {
 				if (keyset.keycode.find(keycode => e.keyCode === keycode)) {
-					(<any>Keyset.KeyEvent)[keyset.eventName] = true;
+					(<any>GamePadComponent.KeyEvent)[keyset.eventName] = true;
 					if (e.keyCode === 32 && document.activeElement === document.body) {
 						e.preventDefault();
 					}
@@ -42,26 +47,26 @@ export class Keyset {
 			});
 			window.addEventListener("keyup", e => {
 				if (keyset.keycode.find(keycode => e.keyCode === keycode)) {
-					(<any>Keyset.KeyEvent)[keyset.eventName] = false;
+					(<any>GamePadComponent.KeyEvent)[keyset.eventName] = false;
 				}
 			});
 
 			document.querySelector(`.${keyset.eventName}`).addEventListener("mousedown", () => {
-				(<any>Keyset.KeyEvent)[keyset.eventName] = true;
+				(<any>GamePadComponent.KeyEvent)[keyset.eventName] = true;
 			});
 
 			document.querySelector(`.${keyset.eventName}`).addEventListener("touchstart", e => {
-				(<any>Keyset.KeyEvent)[keyset.eventName] = true;
+				(<any>GamePadComponent.KeyEvent)[keyset.eventName] = true;
 				const elem = (<HTMLElement> e.target);
 				elem.className = elem.className + " hover";
 				e.preventDefault();
 			});
 
 			document.querySelector(`.${keyset.eventName}`).addEventListener("mouseup", () => {
-				(<any>Keyset.KeyEvent)[keyset.eventName] = false;
+				(<any>GamePadComponent.KeyEvent)[keyset.eventName] = false;
 			});
 			document.querySelector(`.${keyset.eventName}`).addEventListener("touchend", e => {
-				(<any>Keyset.KeyEvent)[keyset.eventName] = false;
+				(<any>GamePadComponent.KeyEvent)[keyset.eventName] = false;
 				const elem = (<HTMLElement> e.target);
 				elem.className = elem.className.replace(" hover", "");
 				e.preventDefault();

@@ -1,7 +1,6 @@
 import * as WebSocket from 'ws';
 import {Collection, Db} from 'mongodb';
-import {Zahyou} from "./GameController";
-import {SocketType} from "../share/share";
+import {SocketType, ReqEvilData} from "../share/share";
 
 interface Msglistner {
 	type: SocketType;
@@ -110,7 +109,7 @@ export class MainController {
 				return false;
 			}
 			if (resData.type === SocketType.zahyou) {
-				const evilInfo = <Zahyou> resData.value;
+				const evilInfo = <ReqEvilData> resData.value;
 				for (let num of [evilInfo.lv, evilInfo.x, evilInfo.y, evilInfo.maxExp]){
 					if (typeof num !== "number") return false;
 				}

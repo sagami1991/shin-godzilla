@@ -1,4 +1,4 @@
-import {MainCanvas, Zahyou} from "./main";
+import {MainCanvas} from "./main";
 import {Gozzila} from "./gozzila";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";

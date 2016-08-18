@@ -1,18 +1,10 @@
 import {SimpleEvil, EvilOption} from "./evil";
 import {Gozzila} from "./gozzila";
 import {StatusBar} from "./StatusBar";
-import {Keyset} from "./keyset";
-import {MainCanvas, Zahyou} from "./main";
+import {GamePadComponent} from "./GamePadComponent";
+import {MainCanvas} from "./main";
 import {WSService} from "../WebSocketService";
 import {SocketType, DbUserData} from "../../server/share/share";
-
-interface StrageData {
-	date: Date;
-	lv: number;
-	exp: number;
-	maxHp: number;
-	name: string;
-}
 
 export interface MyEvilOption extends EvilOption {
 	gozzila: Gozzila;
@@ -25,7 +17,7 @@ export class Ebiruai extends SimpleEvil {
 	private static BASE_JUMP = 10;
 	private static BASE_SPEED = 5;
 	private static EXP_BAIRITU = 1.2;
-	private static INIT_MAX_EXP = 50;
+	private static BASE_EXP = 50;
 	private static INIT_MAX_HP = 100;
 	public atksita: boolean;
 	public maxExp: number;
@@ -91,10 +83,11 @@ export class Ebiruai extends SimpleEvil {
 	private initButtons() {
 		this.rebirthButton = <HTMLButtonElement> document.querySelector(".hukkatu");
 		this.rebirthButton.addEventListener("click", () => {
-			if (this.rebirthButton.className.indexOf("disabled") !== -1) return;
-			this.hp = this.maxHp;
-			this.isDead = false;
-			this.rebirthButton.className += " disabled";
+			if (!this.rebirthButton.classList.contains("disabled")) {
+				this.hp = this.maxHp;
+				this.isDead = false;
+				this.rebirthButton.classList.add("disabled");
+			}
 		});
 		this.resetButton = <HTMLButtonElement> document.querySelector(".reset-button");
 		this.resetButton.addEventListener("click", () => {
@@ -109,23 +102,23 @@ export class Ebiruai extends SimpleEvil {
 	}
 
 	private damegeCalc() {
-		this.hp -= this.gozzila.calcBeamDamege(this.x, this.x + SimpleEvil.WIDTH, this.y, this.y + SimpleEvil.HEIGHT);
-		this.hp -= this.gozzila.sessyoku(this.x, this.y) ? 12 : 0;
+		this.hp -= this.gozzila.calcBeamDmg(this.x, this.x + SimpleEvil.WIDTH, this.y, this.y + SimpleEvil.HEIGHT);
+		this.hp -= this.gozzila.calcSessyokuDmg(this.x, this.y);
 	}
 
 	private move() {
-		if (Keyset.KeyEvent.hidari) {
+		if (GamePadComponent.KeyEvent.hidari) {
 			this.x -= this.speed;
 			this.isMigiMuki = false;
 		}
-		if (Keyset.KeyEvent.migi) {
+		if (GamePadComponent.KeyEvent.migi) {
 			this.x += this.speed;
 			this.isMigiMuki = true;
 		}
 	}
 
 	private jump() {
-		if (Keyset.KeyEvent.jump && !this.isJumping) {
+		if (GamePadComponent.KeyEvent.jump && !this.isJumping) {
 			this.jumpF = 0;
 			this.isJumping = true;
 		}
@@ -140,8 +133,8 @@ export class Ebiruai extends SimpleEvil {
 	}
 
 	private beforeAtk() {
-		if (Keyset.KeyEvent.atk && this.myTrains.length < 3) {
-			Keyset.KeyEvent.atk = false;
+		if (GamePadComponent.KeyEvent.atk && this.myTrains.length < 3) {
+			GamePadComponent.KeyEvent.atk = false;
 			this.atksita = true;
 			super.atk();
 			this.myTrains[this.myTrains.length - 1].setOnAtked(() => this.increaseExp());
@@ -173,7 +166,7 @@ export class Ebiruai extends SimpleEvil {
 		this.isDead = true;
 		this.rebornTimeCount = MainCanvas.FRAME * 8;
 		setTimeout(() => {
-			this.rebirthButton.className = this.rebirthButton.className.replace(" disabled", "");
+			this.rebirthButton.classList.remove("disabled");
 		}, 8000);
 		this.exp -= Math.floor(this.maxExp / 8);
 		this.exp = this.exp < 0 ? 0 : this.exp;
@@ -190,7 +183,7 @@ export class Ebiruai extends SimpleEvil {
 		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp , 8);
 	}
 	private getMaxExp() {
-		return Math.floor(Ebiruai.INIT_MAX_EXP * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
+		return Math.floor(Ebiruai.BASE_EXP * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
 	}
 
 	private saveMyData() {

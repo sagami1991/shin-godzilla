@@ -1,4 +1,3 @@
-import {Zahyou} from "./main";
 
 export interface BaseMobOption {
 	image: HTMLImageElement;

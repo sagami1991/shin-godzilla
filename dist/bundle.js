@@ -717,7 +717,7 @@
 	
 	
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\n.key-pad {\n  width: 100%;\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 60px; }\n  .key-pad button {\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n    margin-top: 40px;\n    border: none;\n    cursor: pointer; }\n  .key-pad .func-button {\n    height: 46px;\n    margin-left: 30px;\n    line-height: 46px;\n    font-size: 16px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    padding: 0 20px;\n    font-weight: 500;\n    color: #00897b; }\n    .key-pad .func-button:hover, .key-pad .func-button.hover {\n      background-color: #e0e0e0; }\n\n.pad {\n  margin-left: 18px;\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  height: 120px;\n  margin-top: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.chat-area {\n  font-family: sans-serif;\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody, button {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA'; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(10) + "); }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0;\n  padding: 0; }\n\n.h2 {\n  display: flex;\n  align-items: center;\n  font-weight: 500; }\n  .h2 .material-icons {\n    margin-right: 8px; }\n\n.canvas-wrapper {\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative; }\n\n.base-panel {\n  background-color: #fdfdfd;\n  color: rgba(2, 33, 2, 0.68);\n  border-radius: 6px; }\n\n.footer {\n  margin-top: 50px;\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\n.key-pad {\n  width: 100%;\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 60px; }\n  .key-pad button {\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n    margin-top: 40px;\n    border: none;\n    cursor: pointer; }\n  .key-pad .func-button {\n    height: 46px;\n    margin-left: 30px;\n    line-height: 46px;\n    font-size: 16px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    padding: 0 20px;\n    font-weight: 500;\n    color: #00897b; }\n    .key-pad .func-button:hover, .key-pad .func-button.hover {\n      background-color: #e0e0e0; }\n\n.pad {\n  margin-left: 18px;\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  height: 120px;\n  margin-top: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.chat-area {\n  font-family: sans-serif;\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody, button {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA'; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(10) + "); }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0;\n  padding: 0; }\n\n.h2 {\n  display: flex;\n  align-items: center;\n  font-weight: 500; }\n  .h2 .material-icons {\n    font-size: 30px;\n    margin-right: 8px; }\n\n.canvas-wrapper {\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative; }\n\n.base-panel {\n  background-color: #fdfdfd;\n  color: rgba(2, 33, 2, 0.68);\n  border-radius: 6px; }\n\n.footer {\n  margin-top: 50px;\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
 	
 	// exports
 
@@ -737,7 +737,7 @@
 	var myEvil_1 = __webpack_require__(16);
 	var gozzila_1 = __webpack_require__(19);
 	var ImageLoader_1 = __webpack_require__(15);
-	var keyset_1 = __webpack_require__(18);
+	var GamePadComponent_1 = __webpack_require__(154);
 	var share_1 = __webpack_require__(20);
 	/** ゲーム機能の総合操作クラス */
 	var MainCanvas = (function () {
@@ -761,7 +761,7 @@
 	        this.canvasElm.width = MainCanvas.WIDTH;
 	        this.canvasElm.height = MainCanvas.HEIGHT;
 	        this.ctx = this.canvasElm.getContext('2d');
-	        keyset_1.Keyset.setKeyAndButton();
+	        GamePadComponent_1.GamePadComponent.setKeyAndButton();
 	    };
 	    MainCanvas.prototype.onReceiveInitData = function (resData) {
 	        var _this = this;
@@ -784,6 +784,8 @@
 	            lv: resData.userData.lv,
 	            exp: resData.userData.exp,
 	            name: resData.userData.name,
+	            isAtk: false,
+	            isDead: false
 	        });
 	        this.gozzila.target = [0, 0].map(function () { return { x: _this.myEvil.x, y: _this.myEvil.y }; });
 	        this.timer = window.setInterval(function () { return _this.draw(); }, 1000 / MainCanvas.FRAME);
@@ -1088,7 +1090,7 @@
 	};
 	var evil_1 = __webpack_require__(12);
 	var StatusBar_1 = __webpack_require__(17);
-	var keyset_1 = __webpack_require__(18);
+	var GamePadComponent_1 = __webpack_require__(154);
 	var main_1 = __webpack_require__(11);
 	var share_1 = __webpack_require__(20);
 	/** 自分が操作する機能をもつエビルアイ */
@@ -1143,11 +1145,11 @@
 	        var _this = this;
 	        this.rebirthButton = document.querySelector(".hukkatu");
 	        this.rebirthButton.addEventListener("click", function () {
-	            if (_this.rebirthButton.className.indexOf("disabled") !== -1)
-	                return;
-	            _this.hp = _this.maxHp;
-	            _this.isDead = false;
-	            _this.rebirthButton.className += " disabled";
+	            if (!_this.rebirthButton.classList.contains("disabled")) {
+	                _this.hp = _this.maxHp;
+	                _this.isDead = false;
+	                _this.rebirthButton.classList.add("disabled");
+	            }
 	        });
 	        this.resetButton = document.querySelector(".reset-button");
 	        this.resetButton.addEventListener("click", function () {
@@ -1161,21 +1163,21 @@
 	        });
 	    };
 	    Ebiruai.prototype.damegeCalc = function () {
-	        this.hp -= this.gozzila.calcBeamDamege(this.x, this.x + evil_1.SimpleEvil.WIDTH, this.y, this.y + evil_1.SimpleEvil.HEIGHT);
-	        this.hp -= this.gozzila.sessyoku(this.x, this.y) ? 12 : 0;
+	        this.hp -= this.gozzila.calcBeamDmg(this.x, this.x + evil_1.SimpleEvil.WIDTH, this.y, this.y + evil_1.SimpleEvil.HEIGHT);
+	        this.hp -= this.gozzila.calcSessyokuDmg(this.x, this.y);
 	    };
 	    Ebiruai.prototype.move = function () {
-	        if (keyset_1.Keyset.KeyEvent.hidari) {
+	        if (GamePadComponent_1.GamePadComponent.KeyEvent.hidari) {
 	            this.x -= this.speed;
 	            this.isMigiMuki = false;
 	        }
-	        if (keyset_1.Keyset.KeyEvent.migi) {
+	        if (GamePadComponent_1.GamePadComponent.KeyEvent.migi) {
 	            this.x += this.speed;
 	            this.isMigiMuki = true;
 	        }
 	    };
 	    Ebiruai.prototype.jump = function () {
-	        if (keyset_1.Keyset.KeyEvent.jump && !this.isJumping) {
+	        if (GamePadComponent_1.GamePadComponent.KeyEvent.jump && !this.isJumping) {
 	            this.jumpF = 0;
 	            this.isJumping = true;
 	        }
@@ -1190,8 +1192,8 @@
 	    };
 	    Ebiruai.prototype.beforeAtk = function () {
 	        var _this = this;
-	        if (keyset_1.Keyset.KeyEvent.atk && this.myTrains.length < 3) {
-	            keyset_1.Keyset.KeyEvent.atk = false;
+	        if (GamePadComponent_1.GamePadComponent.KeyEvent.atk && this.myTrains.length < 3) {
+	            GamePadComponent_1.GamePadComponent.KeyEvent.atk = false;
 	            this.atksita = true;
 	            _super.prototype.atk.call(this);
 	            this.myTrains[this.myTrains.length - 1].setOnAtked(function () { return _this.increaseExp(); });
@@ -1222,7 +1224,7 @@
 	        this.isDead = true;
 	        this.rebornTimeCount = main_1.MainCanvas.FRAME * 8;
 	        setTimeout(function () {
-	            _this.rebirthButton.className = _this.rebirthButton.className.replace(" disabled", "");
+	            _this.rebirthButton.classList.remove("disabled");
 	        }, 8000);
 	        this.exp -= Math.floor(this.maxExp / 8);
 	        this.exp = this.exp < 0 ? 0 : this.exp;
@@ -1238,7 +1240,7 @@
 	        this.ctx.fillRect(this.x + 10 + 1, main_1.MainCanvas.convY(this.y + evil_1.SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp, 8);
 	    };
 	    Ebiruai.prototype.getMaxExp = function () {
-	        return Math.floor(Ebiruai.INIT_MAX_EXP * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
+	        return Math.floor(Ebiruai.BASE_EXP * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
 	    };
 	    Ebiruai.prototype.saveMyData = function () {
 	        this.ws.send(share_1.SocketType.save, {
@@ -1251,7 +1253,7 @@
 	    Ebiruai.BASE_JUMP = 10;
 	    Ebiruai.BASE_SPEED = 5;
 	    Ebiruai.EXP_BAIRITU = 1.2;
-	    Ebiruai.INIT_MAX_EXP = 50;
+	    Ebiruai.BASE_EXP = 50;
 	    Ebiruai.INIT_MAX_HP = 100;
 	    return Ebiruai;
 	}(evil_1.SimpleEvil));
@@ -1310,77 +1312,7 @@
 
 
 /***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/** ボタンやキーを設定 */
-	var Keyset = (function () {
-	    function Keyset() {
-	    }
-	    /** ボタンやキーを設定 */
-	    Keyset.setKeyAndButton = function () {
-	        document.querySelector(".key-pad").innerHTML = this.HTML;
-	        document.querySelector("#canvas").addEventListener("click", function () {
-	            Keyset.KeyEvent.atk = true;
-	        });
-	        Keyset.KEYSET.forEach(function (keyset) {
-	            window.addEventListener("keydown", function (e) {
-	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
-	                    Keyset.KeyEvent[keyset.eventName] = true;
-	                    if (e.keyCode === 32 && document.activeElement === document.body) {
-	                        e.preventDefault();
-	                    }
-	                }
-	            });
-	            window.addEventListener("keyup", function (e) {
-	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
-	                    Keyset.KeyEvent[keyset.eventName] = false;
-	                }
-	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("mousedown", function () {
-	                Keyset.KeyEvent[keyset.eventName] = true;
-	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("touchstart", function (e) {
-	                Keyset.KeyEvent[keyset.eventName] = true;
-	                var elem = e.target;
-	                elem.className = elem.className + " hover";
-	                e.preventDefault();
-	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("mouseup", function () {
-	                Keyset.KeyEvent[keyset.eventName] = false;
-	            });
-	            document.querySelector("." + keyset.eventName).addEventListener("touchend", function (e) {
-	                Keyset.KeyEvent[keyset.eventName] = false;
-	                var elem = e.target;
-	                elem.className = elem.className.replace(" hover", "");
-	                e.preventDefault();
-	            });
-	        });
-	    };
-	    Keyset.KeyEvent = {
-	        // ue: false,
-	        migi: false,
-	        // sita: false,
-	        hidari: false,
-	        jump: false,
-	        atk: false
-	    };
-	    Keyset.HTML = "\n\t\t<button class=\"pad hidari\"><i class=\"material-icons\">chevron_left</i></button>\n\t\t<button class=\"pad migi\"><i class=\"material-icons\">chevron_right</i></button>\n\t\t<button class=\"pad jump\">\u30B8\u30E3\u30F3\u30D7</button>\n\t\t<button class=\"pad atk\">\u653B\u6483</button>\n\t\t<button class=\"pad hukkatu disabled\">\u5FA9\u6D3B</button>\n\t\t<button class=\"func-button reset-button\">\u30EA\u30BB\u30C3\u30C8</button>\n\t";
-	    Keyset.KEYSET = [
-	        // {keycode: [87, 38], eventName: "ue"},
-	        { keycode: [68, 39], eventName: "migi" },
-	        // {keycode: [83, 40], eventName: "sita"},
-	        { keycode: [65, 37], eventName: "hidari" },
-	        { keycode: [32, 87, 67], eventName: "jump" },
-	        { keycode: [88], eventName: "atk" }
-	    ];
-	    return Keyset;
-	}());
-	exports.Keyset = Keyset;
-
-
-/***/ },
+/* 18 */,
 /* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1393,13 +1325,7 @@
 	var main_1 = __webpack_require__(11);
 	var BaseMonster_1 = __webpack_require__(14);
 	var ImageLoader_1 = __webpack_require__(15);
-	(function (GozzilaMode) {
-	    GozzilaMode[GozzilaMode["init"] = 0] = "init";
-	    GozzilaMode[GozzilaMode["beforeAtk"] = 1] = "beforeAtk";
-	    GozzilaMode[GozzilaMode["atk"] = 2] = "atk";
-	    GozzilaMode[GozzilaMode["dead"] = 3] = "dead";
-	})(exports.GozzilaMode || (exports.GozzilaMode = {}));
-	var GozzilaMode = exports.GozzilaMode;
+	var share_1 = __webpack_require__(20);
 	var Gozzila = (function (_super) {
 	    __extends(Gozzila, _super);
 	    function Gozzila(ctx, option) {
@@ -1408,8 +1334,7 @@
 	            { x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU },
 	            { x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU },
 	        ];
-	        this.maxHp = 4000;
-	        this.hp = 4000;
+	        this.maxHp = Gozzila.MAX_HP;
 	    }
 	    Gozzila.prototype.draw = function () {
 	        this.ctx.drawImage(this.image, this.x, main_1.MainCanvas.convY(this.y, Gozzila.HEIGHT * Gozzila.BAIRITU), Gozzila.WIDTH * Gozzila.BAIRITU, Gozzila.HEIGHT * Gozzila.BAIRITU);
@@ -1417,9 +1342,9 @@
 	        this.action();
 	    };
 	    /** ビームによるダメージ計算 */
-	    Gozzila.prototype.calcBeamDamege = function (x0, x1, y0, y1) {
+	    Gozzila.prototype.calcBeamDmg = function (x0, x1, y0, y1) {
 	        var _this = this;
-	        if (this.mode !== GozzilaMode.atk)
+	        if (this.mode !== share_1.GodzillaMode.atk)
 	            return 0;
 	        var count = 0;
 	        this.target.forEach(function (target, i) {
@@ -1432,17 +1357,14 @@
 	            }
 	            ;
 	        });
-	        return count * Gozzila.BEAM_DAMAGE;
+	        return count * Gozzila.BEAM_DMG;
 	    };
-	    /** 接触しているか */
-	    Gozzila.prototype.sessyoku = function (x, y) {
-	        if (this.mode === GozzilaMode.dead)
-	            return false;
-	        return this.x + 5 <= x;
+	    /** 接触ダメージ */
+	    Gozzila.prototype.calcSessyokuDmg = function (x, y) {
+	        return this.mode !== share_1.GodzillaMode.dead && this.x + 5 <= x ? Gozzila.SESSYOKU_DMG : 0;
 	    };
 	    Gozzila.prototype.atk = function () {
 	        var _this = this;
-	        // TODO エラー出てる
 	        this.target.forEach(function (target, i) {
 	            var endX = _this.begin[i].x < target.x ? main_1.MainCanvas.WIDTH : 0;
 	            var endY = (target.y - _this.begin[i].y) * (endX - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
@@ -1459,24 +1381,24 @@
 	    };
 	    Gozzila.prototype.drawHp = function () {
 	        this.ctx.fillStyle = "#000";
-	        this.ctx.fillRect(Gozzila.HP_INFO.X, Gozzila.HP_INFO.Y, Gozzila.HP_INFO.WIDTH + 2, Gozzila.HP_INFO.HEIGHT + 2);
+	        this.ctx.fillRect(Gozzila.HP_BAR_INFO.X, Gozzila.HP_BAR_INFO.Y, Gozzila.HP_BAR_INFO.WIDTH + 2, Gozzila.HP_BAR_INFO.HEIGHT + 2);
 	        this.ctx.fillStyle = "#fff";
-	        this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH, Gozzila.HP_INFO.HEIGHT);
+	        this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH, Gozzila.HP_BAR_INFO.HEIGHT);
 	        this.ctx.fillStyle = "#4f1ae8";
-	        this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH * this.hp / this.maxHp, Gozzila.HP_INFO.HEIGHT);
+	        this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH * this.hp / this.maxHp, Gozzila.HP_BAR_INFO.HEIGHT);
 	        this.ctx.fillStyle = "black";
 	        this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 	        this.ctx.fillText(this.hp + " / " + this.maxHp, this.x + 30, 40);
 	    };
 	    Gozzila.prototype.action = function () {
 	        switch (this.mode) {
-	            case GozzilaMode.init:
+	            case share_1.GodzillaMode.init:
 	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzila;
 	                break;
-	            case GozzilaMode.beforeAtk:
+	            case share_1.GodzillaMode.beforeAtk:
 	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzilaBefAtk;
 	                break;
-	            case GozzilaMode.atk:
+	            case share_1.GodzillaMode.atk:
 	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzila_atk;
 	                this.atk();
 	                break;
@@ -1487,13 +1409,15 @@
 	    Gozzila.WIDTH = 64;
 	    Gozzila.HEIGHT = 64;
 	    Gozzila.BAIRITU = 5;
-	    Gozzila.BEAM_DAMAGE = 1.3;
-	    Gozzila.HP_INFO = {
+	    Gozzila.MAX_HP = 4000;
+	    Gozzila.HP_BAR_INFO = {
 	        X: 30,
 	        Y: 10,
 	        WIDTH: 500,
 	        HEIGHT: 20
 	    };
+	    Gozzila.BEAM_DMG = 1.3;
+	    Gozzila.SESSYOKU_DMG = 12;
 	    return Gozzila;
 	}(BaseMonster_1.BaseMonster));
 	exports.Gozzila = Gozzila;
@@ -1519,6 +1443,14 @@
 	    SocketType[SocketType["ranking"] = 9] = "ranking";
 	})(exports.SocketType || (exports.SocketType = {}));
 	var SocketType = exports.SocketType;
+	(function (GodzillaMode) {
+	    GodzillaMode[GodzillaMode["init"] = 0] = "init";
+	    GodzillaMode[GodzillaMode["beforeAtk"] = 1] = "beforeAtk";
+	    GodzillaMode[GodzillaMode["atk"] = 2] = "atk";
+	    GodzillaMode[GodzillaMode["atkEnd"] = 3] = "atkEnd";
+	    GodzillaMode[GodzillaMode["dead"] = 4] = "dead";
+	})(exports.GodzillaMode || (exports.GodzillaMode = {}));
+	var GodzillaMode = exports.GodzillaMode;
 
 
 /***/ },
@@ -4601,9 +4533,84 @@
 	
 	
 	// module
-	exports.push([module.id, ".ranking-area {\n  padding: 1.5em; }\n  .ranking-area .h2 {\n    padding-bottom: 4px;\n    font-size: 30px;\n    border-bottom: 1px solid rgba(29, 45, 23, 0.28);\n    margin-bottom: 20px; }\n  .ranking-area .rank-table {\n    width: 80%;\n    margin: 0 auto;\n    border-collapse: collapse;\n    border-spacing: 0px; }\n    .ranking-area .rank-table tr {\n      border-bottom: 1px solid #e0e0e0; }\n    .ranking-area .rank-table th, .ranking-area .rank-table td {\n      align-items: center;\n      padding: 0 24px; }\n    .ranking-area .rank-table th {\n      text-align: left;\n      font-weight: 500;\n      height: 50px; }\n      .ranking-area .rank-table th.rank-th {\n        width: 100px; }\n    .ranking-area .rank-table td {\n      height: 48px; }\n      .ranking-area .rank-table td .rank-name {\n        display: flex;\n        align-items: center; }\n        .ranking-area .rank-table td .rank-name .material-icons {\n          margin-right: 6px; }\n    .ranking-area .rank-table .rank-bold {\n      font-size: 18px;\n      font-weight: 500; }\n", ""]);
+	exports.push([module.id, ".ranking-area {\n  padding: 1.5em;\n  opacity: 1;\n  transition: opacity 0.6s linear; }\n  .ranking-area.disabled {\n    opacity: 0;\n    max-height: 0;\n    overflow: hidden;\n    padding: 0; }\n  .ranking-area .h2 {\n    padding-bottom: 4px;\n    font-size: 30px;\n    border-bottom: 1px solid rgba(29, 45, 23, 0.28);\n    margin-bottom: 20px; }\n  .ranking-area .rank-table {\n    width: 80%;\n    margin: 0 auto;\n    border-collapse: collapse;\n    border-spacing: 0px; }\n    .ranking-area .rank-table tr {\n      border-bottom: 1px solid #e0e0e0; }\n    .ranking-area .rank-table th, .ranking-area .rank-table td {\n      align-items: center;\n      padding: 0 24px; }\n    .ranking-area .rank-table th {\n      text-align: left;\n      font-weight: 500;\n      height: 50px; }\n      .ranking-area .rank-table th.rank-th {\n        width: 100px; }\n    .ranking-area .rank-table td {\n      height: 48px; }\n      .ranking-area .rank-table td .rank-name {\n        display: flex;\n        align-items: center; }\n        .ranking-area .rank-table td .rank-name .material-icons {\n          margin-right: 6px; }\n    .ranking-area .rank-table .rank-bold {\n      font-size: 18px;\n      font-weight: 500; }\n", ""]);
 	
 	// exports
+
+
+/***/ },
+/* 154 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/** ボタンやキーを設定 */
+	var GamePadComponent = (function () {
+	    function GamePadComponent() {
+	    }
+	    /** ボタンやキーを設定 */
+	    GamePadComponent.setKeyAndButton = function () {
+	        document.querySelector(".key-pad").innerHTML = this.HTML;
+	        document.querySelector("#canvas").addEventListener("click", function () {
+	            GamePadComponent.KeyEvent.atk = true;
+	        });
+	        var rankArea = document.querySelector(".ranking-area");
+	        document.querySelector(".rank-button").addEventListener("click", function () {
+	            rankArea.classList.toggle("disabled");
+	        });
+	        GamePadComponent.KEYSET.forEach(function (keyset) {
+	            window.addEventListener("keydown", function (e) {
+	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
+	                    GamePadComponent.KeyEvent[keyset.eventName] = true;
+	                    if (e.keyCode === 32 && document.activeElement === document.body) {
+	                        e.preventDefault();
+	                    }
+	                }
+	            });
+	            window.addEventListener("keyup", function (e) {
+	                if (keyset.keycode.find(function (keycode) { return e.keyCode === keycode; })) {
+	                    GamePadComponent.KeyEvent[keyset.eventName] = false;
+	                }
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("mousedown", function () {
+	                GamePadComponent.KeyEvent[keyset.eventName] = true;
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("touchstart", function (e) {
+	                GamePadComponent.KeyEvent[keyset.eventName] = true;
+	                var elem = e.target;
+	                elem.className = elem.className + " hover";
+	                e.preventDefault();
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("mouseup", function () {
+	                GamePadComponent.KeyEvent[keyset.eventName] = false;
+	            });
+	            document.querySelector("." + keyset.eventName).addEventListener("touchend", function (e) {
+	                GamePadComponent.KeyEvent[keyset.eventName] = false;
+	                var elem = e.target;
+	                elem.className = elem.className.replace(" hover", "");
+	                e.preventDefault();
+	            });
+	        });
+	    };
+	    GamePadComponent.KeyEvent = {
+	        // ue: false,
+	        migi: false,
+	        // sita: false,
+	        hidari: false,
+	        jump: false,
+	        atk: false
+	    };
+	    GamePadComponent.HTML = "\n\t\t<button class=\"pad hidari\"><i class=\"material-icons\">chevron_left</i></button>\n\t\t<button class=\"pad migi\"><i class=\"material-icons\">chevron_right</i></button>\n\t\t<button class=\"pad jump\">\u30B8\u30E3\u30F3\u30D7</button>\n\t\t<button class=\"pad atk\">\u653B\u6483</button>\n\t\t<button class=\"pad hukkatu disabled\">\u5FA9\u6D3B</button>\n\t\t<button class=\"func-button reset-button\">\u30EA\u30BB\u30C3\u30C8</button>\n\t\t<button class=\"func-button rank-button\">\u30E9\u30F3\u30AD\u30F3\u30B0</button>\n\t";
+	    GamePadComponent.KEYSET = [
+	        // {keycode: [87, 38], eventName: "ue"},
+	        { keycode: [68, 39], eventName: "migi" },
+	        // {keycode: [83, 40], eventName: "sita"},
+	        { keycode: [65, 37], eventName: "hidari" },
+	        { keycode: [32, 87, 67], eventName: "jump" },
+	        { keycode: [88], eventName: "atk" }
+	    ];
+	    return GamePadComponent;
+	}());
+	exports.GamePadComponent = GamePadComponent;
 
 
 /***/ }

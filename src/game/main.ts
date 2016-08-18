@@ -3,30 +3,8 @@ import {SimpleEvil, EvilOption} from "./evil";
 import {Ebiruai} from "./myEvil";
 import {Gozzila} from "./gozzila";
 import {ImageLoader} from "./ImageLoader";
-import {Keyset} from "./keyset";
-import {SocketType, InitialUserData, ReqEvilData} from "../../server/share/share";
-
-/** TODO いい加減送信用インターフェースに分ける */
-export interface Zahyou {
-	image?: HTMLImageElement;
-	personId: string;
-	isMy?: boolean;
-	isMigiMuki: boolean;
-	x: number;
-	y: number;
-	isDead?: boolean;
-	isAtk?: boolean;
-	gozzila?: Gozzila;
-	lv?: number;
-	maxExp?: number;
-}
-
-
-interface GozzilaInfo {
-	hp: number;
-	mode: number;
-	target: {x: number, y: number}[];
-}
+import {GamePadComponent} from "./GamePadComponent";
+import {SocketType, InitialUserData, ReqEvilData, GameData} from "../../server/share/share";
 
 /** ゲーム機能の総合操作クラス */
 export class MainCanvas {
@@ -43,8 +21,8 @@ export class MainCanvas {
 	private myEvil: Ebiruai;
 	private gozzila: Gozzila;
 	private otherPersonEvils: SimpleEvil[] = [];
-	private receiveMyEvilInfo: Zahyou;
-	private befSendData: Zahyou;
+	private receiveMyEvilInfo: ReqEvilData;
+	private befSendData: ReqEvilData;
 
 	/** 下からのY座標を上からのY座標に変更 */
 	public static convY(y: number, height: number) {
@@ -66,7 +44,7 @@ export class MainCanvas {
 		this.canvasElm.width = MainCanvas.WIDTH;
 		this.canvasElm.height = MainCanvas.HEIGHT;
 		this.ctx = this.canvasElm.getContext('2d');
-		Keyset.setKeyAndButton();
+		GamePadComponent.setKeyAndButton();
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
@@ -89,6 +67,8 @@ export class MainCanvas {
 			lv: resData.userData.lv,
 			exp: resData.userData.exp,
 			name: resData.userData.name,
+			isAtk: false,
+			isDead: false
 		});
 		this.gozzila.target = [0, 0].map( () => {return{x: this.myEvil.x, y: this.myEvil.y}; });
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
@@ -96,18 +76,18 @@ export class MainCanvas {
 		this.ws.addOnCloseListener(() => window.clearInterval(this.timer));
 	}
 
-	private onReceiveGameData(value: any) {
-		const gozzilaInfo = <GozzilaInfo> value.gozzila;
+	private onReceiveGameData(value: GameData) {
+		const gozzilaInfo = value.gozzila;
 		this.gozzila.hp = gozzilaInfo.hp;
 		this.gozzila.mode = gozzilaInfo.mode;
 		this.gozzila.target = gozzilaInfo.target;
-		const receiveEvils = <EvilOption[]> value.evils;
+		const receiveEvils = value.evils;
 		receiveEvils.forEach(evilInfo => {
 			const existEvil = this.otherPersonEvils.find(existEvil => existEvil.personId === evilInfo.personId);
 			if (existEvil) {
 				Object.assign(existEvil, evilInfo);
 			} else if (evilInfo.personId !== this.myEvil.personId) {
-				this.otherPersonEvils.push(new SimpleEvil(this.ctx, evilInfo));
+				this.otherPersonEvils.push(new SimpleEvil(this.ctx, <EvilOption> evilInfo));
 			}
 		});
 		this.otherPersonEvils = this.otherPersonEvils.filter(

@@ -31,22 +31,12 @@ var GameController = (function () {
         }
         else {
             this.userService.getUser(reqData._id).then(function (user) {
-                if (user) {
-                    _this.sendInitUserData(ws, user);
-                }
-                else {
-                    _this.sendInitUserData(ws, _this.createInitUser());
-                }
+                _this.sendInitUserData(ws, user ? user : _this.createInitUser());
             });
         }
     };
     GameController.prototype.createInitUser = function () {
-        var initialData = {
-            _id: shortid.generate(),
-            exp: 0,
-            lv: 1,
-            name: "名前"
-        };
+        var initialData = Object.assign({ _id: shortid.generate() }, GameController.INIT_USERDATA);
         this.userService.createUser(initialData);
         return initialData;
     };
@@ -90,7 +80,6 @@ var GameController = (function () {
     };
     GameController.FRAME = 30;
     GameController.INIT_USERDATA = {
-        _id: "",
         exp: 0,
         lv: 1,
         name: "名前"

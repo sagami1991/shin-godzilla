@@ -1,21 +1,7 @@
 import * as WebSocket from 'ws';
 import {MainController} from "./MainController";
-import {GameController, Zahyou} from "./GameController";
-import {SocketType} from "../share/share";
-
-export interface GodzillaInfo {
-	hp: number;
-	mode: GodzillaMode;
-	target: {x: number, y: number}[];
-}
-
-enum GodzillaMode {
-	init,
-	beforeAtk,
-	atk,
-	atkEnd,
-	dead
-}
+import {GameController} from "./GameController";
+import {SocketType, ReqEvilData, GodzillaMode, GodzillaInfo} from "../share/share";
 
 export class GodzillaController {
 	private static ACTION_INFO = [
@@ -33,7 +19,7 @@ export class GodzillaController {
 		return this._godzilla;
 	}
 
-	constructor(private main: MainController, private evils: Zahyou[]) {
+	constructor(private main: MainController, private evils: ReqEvilData[]) {
 	}
 
 	public init() {

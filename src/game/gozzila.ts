@@ -1,39 +1,34 @@
-import {MainCanvas, Zahyou} from "./main";
+import {MainCanvas} from "./main";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
-
-export enum GozzilaMode {
-	init,
-	beforeAtk,
-	atk,
-	dead
-}
+import {GodzillaMode} from "../../server/share/share";
 
 export class Gozzila extends BaseMonster {
-	public static WIDTH = 64;
-	public static HEIGHT = 64;
-	public static BAIRITU = 5;
-	public static BEAM_DAMAGE = 1.3;
-	public static HP_INFO = {
+	private static WIDTH = 64;
+	private static HEIGHT = 64;
+	private static BAIRITU = 5;
+	private static MAX_HP = 4000;
+	private static HP_BAR_INFO = {
 		X: 30,
 		Y: 10,
 		WIDTH: 500,
 		HEIGHT: 20
 	};
+	private static BEAM_DMG = 1.3;
+	private static SESSYOKU_DMG = 12;
 
-	/** ビームが発射される座標*/
-	public begin: {x: number, y: number}[];
 	public isDamege: boolean;
 	public target: {x: number, y: number}[];
 	public mode: number;
+	/** ビームが発射される座標*/
+	private begin: {x: number, y: number}[];
 	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {
 		super(ctx, option);
 		this.begin = [
 			{x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU},
 			{x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU},
-			];
-		this.maxHp = 4000;
-		this.hp = 4000;
+		];
+		this.maxHp = Gozzila.MAX_HP;
 	}
 
 	public draw() {
@@ -49,8 +44,8 @@ export class Gozzila extends BaseMonster {
 	}
 
 	/** ビームによるダメージ計算 */
-	public calcBeamDamege(x0: number, x1: number,  y0: number, y1: number) {
-		if (this.mode !== GozzilaMode.atk) return 0;
+	public calcBeamDmg(x0: number, x1: number,  y0: number, y1: number) {
+		if (this.mode !== GodzillaMode.atk) return 0;
 		let count = 0;
 		this.target.forEach((target, i) => {
 			const ya = (target.y - this.begin[i].y) * (x0 - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
@@ -61,16 +56,15 @@ export class Gozzila extends BaseMonster {
 				count ++;
 			} ;
 		});
-		return count * Gozzila.BEAM_DAMAGE;
+		return count * Gozzila.BEAM_DMG;
 	}
-	/** 接触しているか */
-	public sessyoku(x: number, y: number) {
-		if (this.mode === GozzilaMode.dead) return false;
-		return this.x + 5 <= x;
+
+	/** 接触ダメージ */
+	public calcSessyokuDmg(x: number, y: number): number {
+		return this.mode !== GodzillaMode.dead && this.x + 5 <= x ? Gozzila.SESSYOKU_DMG : 0;
 	}
 
 	protected atk() {
-		// TODO エラー出てる
 		this.target.forEach((target, i) => {
 			const endX = this.begin[i].x < target.x ? MainCanvas.WIDTH : 0;
 			const endY = (target.y - this.begin[i].y) * (endX - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
@@ -88,11 +82,11 @@ export class Gozzila extends BaseMonster {
 
 	private drawHp() {
 		this.ctx.fillStyle = "#000";
-		this.ctx.fillRect(Gozzila.HP_INFO.X, Gozzila.HP_INFO.Y, Gozzila.HP_INFO.WIDTH + 2, Gozzila.HP_INFO.HEIGHT + 2);
+		this.ctx.fillRect(Gozzila.HP_BAR_INFO.X, Gozzila.HP_BAR_INFO.Y, Gozzila.HP_BAR_INFO.WIDTH + 2, Gozzila.HP_BAR_INFO.HEIGHT + 2);
 		this.ctx.fillStyle = "#fff";
-		this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH, Gozzila.HP_INFO.HEIGHT );
+		this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH, Gozzila.HP_BAR_INFO.HEIGHT );
 		this.ctx.fillStyle = "#4f1ae8";
-		this.ctx.fillRect(Gozzila.HP_INFO.X + 1, Gozzila.HP_INFO.Y + 1, Gozzila.HP_INFO.WIDTH * this.hp / this.maxHp , Gozzila.HP_INFO.HEIGHT );
+		this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH * this.hp / this.maxHp , Gozzila.HP_BAR_INFO.HEIGHT );
 		this.ctx.fillStyle = "black";
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`${this.hp} / ${this.maxHp}`, this.x + 30, 40);
@@ -100,13 +94,13 @@ export class Gozzila extends BaseMonster {
 
 	private action() {
 		switch (this.mode) {
-		case GozzilaMode.init:
+		case GodzillaMode.init:
 			this.image = ImageLoader.IMAGES.gozzila;
 			break;
-		case GozzilaMode.beforeAtk:
+		case GodzillaMode.beforeAtk:
 			this.image = ImageLoader.IMAGES.gozzilaBefAtk;
 			break;
-		case GozzilaMode.atk:
+		case GodzillaMode.atk:
 			this.image = ImageLoader.IMAGES.gozzila_atk;
 			this.atk();
 			break;

@@ -1,14 +1,6 @@
 "use strict";
 var GameController_1 = require("./GameController");
 var share_1 = require("../share/share");
-var GodzillaMode;
-(function (GodzillaMode) {
-    GodzillaMode[GodzillaMode["init"] = 0] = "init";
-    GodzillaMode[GodzillaMode["beforeAtk"] = 1] = "beforeAtk";
-    GodzillaMode[GodzillaMode["atk"] = 2] = "atk";
-    GodzillaMode[GodzillaMode["atkEnd"] = 3] = "atkEnd";
-    GodzillaMode[GodzillaMode["dead"] = 4] = "dead";
-})(GodzillaMode || (GodzillaMode = {}));
 var GodzillaController = (function () {
     function GodzillaController(main, evils) {
         this.main = main;
@@ -26,7 +18,7 @@ var GodzillaController = (function () {
         var _this = this;
         this._godzilla = {
             hp: 4000,
-            mode: GodzillaMode.init,
+            mode: share_1.GodzillaMode.init,
             target: Array.from(new Array(2)).map(function () { return { x: 0, y: 0 }; })
         };
         this.main.addMsgListner(share_1.SocketType.gozzilaDamege, function (ws, reqData) { return _this.onAtkGodzilla(ws); });
@@ -44,11 +36,11 @@ var GodzillaController = (function () {
             }
         }
         switch (this._godzilla.mode) {
-            case GodzillaMode.beforeAtk:
+            case share_1.GodzillaMode.beforeAtk:
                 if (!this.isDecidedTarget)
                     this.decideTarget();
                 break;
-            case GodzillaMode.atkEnd:
+            case share_1.GodzillaMode.atkEnd:
                 this.isDecidedTarget = false;
                 this.actionFrameCount = 0;
                 break;
@@ -72,10 +64,10 @@ var GodzillaController = (function () {
         this.isDecidedTarget = true;
     };
     GodzillaController.ACTION_INFO = [
-        { sec: 1, mode: GodzillaMode.init },
-        { sec: 0.8, mode: GodzillaMode.beforeAtk },
-        { sec: 1.6, mode: GodzillaMode.atk },
-        { sec: Infinity, mode: GodzillaMode.atkEnd }
+        { sec: 1, mode: share_1.GodzillaMode.init },
+        { sec: 0.8, mode: share_1.GodzillaMode.beforeAtk },
+        { sec: 1.6, mode: share_1.GodzillaMode.atk },
+        { sec: Infinity, mode: share_1.GodzillaMode.atkEnd }
     ];
     return GodzillaController;
 }());
