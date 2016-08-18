@@ -36,6 +36,7 @@ export interface ReqEvilData {
 	lv: number;
 	maxExp?: number;
 	personId?: string;
+	isLvUp?: boolean;
 }
 
 export interface RankingInfo {

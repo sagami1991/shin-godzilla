@@ -40,7 +40,7 @@ var UserService = (function () {
     };
     UserService.prototype.validate = function (user) {
         return (user._id &&
-            user.name &&
+            user.name !== undefined &&
             typeof user.lv === "number" &&
             typeof user.exp === "number");
     };

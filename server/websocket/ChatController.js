@@ -30,7 +30,7 @@ var ChatController = (function () {
                 }));
             }
             catch (e) {
-                console.error(e);
+                console.trace(e);
             }
         });
     };

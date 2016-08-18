@@ -33,7 +33,7 @@ var MainController = (function () {
             ws.send(JSON.stringify({ type: type, value: data }));
         }
         catch (e) {
-            console.error(e);
+            console.trace(e);
         }
     };
     /** 全員に送る */
@@ -49,7 +49,7 @@ var MainController = (function () {
                 }));
             }
             catch (err) {
-                console.error(err);
+                console.trace(err);
             }
         });
     };

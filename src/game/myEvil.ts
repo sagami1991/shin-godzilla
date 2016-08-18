@@ -5,6 +5,7 @@ import {GamePadComponent} from "./GamePadComponent";
 import {MainCanvas} from "./main";
 import {WSService} from "../WebSocketService";
 import {SocketType, DbUserData} from "../../server/share/share";
+import {LvUpEffect} from "./LvEffect";
 
 export interface MyEvilOption extends EvilOption {
 	gozzila: Gozzila;
@@ -77,7 +78,6 @@ export class Ebiruai extends SimpleEvil {
 		this.statusBar.setExp(this.exp, this.maxExp);
 		this.statusBar.setLv(this.lv);
 		this.statusBar.setName(this.name);
-
 	}
 
 	private initButtons() {
@@ -145,12 +145,18 @@ export class Ebiruai extends SimpleEvil {
 		this.exp += 2;
 		this.statusBar.setExp(this.exp, this.maxExp);
 		if (this.maxExp <= this.exp) {
-			this.lv ++;
-			this.exp = 0;
-			this.maxExp = this.getMaxExp();
-			this.refreshStatusBar();
-			this.saveMyData();
+			this.lvUp();
 		}
+	}
+
+	private lvUp() {
+		LvUpEffect.draw(this.ctx, this);
+		this.isLvUp = true;
+		this.lv ++;
+		this.exp = 0;
+		this.maxExp = this.getMaxExp();
+		this.refreshStatusBar();
+		this.saveMyData();
 	}
 
 	private drawRespawnCount() {

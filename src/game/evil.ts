@@ -2,6 +2,7 @@ import {MainCanvas} from "./main";
 import {Train} from "./train";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
+import {LvUpEffect} from "./LvEffect";
 
 export interface EvilOption extends BaseMobOption {
 	lv: number;
@@ -18,12 +19,14 @@ export class SimpleEvil extends BaseMonster {
 	public isAtk: boolean;
 	protected myTrains: Train[] = [];
 	public lv: number;
+	public isLvUp: boolean;
 	constructor(protected ctx: CanvasRenderingContext2D, option: EvilOption) {
 		super(ctx, option);
 		this.lv = option.lv;
 		this.isDead = option.isDead;
 		this.isAtk = option.isAtk;
 		this.personId = option.personId;
+		this.isLvUp = false;
 	}
 	public draw() {
 		this.action();
@@ -37,6 +40,11 @@ export class SimpleEvil extends BaseMonster {
 	protected action() {
 		if (this.isAtk) {
 			this.atk();
+		}
+		if (this.isLvUp) {
+
+			LvUpEffect.draw(this.ctx, this);
+			this.isLvUp = false;
 		}
 	}
 	protected atk() {

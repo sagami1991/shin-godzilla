@@ -48,7 +48,7 @@ export class UserService {
 	private validate(user: DbUserData) {
 		return (
 			user._id &&
-			user.name &&
+			user.name !== undefined &&
 			typeof user.lv === "number" &&
 			typeof user.exp === "number"
 			);

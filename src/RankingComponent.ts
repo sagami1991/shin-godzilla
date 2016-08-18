@@ -35,6 +35,10 @@ export class RankingComponent {
 	constructor(private wsService: WSService) {}
 
 	public init() {
+		document.querySelector(".rank-button").addEventListener("click", () => {
+			this.wsService.send(SocketType.ranking, null);
+			document.querySelector(".ranking-area").classList.toggle("disabled");
+		});
 		document.querySelector(".ranking-area").innerHTML = RankingComponent.HTML;
 		this.wsService.addOnReceiveMsgListener(SocketType.ranking, (resData) => this.parseRanking(resData));
 	}

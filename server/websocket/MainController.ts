@@ -58,7 +58,7 @@ export class MainController {
 		try {
 			ws.send(JSON.stringify({type: type, value: data}));
 		} catch (e) {
-			console.error(e);
+			console.trace(e);
 		}
 	}
 
@@ -74,7 +74,7 @@ export class MainController {
 					value: opt.value
 				}));
 			} catch (err) {
-				console.error(err);
+				console.trace(err);
 			}
 		});
 	}

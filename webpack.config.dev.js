@@ -21,6 +21,7 @@ module.exports = {
     loaders: [
 		{ test: /\.ts?$/, loader: "ts-loader" },
 		{ test: /\.html$/, loader: 'raw'},
+		{ test: /\.json$/, loader: 'json'},
 		{ test: /\.scss$/, loaders: ['style', 'css', 'sass'] },
 		{ test: /\.png$/, loader: "url?limit=10000&mimetype=image/png" },
 		{ test: /\.jpg$/, loader: "url?limit=10000&mimetype=image/jpeg" },

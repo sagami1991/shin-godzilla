@@ -32,10 +32,6 @@ export class GamePadComponent {
 		document.querySelector("#canvas").addEventListener("click", () => {
 			GamePadComponent.KeyEvent.atk = true;
 		});
-		const rankArea = <HTMLElement> document.querySelector(".ranking-area");
-		document.querySelector(".rank-button").addEventListener("click", () => {
-			rankArea.classList.toggle("disabled");
-		});
 		GamePadComponent.KEYSET.forEach((keyset) => {
 			window.addEventListener("keydown", e => {
 				if (keyset.keycode.find(keycode => e.keyCode === keycode)) {

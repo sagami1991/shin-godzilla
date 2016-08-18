@@ -8,6 +8,7 @@ var RankingController = (function () {
     RankingController.prototype.init = function () {
         var _this = this;
         this.main.addConnectListner(function (ws) { return _this.sendRanking(ws); });
+        this.main.addMsgListner(share_1.SocketType.ranking, function (ws) { return _this.sendRanking(ws); });
     };
     RankingController.prototype.sendRanking = function (ws) {
         var _this = this;

@@ -32,7 +32,7 @@ export class ChatController {
 					type: SocketType.initlog,
 					value: arr ? arr.reverse() : []
 				}));
-			}catch (e) {console.error(e); }
+			}catch (e) {console.trace(e); }
 		});
 	}
 }
