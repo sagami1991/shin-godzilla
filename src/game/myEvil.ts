@@ -1,5 +1,5 @@
 import {SimpleEvil, EvilOption} from "./evil";
-import {Gozzila} from "./gozzila";
+import {GodzillaMob} from "./GozdillaMob";
 import {StatusBar} from "./StatusBar";
 import {GamePadComponent} from "./GamePadComponent";
 import {MainCanvas} from "./main";
@@ -8,7 +8,7 @@ import {SocketType, DbUserData} from "../../server/share/share";
 import {LvUpEffect} from "./LvEffect";
 
 export interface MyEvilOption extends EvilOption {
-	gozzila: Gozzila;
+	gozzila: GodzillaMob;
 	exp: number;
 	name: string;
 	dbId: string;
@@ -26,7 +26,7 @@ export class Ebiruai extends SimpleEvil {
 	public isChangeName: boolean;
 	private jumpF: number;
 	private isJumping: boolean;
-	private gozzila: Gozzila;
+	private gozzila: GodzillaMob;
 	private rebirthButton: HTMLButtonElement;
 	private resetButton: HTMLButtonElement;
 	private statusBar: StatusBar;

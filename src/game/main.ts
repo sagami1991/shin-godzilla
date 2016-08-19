@@ -1,7 +1,7 @@
 import {WSService} from "../WebSocketService";
 import {SimpleEvil, EvilOption} from "./evil";
 import {Ebiruai} from "./myEvil";
-import {Gozzila} from "./gozzila";
+import {GodzillaMob} from "./GozdillaMob";
 import {ImageLoader} from "./ImageLoader";
 import {GamePadComponent} from "./GamePadComponent";
 import {SocketType, InitialUserData, ReqEvilData, GameData} from "../../server/share/share";
@@ -13,7 +13,7 @@ export class MainCanvas {
 	public static HEIGHT = 500;
 	public static WIDTH = 800;
 	public static Y0 = 150;
-	public static GOZZILA: Gozzila;
+	public static GOZZILA: GodzillaMob;
 	public static CTX: CanvasRenderingContext2D;
 	private static intervalActions: {
 		delay: number, //一回の処理のフレーム数
@@ -27,7 +27,7 @@ export class MainCanvas {
 	private ctx: CanvasRenderingContext2D;
 	private timer: number;
 	private myEvil: Ebiruai;
-	private gozzila: Gozzila;
+	private gozzila: GodzillaMob;
 	private otherPersonEvils: SimpleEvil[] = [];
 	private receiveMyEvilInfo: ReqEvilData;
 	private befSendData: ReqEvilData;
@@ -66,7 +66,7 @@ export class MainCanvas {
 	private onReceiveInitData(resData: InitialUserData) {
 		new FieldComponent(this.ws).init(resData.bgType);
 		localStorage.setItem("dbId", resData.userData._id);
-		this.gozzila = new Gozzila(this.ctx, {
+		this.gozzila = new GodzillaMob(this.ctx, {
 			image: ImageLoader.IMAGES.gozzila,
 			x: 550,
 			y: MainCanvas.Y0,

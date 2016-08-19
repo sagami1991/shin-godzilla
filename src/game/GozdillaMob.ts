@@ -3,12 +3,12 @@ import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
 import {GodzillaMode} from "../../server/share/share";
 
-export class Gozzila extends BaseMonster {
+export class GodzillaMob extends BaseMonster {
 	private static WIDTH = 64;
 	private static HEIGHT = 64;
-	private static BAIRITU = 6;
+	private static BAIRITU = 5;
 	private static MAX_HP = 4000;
-	private static HP_BAR_INFO = {
+	private static HP_BAR = {
 		X: 30,
 		Y: 10,
 		WIDTH: 500,
@@ -16,7 +16,6 @@ export class Gozzila extends BaseMonster {
 	};
 	private static BEAM_DMG = 1.3;
 	private static SESSYOKU_DMG = 12;
-
 	public isDamege: boolean;
 	public target: {x: number, y: number}[];
 	public mode: number;
@@ -25,19 +24,19 @@ export class Gozzila extends BaseMonster {
 	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {
 		super(ctx, option);
 		this.begin = [
-			{x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU},
-			{x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU},
+			{x: this.x + 14 * GodzillaMob.BAIRITU, y: this.y + 50 * GodzillaMob.BAIRITU},
+			{x: this.x + 34 * GodzillaMob.BAIRITU, y: this.y + 61 * GodzillaMob.BAIRITU},
 		];
-		this.maxHp = Gozzila.MAX_HP;
+		this.maxHp = GodzillaMob.MAX_HP;
 	}
 
 	public draw() {
 		this.ctx.drawImage(
 			this.image,
 			this.x,
-			MainCanvas.convY(this.y, Gozzila.HEIGHT * Gozzila.BAIRITU),
-			Gozzila.WIDTH * Gozzila.BAIRITU,
-			Gozzila.HEIGHT * Gozzila.BAIRITU
+			MainCanvas.convY(this.y, GodzillaMob.HEIGHT * GodzillaMob.BAIRITU),
+			GodzillaMob.WIDTH * GodzillaMob.BAIRITU,
+			GodzillaMob.HEIGHT * GodzillaMob.BAIRITU
 			);
 		this.drawHp();
 		this.action();
@@ -56,37 +55,39 @@ export class Gozzila extends BaseMonster {
 				count ++;
 			} ;
 		});
-		return count * Gozzila.BEAM_DMG;
+		return count * GodzillaMob.BEAM_DMG;
 	}
 
 	/** 接触ダメージ */
 	public calcSessyokuDmg(x: number, y: number): number {
-		return this.mode !== GodzillaMode.dead && this.x + 5 <= x ? Gozzila.SESSYOKU_DMG : 0;
+		return this.mode !== GodzillaMode.dead && this.x + 5 <= x ? GodzillaMob.SESSYOKU_DMG : 0;
 	}
-
-	protected atk() {
+	private beamFrame = 0;
+	private drawBeam() {
+		this.beamFrame += 1 / 4;
 		this.target.forEach((target, i) => {
-			const endX = this.begin[i].x < target.x ? MainCanvas.WIDTH : 0;
-			const endY = (target.y - this.begin[i].y) * (endX - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
-			this.ctx.strokeStyle = "#317cff";
-			this.ctx.shadowColor = "#317cff";
-			this.ctx.shadowBlur = 8;
-			this.ctx.beginPath();
-			this.ctx.moveTo(this.begin[i].x, MainCanvas.convY(this.begin[i].y, 0));
-			this.ctx.lineTo(endX, MainCanvas.convY(endY, 0));
-			this.ctx.closePath();
-			this.ctx.stroke();
-			this.ctx.shadowBlur = 0;
+			const beamImg = ImageLoader.ANIME_IMAGE.beam[Math.floor(this.beamFrame)];
+			const begin = this.begin[i];
+			const angle = Math.PI / 2 + Math.atan2(begin.x - target.x , begin.y - target.y);
+
+			// const endX = this.begin[i].x < target.x ? MainCanvas.WIDTH : 0;
+			// const endY = (target.y - this.begin[i].y) * (endX - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
+			this.ctx.save();
+			this.ctx.translate(begin.x - 10, MainCanvas.convY(begin.y - 30, 0));
+			this.ctx.rotate(angle);
+			this.ctx.drawImage(beamImg, 0, 0);
+			this.ctx.restore();
+			this.beamFrame = this.beamFrame > 2 ? 0 : this.beamFrame;
 		});
 	}
 
 	private drawHp() {
 		this.ctx.fillStyle = "#000";
-		this.ctx.fillRect(Gozzila.HP_BAR_INFO.X, Gozzila.HP_BAR_INFO.Y, Gozzila.HP_BAR_INFO.WIDTH + 2, Gozzila.HP_BAR_INFO.HEIGHT + 2);
+		this.ctx.fillRect(GodzillaMob.HP_BAR.X, GodzillaMob.HP_BAR.Y, GodzillaMob.HP_BAR.WIDTH + 2, GodzillaMob.HP_BAR.HEIGHT + 2);
 		this.ctx.fillStyle = "#fff";
-		this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH, Gozzila.HP_BAR_INFO.HEIGHT );
+		this.ctx.fillRect(GodzillaMob.HP_BAR.X + 1, GodzillaMob.HP_BAR.Y + 1, GodzillaMob.HP_BAR.WIDTH, GodzillaMob.HP_BAR.HEIGHT );
 		this.ctx.fillStyle = "#4f1ae8";
-		this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH * this.hp / this.maxHp , Gozzila.HP_BAR_INFO.HEIGHT );
+		this.ctx.fillRect(GodzillaMob.HP_BAR.X + 1, GodzillaMob.HP_BAR.Y + 1, GodzillaMob.HP_BAR.WIDTH * this.hp / this.maxHp , GodzillaMob.HP_BAR.HEIGHT );
 		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`${this.hp} / ${this.maxHp}`, this.x + 30, 40);
@@ -102,7 +103,7 @@ export class Gozzila extends BaseMonster {
 			break;
 		case GodzillaMode.atk:
 			this.image = ImageLoader.IMAGES.gozzila_atk;
-			this.atk();
+			this.drawBeam();
 			break;
 		default:
 			break;

@@ -1,5 +1,5 @@
 import {MainCanvas} from "./main";
-import {Gozzila} from "./gozzila";
+import {GodzillaMob} from "./GozdillaMob";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
 
@@ -15,7 +15,7 @@ export class Train extends BaseMonster {
 	public static HEIGHT = 20;
 	private static BAKUHATU_SEC = 0.5;
 	private mode: number;
-	private gozzila: Gozzila;
+	private gozzila: GodzillaMob;
 	private bakuhatuCount: number;
 	private onBakuhatu: Array<() => void> = [];
 	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {

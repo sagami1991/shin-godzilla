@@ -3524,7 +3524,7 @@
 	
 	
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\n.key-pad {\n  width: 100%;\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 60px; }\n  .key-pad button {\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n    margin-top: 40px;\n    border: none;\n    cursor: pointer; }\n  .key-pad .func-button {\n    height: 46px;\n    margin-left: 30px;\n    line-height: 46px;\n    font-size: 16px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    padding: 0 20px;\n    font-weight: 500;\n    color: #00897b; }\n    .key-pad .func-button:hover, .key-pad .func-button.hover {\n      background-color: #e0e0e0; }\n\n.pad {\n  margin-left: 18px;\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  height: 120px;\n  margin-top: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.chat-area {\n  font-family: sans-serif;\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  max-height: 110px;\n  overflow-y: auto;\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding-left: 5px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n  ul.chat-logs::-webkit-scrollbar {\n    width: 8px;\n    background-color: inherit; }\n  ul.chat-logs::-webkit-scrollbar-thumb {\n    background-color: black; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody, button {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA'; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(136) + "); }\n\nul {\n  margin: 0;\n  list-style: none;\n  padding: 0; }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0;\n  padding: 0; }\n\n.h2 {\n  display: flex;\n  align-items: center;\n  font-weight: 500; }\n  .h2 .material-icons {\n    font-size: 30px;\n    margin-right: 8px; }\n\n.canvas-wrapper {\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative;\n  overflow: hidden; }\n  .canvas-wrapper canvas {\n    border-radius: 6px;\n    position: absolute;\n    top: 0;\n    left: 0; }\n\n.base-panel {\n  background-color: #fdfdfd;\n  color: rgba(2, 33, 2, 0.68);\n  border-radius: 6px; }\n\n.footer {\n  margin-top: 50px;\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\n.key-pad {\n  width: 100%;\n  display: flex;\n  flex-wrap: wrap;\n  margin-bottom: 60px; }\n  .key-pad button {\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n    margin-top: 40px;\n    border: none;\n    cursor: pointer; }\n  .key-pad .func-button {\n    height: 46px;\n    margin-left: 30px;\n    line-height: 46px;\n    font-size: 16px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    padding: 0 20px;\n    font-weight: 500;\n    color: #00897b; }\n    .key-pad .func-button:hover, .key-pad .func-button.hover {\n      background-color: #e0e0e0; }\n\n.pad {\n  margin-left: 18px;\n  border-radius: 50%;\n  color: rgba(255, 255, 255, 0.87059);\n  width: 140px;\n  height: 140px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 24px;\n  background-color: #00897b; }\n  .pad .material-icons {\n    font-size: 80px; }\n  .pad.hukkatu {\n    background-color: #e2b717; }\n  .pad:hover, .pad.hover {\n    background-color: #9c27b0; }\n  .pad.disabled {\n    background-color: #888;\n    cursor: not-allowed; }\n\n.status-bar {\n  height: 120px;\n  margin-top: 6px;\n  display: flex;\n  align-items: center;\n  font-weight: 400;\n  padding: 1em;\n  font-size: 24px; }\n  .status-bar .lv-panel {\n    width: 100px; }\n    .status-bar .lv-panel .value {\n      font-size: 32px;\n      font-weight: 500; }\n  .status-bar .name-panel {\n    width: 260px;\n    margin-right: 20px; }\n    .status-bar .name-panel .name {\n      margin-bottom: 4px;\n      font-weight: 500;\n      display: flex;\n      align-items: center; }\n      .status-bar .name-panel .name .edit {\n        margin-left: 14px;\n        cursor: pointer; }\n    .status-bar .name-panel .name-input {\n      display: none; }\n    .status-bar .name-panel .job {\n      font-size: 16px;\n      padding-left: 2px; }\n  .status-bar .graph-panel {\n    width: 160px;\n    display: flex;\n    align-items: center; }\n    .status-bar .graph-panel .graph-info {\n      margin-right: 10px; }\n    .status-bar .graph-panel .graph-bar {\n      width: 100px;\n      height: 6px;\n      background-color: rgba(93, 90, 90, 0.22);\n      position: relative; }\n      .status-bar .graph-panel .graph-bar .value-bar {\n        top: 0;\n        left: 0;\n        height: inherit; }\n        .status-bar .graph-panel .graph-bar .value-bar.exp-bar {\n          background-color: #ffed31;\n          width: 0; }\n\n.chat-area {\n  font-family: sans-serif;\n  position: absolute;\n  width: 600px;\n  padding: 5px;\n  z-index: 2;\n  bottom: 0;\n  left: 0; }\n\nul.chat-logs {\n  max-height: 114px;\n  overflow-y: auto;\n  background-color: rgba(0, 0, 0, 0.46);\n  list-style: none;\n  margin: 0;\n  padding: 6px;\n  border-radius: 4px; }\n  ul.chat-logs li.chat-log {\n    color: white;\n    font-size: 12px;\n    padding: 2px 0; }\n  ul.chat-logs::-webkit-scrollbar {\n    width: 8px;\n    background-color: inherit; }\n  ul.chat-logs::-webkit-scrollbar-thumb {\n    background-color: black; }\n\n.chat-input {\n  display: flex;\n  border: 1px solid #E0E0E0;\n  border-radius: 6px;\n  overflow: hidden; }\n  .chat-input:focus {\n    border-color: #bbbdbf; }\n  .chat-input #chat {\n    border: 0;\n    width: 100%;\n    resize: none;\n    padding: 0.5em;\n    font-size: 14px;\n    height: 2em; }\n    .chat-input #chat:focus {\n      outline: 0; }\n  .chat-input .chat-send {\n    cursor: pointer;\n    width: 44px;\n    font-size: 22px;\n    border: 0;\n    border-left: 1px solid #E0E0E0;\n    color: #888;\n    background-color: #fcfcfc;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    -webkit-user-select: none; }\n    .chat-input .chat-send:hover {\n      background-color: #f1f1f1;\n      color: #666; }\n\n* {\n  box-sizing: border-box; }\n\nbody, h1, h2, h3, p {\n  margin: 0; }\n\nbody, button {\n  font-family: 'Roboto', \"Yu Gothic\", \"\\6E38\\30B4\\30B7\\30C3\\30AF\", 'Meiryo UI','\\30E1\\30A4\\30EA\\30AA'; }\n\nbody {\n  margin: 0;\n  color: #5f5f5f;\n  background-image: url(" + __webpack_require__(136) + "); }\n\nul {\n  margin: 0;\n  list-style: none;\n  padding: 0; }\n\n.container {\n  width: 800px;\n  margin: 0 auto; }\n\na {\n  color: #2156a5;\n  text-decoration: underline;\n  line-height: inherit; }\n\nbutton {\n  outline: 0;\n  padding: 0; }\n\n.h2 {\n  display: flex;\n  align-items: center;\n  font-weight: 500; }\n  .h2 .material-icons {\n    font-size: 30px;\n    margin-right: 8px; }\n\n.canvas-wrapper {\n  margin-top: 40px;\n  width: 800px;\n  height: 500px;\n  position: relative;\n  overflow: hidden; }\n  .canvas-wrapper canvas {\n    border-radius: 6px;\n    position: absolute;\n    top: 0;\n    left: 0; }\n\n.base-panel {\n  background-color: #fdfdfd;\n  color: rgba(2, 33, 2, 0.68);\n  border-radius: 6px; }\n\n.footer {\n  margin-top: 50px;\n  background-color: rgba(29, 45, 23, 0.64);\n  padding: 30px;\n  color: rgba(255, 255, 255, 0.541176); }\n\n.humane-error {\n  background: linear-gradient(rgba(171, 26, 26, 0.9) 0%, rgba(216, 0, 0, 0.9) 100%) no-repeat; }\n\n.humane-warning {\n  background: linear-gradient(rgba(191, 155, 22, 0.9) 0%, rgba(216, 169, 0, 0.9) 100%) no-repeat; }\n\n.humane-success {\n  background: -webkit-linear-gradient(top, rgba(8, 179, 30, 0.9) 0%, rgba(14, 183, 11, 0.9) 100%) no-repeat; }\n", ""]);
 	
 	// exports
 
@@ -3542,7 +3542,7 @@
 	"use strict";
 	var evil_1 = __webpack_require__(138);
 	var myEvil_1 = __webpack_require__(142);
-	var gozzila_1 = __webpack_require__(148);
+	var GozdillaMob_1 = __webpack_require__(160);
 	var ImageLoader_1 = __webpack_require__(141);
 	var GamePadComponent_1 = __webpack_require__(144);
 	var share_1 = __webpack_require__(145);
@@ -3586,7 +3586,7 @@
 	        var _this = this;
 	        new FieldComponent_1.FieldComponent(this.ws).init(resData.bgType);
 	        localStorage.setItem("dbId", resData.userData._id);
-	        this.gozzila = new gozzila_1.Gozzila(this.ctx, {
+	        this.gozzila = new GozdillaMob_1.GodzillaMob(this.ctx, {
 	            image: ImageLoader_1.ImageLoader.IMAGES.gozzila,
 	            x: 550,
 	            y: MainCanvas.Y0,
@@ -3863,9 +3863,7 @@
 	    function ImageLoader() {
 	    }
 	    ImageLoader.load = function () {
-	        //こっちは非同期で
-	        this.animeImageLoad();
-	        return this.commonImageLoad();
+	        return Promise.all([this.commonImageLoad(), this.animeImageLoad()]);
 	    };
 	    ImageLoader.fieldImageLoad = function (type) {
 	        return Promise.all(ImageLoader.FIELD_PATH.map(function (src) {
@@ -3881,16 +3879,15 @@
 	        });
 	    };
 	    ImageLoader.animeImageLoad = function () {
-	        var hoge = ImageLoader.AnimationPath[0];
-	        return Promise.all(Array.from(new Array(hoge.length)).map(function (val, i) {
-	            return new Promise(function (reslve) {
-	                return ImageLoader.imageLoad("" + ImageLoader.PREFIX_PATH + hoge.baseName + i + ".png", reslve);
+	        return Promise.all(ImageLoader.AnimationPath.map(function (pathInfo) {
+	            return Promise.all(Array.from(new Array(pathInfo.length)).map(function (val, i) {
+	                return new Promise(function (reslve) {
+	                    return ImageLoader.imageLoad("" + ImageLoader.PREFIX_PATH + pathInfo.pathName + i + ".png", reslve);
+	                });
+	            })).then(function (imageElms) {
+	                ImageLoader.ANIME_IMAGE[pathInfo.name] = imageElms;
 	            });
-	        })).then(function (imageElms) {
-	            ImageLoader.ANIME_IMAGE = {
-	                lvup: imageElms
-	            };
-	        });
+	        }));
 	    };
 	    ImageLoader.commonImageLoad = function () {
 	        return Promise.all(ImageLoader.IMAGE_PATHS.map(function (src) {
@@ -3915,6 +3912,7 @@
 	        image.addEventListener("load", function () { return resolve(image); });
 	        image.src = path;
 	    };
+	    ImageLoader.ANIME_IMAGE = {};
 	    ImageLoader.FIELD_PATH = [
 	        "back.0.png",
 	        "enH0.0.png",
@@ -3932,7 +3930,8 @@
 	        "gozzila_bef_atk.png",
 	    ];
 	    ImageLoader.AnimationPath = [
-	        { baseName: "lvup/LevelUp.", length: 21 }
+	        { name: "lvup", pathName: "lvup/LevelUp.", length: 21 },
+	        { name: "beam", pathName: "beam/", length: 3 }
 	    ];
 	    return ImageLoader;
 	}());
@@ -4404,117 +4403,7 @@
 	];
 
 /***/ },
-/* 148 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var main_1 = __webpack_require__(137);
-	var BaseMonster_1 = __webpack_require__(140);
-	var ImageLoader_1 = __webpack_require__(141);
-	var share_1 = __webpack_require__(145);
-	var Gozzila = (function (_super) {
-	    __extends(Gozzila, _super);
-	    function Gozzila(ctx, option) {
-	        _super.call(this, ctx, option);
-	        this.begin = [
-	            { x: this.x + 14 * Gozzila.BAIRITU, y: this.y + 50 * Gozzila.BAIRITU },
-	            { x: this.x + 34 * Gozzila.BAIRITU, y: this.y + 61 * Gozzila.BAIRITU },
-	        ];
-	        this.maxHp = Gozzila.MAX_HP;
-	    }
-	    Gozzila.prototype.draw = function () {
-	        this.ctx.drawImage(this.image, this.x, main_1.MainCanvas.convY(this.y, Gozzila.HEIGHT * Gozzila.BAIRITU), Gozzila.WIDTH * Gozzila.BAIRITU, Gozzila.HEIGHT * Gozzila.BAIRITU);
-	        this.drawHp();
-	        this.action();
-	    };
-	    /** ビームによるダメージ計算 */
-	    Gozzila.prototype.calcBeamDmg = function (x0, x1, y0, y1) {
-	        var _this = this;
-	        if (this.mode !== share_1.GodzillaMode.atk)
-	            return 0;
-	        var count = 0;
-	        this.target.forEach(function (target, i) {
-	            var ya = (target.y - _this.begin[i].y) * (x0 - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
-	            var yb = (target.y - _this.begin[i].y) * (x1 - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
-	            var xa = (target.x - _this.begin[i].x) * (y0 - _this.begin[i].y) / (target.y - _this.begin[i].y) + _this.begin[i].x;
-	            var xb = (target.x - _this.begin[i].x) * (y1 - _this.begin[i].y) / (target.y - _this.begin[i].y) + _this.begin[i].x;
-	            if ((y0 <= ya && ya <= y1) || (y0 <= yb && yb <= y1) || (x0 <= xa && xa <= x1) || (x0 <= xb && xb <= x1)) {
-	                count++;
-	            }
-	            ;
-	        });
-	        return count * Gozzila.BEAM_DMG;
-	    };
-	    /** 接触ダメージ */
-	    Gozzila.prototype.calcSessyokuDmg = function (x, y) {
-	        return this.mode !== share_1.GodzillaMode.dead && this.x + 5 <= x ? Gozzila.SESSYOKU_DMG : 0;
-	    };
-	    Gozzila.prototype.atk = function () {
-	        var _this = this;
-	        this.target.forEach(function (target, i) {
-	            var endX = _this.begin[i].x < target.x ? main_1.MainCanvas.WIDTH : 0;
-	            var endY = (target.y - _this.begin[i].y) * (endX - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
-	            _this.ctx.strokeStyle = "#317cff";
-	            _this.ctx.shadowColor = "#317cff";
-	            _this.ctx.shadowBlur = 8;
-	            _this.ctx.beginPath();
-	            _this.ctx.moveTo(_this.begin[i].x, main_1.MainCanvas.convY(_this.begin[i].y, 0));
-	            _this.ctx.lineTo(endX, main_1.MainCanvas.convY(endY, 0));
-	            _this.ctx.closePath();
-	            _this.ctx.stroke();
-	            _this.ctx.shadowBlur = 0;
-	        });
-	    };
-	    Gozzila.prototype.drawHp = function () {
-	        this.ctx.fillStyle = "#000";
-	        this.ctx.fillRect(Gozzila.HP_BAR_INFO.X, Gozzila.HP_BAR_INFO.Y, Gozzila.HP_BAR_INFO.WIDTH + 2, Gozzila.HP_BAR_INFO.HEIGHT + 2);
-	        this.ctx.fillStyle = "#fff";
-	        this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH, Gozzila.HP_BAR_INFO.HEIGHT);
-	        this.ctx.fillStyle = "#4f1ae8";
-	        this.ctx.fillRect(Gozzila.HP_BAR_INFO.X + 1, Gozzila.HP_BAR_INFO.Y + 1, Gozzila.HP_BAR_INFO.WIDTH * this.hp / this.maxHp, Gozzila.HP_BAR_INFO.HEIGHT);
-	        this.ctx.fillStyle = main_1.MainCanvas.MOJI_COLOR;
-	        this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
-	        this.ctx.fillText(this.hp + " / " + this.maxHp, this.x + 30, 40);
-	    };
-	    Gozzila.prototype.action = function () {
-	        switch (this.mode) {
-	            case share_1.GodzillaMode.init:
-	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzila;
-	                break;
-	            case share_1.GodzillaMode.beforeAtk:
-	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzilaBefAtk;
-	                break;
-	            case share_1.GodzillaMode.atk:
-	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzila_atk;
-	                this.atk();
-	                break;
-	            default:
-	                break;
-	        }
-	    };
-	    Gozzila.WIDTH = 64;
-	    Gozzila.HEIGHT = 64;
-	    Gozzila.BAIRITU = 6;
-	    Gozzila.MAX_HP = 4000;
-	    Gozzila.HP_BAR_INFO = {
-	        X: 30,
-	        Y: 10,
-	        WIDTH: 500,
-	        HEIGHT: 20
-	    };
-	    Gozzila.BEAM_DMG = 1.3;
-	    Gozzila.SESSYOKU_DMG = 12;
-	    return Gozzila;
-	}(BaseMonster_1.BaseMonster));
-	exports.Gozzila = Gozzila;
-
-
-/***/ },
+/* 148 */,
 /* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -4909,6 +4798,119 @@
 	exports.push([module.id, ".field-change-area {\n  position: relative; }\n  .field-change-area .hide {\n    display: none; }\n  .field-change-area .field-select-ul {\n    font-size: 16px;\n    font-weight: 500;\n    line-height: 46px;\n    position: absolute;\n    color: #00897b;\n    top: 90px;\n    left: -50px;\n    border-radius: 3px;\n    background-color: #fdfdfd;\n    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); }\n    .field-change-area .field-select-ul li {\n      padding: 0 24px;\n      cursor: pointer;\n      border-bottom: 1px solid #e0e0e0;\n      white-space: nowrap; }\n      .field-change-area .field-select-ul li:hover {\n        background-color: #e0e0e0; }\n", ""]);
 	
 	// exports
+
+
+/***/ },
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var main_1 = __webpack_require__(137);
+	var BaseMonster_1 = __webpack_require__(140);
+	var ImageLoader_1 = __webpack_require__(141);
+	var share_1 = __webpack_require__(145);
+	var GodzillaMob = (function (_super) {
+	    __extends(GodzillaMob, _super);
+	    function GodzillaMob(ctx, option) {
+	        _super.call(this, ctx, option);
+	        this.beamFrame = 0;
+	        this.begin = [
+	            { x: this.x + 14 * GodzillaMob.BAIRITU, y: this.y + 50 * GodzillaMob.BAIRITU },
+	            { x: this.x + 34 * GodzillaMob.BAIRITU, y: this.y + 61 * GodzillaMob.BAIRITU },
+	        ];
+	        this.maxHp = GodzillaMob.MAX_HP;
+	    }
+	    GodzillaMob.prototype.draw = function () {
+	        this.ctx.drawImage(this.image, this.x, main_1.MainCanvas.convY(this.y, GodzillaMob.HEIGHT * GodzillaMob.BAIRITU), GodzillaMob.WIDTH * GodzillaMob.BAIRITU, GodzillaMob.HEIGHT * GodzillaMob.BAIRITU);
+	        this.drawHp();
+	        this.action();
+	    };
+	    /** ビームによるダメージ計算 */
+	    GodzillaMob.prototype.calcBeamDmg = function (x0, x1, y0, y1) {
+	        var _this = this;
+	        if (this.mode !== share_1.GodzillaMode.atk)
+	            return 0;
+	        var count = 0;
+	        this.target.forEach(function (target, i) {
+	            var ya = (target.y - _this.begin[i].y) * (x0 - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
+	            var yb = (target.y - _this.begin[i].y) * (x1 - _this.begin[i].x) / (target.x - _this.begin[i].x) + _this.begin[i].y;
+	            var xa = (target.x - _this.begin[i].x) * (y0 - _this.begin[i].y) / (target.y - _this.begin[i].y) + _this.begin[i].x;
+	            var xb = (target.x - _this.begin[i].x) * (y1 - _this.begin[i].y) / (target.y - _this.begin[i].y) + _this.begin[i].x;
+	            if ((y0 <= ya && ya <= y1) || (y0 <= yb && yb <= y1) || (x0 <= xa && xa <= x1) || (x0 <= xb && xb <= x1)) {
+	                count++;
+	            }
+	            ;
+	        });
+	        return count * GodzillaMob.BEAM_DMG;
+	    };
+	    /** 接触ダメージ */
+	    GodzillaMob.prototype.calcSessyokuDmg = function (x, y) {
+	        return this.mode !== share_1.GodzillaMode.dead && this.x + 5 <= x ? GodzillaMob.SESSYOKU_DMG : 0;
+	    };
+	    GodzillaMob.prototype.drawBeam = function () {
+	        var _this = this;
+	        this.beamFrame += 1 / 4;
+	        this.target.forEach(function (target, i) {
+	            var beamImg = ImageLoader_1.ImageLoader.ANIME_IMAGE.beam[Math.floor(_this.beamFrame)];
+	            var begin = _this.begin[i];
+	            var angle = Math.PI / 2 + Math.atan2(begin.x - target.x, begin.y - target.y);
+	            // const endX = this.begin[i].x < target.x ? MainCanvas.WIDTH : 0;
+	            // const endY = (target.y - this.begin[i].y) * (endX - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
+	            _this.ctx.save();
+	            _this.ctx.translate(begin.x - 10, main_1.MainCanvas.convY(begin.y - 30, 0));
+	            _this.ctx.rotate(angle);
+	            _this.ctx.drawImage(beamImg, 0, 0);
+	            _this.ctx.restore();
+	            _this.beamFrame = _this.beamFrame > 2 ? 0 : _this.beamFrame;
+	        });
+	    };
+	    GodzillaMob.prototype.drawHp = function () {
+	        this.ctx.fillStyle = "#000";
+	        this.ctx.fillRect(GodzillaMob.HP_BAR.X, GodzillaMob.HP_BAR.Y, GodzillaMob.HP_BAR.WIDTH + 2, GodzillaMob.HP_BAR.HEIGHT + 2);
+	        this.ctx.fillStyle = "#fff";
+	        this.ctx.fillRect(GodzillaMob.HP_BAR.X + 1, GodzillaMob.HP_BAR.Y + 1, GodzillaMob.HP_BAR.WIDTH, GodzillaMob.HP_BAR.HEIGHT);
+	        this.ctx.fillStyle = "#4f1ae8";
+	        this.ctx.fillRect(GodzillaMob.HP_BAR.X + 1, GodzillaMob.HP_BAR.Y + 1, GodzillaMob.HP_BAR.WIDTH * this.hp / this.maxHp, GodzillaMob.HP_BAR.HEIGHT);
+	        this.ctx.fillStyle = main_1.MainCanvas.MOJI_COLOR;
+	        this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
+	        this.ctx.fillText(this.hp + " / " + this.maxHp, this.x + 30, 40);
+	    };
+	    GodzillaMob.prototype.action = function () {
+	        switch (this.mode) {
+	            case share_1.GodzillaMode.init:
+	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzila;
+	                break;
+	            case share_1.GodzillaMode.beforeAtk:
+	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzilaBefAtk;
+	                break;
+	            case share_1.GodzillaMode.atk:
+	                this.image = ImageLoader_1.ImageLoader.IMAGES.gozzila_atk;
+	                this.drawBeam();
+	                break;
+	            default:
+	                break;
+	        }
+	    };
+	    GodzillaMob.WIDTH = 64;
+	    GodzillaMob.HEIGHT = 64;
+	    GodzillaMob.BAIRITU = 5;
+	    GodzillaMob.MAX_HP = 4000;
+	    GodzillaMob.HP_BAR = {
+	        X: 30,
+	        Y: 10,
+	        WIDTH: 500,
+	        HEIGHT: 20
+	    };
+	    GodzillaMob.BEAM_DMG = 1.3;
+	    GodzillaMob.SESSYOKU_DMG = 12;
+	    return GodzillaMob;
+	}(BaseMonster_1.BaseMonster));
+	exports.GodzillaMob = GodzillaMob;
 
 
 /***/ }

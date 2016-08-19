@@ -12,7 +12,8 @@ export class ImageLoader {
 	};
 	public static ANIME_IMAGE: {
 		lvup: HTMLImageElement[];
-	};
+		beam: HTMLImageElement[];
+	} = <any>{};
 
 	public static FIELD_IMAGE: {
 		bg: HTMLImageElement;
@@ -24,7 +25,7 @@ export class ImageLoader {
 		"back.0.png",
 		"enH0.0.png",
 		"bsc.0.png"
-	]
+	];
 	private static PREFIX_PATH = "./assets/";
 	private static IMAGE_PATHS = [
 		"ebiruai.png",
@@ -37,13 +38,12 @@ export class ImageLoader {
 		"gozzila_bef_atk.png",
 	];
 	private static AnimationPath = [
-		{baseName: "lvup/LevelUp.", length: 21}
+		{name: "lvup", pathName: "lvup/LevelUp.", length: 21},
+		{name: "beam", pathName: "beam/", length: 3}
 	];
 
-	public static load(): Promise<void> {
-		//こっちは非同期で
-		this.animeImageLoad();
-		return this.commonImageLoad();
+	public static load(): Promise<any> {
+		return Promise.all([this.commonImageLoad(), this.animeImageLoad()]);
 	}
 
 	public static fieldImageLoad(type: string) {
@@ -59,18 +59,21 @@ export class ImageLoader {
 			};
 		});
 	}
+
 	private static animeImageLoad() {
-		const hoge = ImageLoader.AnimationPath[0];
-		return Promise.all(Array.from(new Array(hoge.length)).map((val, i) => {
-			return new Promise<HTMLImageElement>(reslve => {
-				return ImageLoader.imageLoad(`${ImageLoader.PREFIX_PATH}${hoge.baseName}${i}.png`, reslve);
-			});
-		})).then((imageElms) => {
-			ImageLoader.ANIME_IMAGE = {
-				lvup: imageElms
-			};
-		});
+		return Promise.all(
+			ImageLoader.AnimationPath.map((pathInfo) => {
+				return Promise.all(Array.from(new Array(pathInfo.length)).map((val, i) => {
+					return new Promise<HTMLImageElement>(reslve => {
+						return ImageLoader.imageLoad(`${ImageLoader.PREFIX_PATH}${pathInfo.pathName}${i}.png`, reslve);
+					});
+				})).then((imageElms) => {
+					(<any>ImageLoader.ANIME_IMAGE)[pathInfo.name] = imageElms;
+				});
+			})
+		);
 	}
+
 	private static commonImageLoad() {
 		return Promise.all(ImageLoader.IMAGE_PATHS.map((src) => {
 			return new Promise<HTMLImageElement>(reslve => {
