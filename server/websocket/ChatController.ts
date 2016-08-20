@@ -1,12 +1,12 @@
 import * as WebSocket from 'ws';
 import {Collection} from 'mongodb';
-import {MainController} from "./MainController";
+import {WSWrapper} from "./WebSocketWrapper";
 import {SocketType} from "../share/share";
 import {MongoWrapper} from "../server";
 
 export class ChatController {
 	private static C_NAME = process.env.COLLECTION_NAME || "maplechatlog";
-	constructor(private main: MainController, private mongo: MongoWrapper) {
+	constructor(private main: WSWrapper, private mongo: MongoWrapper) {
 	}
 
 	public init() {

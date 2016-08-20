@@ -1,10 +1,10 @@
 import * as WebSocket from 'ws';
-import {MainController} from "./MainController";
+import {WSWrapper} from "./WebSocketWrapper";
 import {SocketType} from "../share/share";
 import {UserService} from "../service/UserService";
 
 export class RankingController {
-	constructor(private main: MainController, private userService: UserService) {
+	constructor(private main: WSWrapper, private userService: UserService) {
 	}
 
 	public init() {

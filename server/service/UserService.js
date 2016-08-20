@@ -13,21 +13,18 @@ var UserService = (function () {
             .find({}, { _id: 0, lv: 1, name: 1 }).limit(10).sort({ lv: -1 }).toArray();
     };
     UserService.prototype.createUser = function (user) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.mongo.getCollection(UserService.C_NAME).insert(_this.filterUserData(user)).catch(function (e) {
-                console.trace(e);
-            });
-            _this.validate(user) ? resolve() : reject();
+        return this.mongo.getCollection(UserService.C_NAME).insert(user).catch(function (e) {
+            console.trace(e);
         });
     };
     UserService.prototype.updateUser = function (user) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.mongo.getCollection(UserService.C_NAME).update({ _id: user._id }, _this.filterUserData(user)).catch(function (e) {
-                console.trace(e);
-            });
-            _this.validate(user) ? resolve() : reject();
+        return this.mongo.getCollection(UserService.C_NAME).updateOne({ _id: user._id }, user).catch(function (e) {
+            console.trace(e);
+        });
+    };
+    UserService.prototype.increseExp = function (userId, exp) {
+        this.mongo.getCollection(UserService.C_NAME).updateOne({ _id: userId }, { exp: exp }).catch(function (e) {
+            console.trace(e);
         });
     };
     UserService.prototype.deleteUser = function (id) {
@@ -43,22 +40,6 @@ var UserService = (function () {
                 !value ? resolve() : reject();
             });
         });
-    };
-    UserService.prototype.filterUserData = function (user) {
-        return {
-            _id: user._id,
-            ip: user.ip,
-            lv: user.lv,
-            name: user.name,
-            exp: user.exp,
-            date: new Date()
-        };
-    };
-    UserService.prototype.validate = function (user) {
-        return (user._id &&
-            user.name !== undefined &&
-            typeof user.lv === "number" &&
-            typeof user.exp === "number");
     };
     UserService.C_NAME = "users";
     UserService.BANS_COLLECTION = "banip";

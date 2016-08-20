@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws';
-import {MainController} from "./MainController";
+import {WSWrapper} from "./WebSocketWrapper";
 import {GameController} from "./GameController";
 import {SocketType, ReqEvilData, GodzillaMode, GodzillaInfo} from "../share/share";
 
@@ -13,13 +13,12 @@ export class GodzillaController {
 
 	private _godzilla: GodzillaInfo;
 	private actionFrameCount: number;
-	private atkCount: any = {};
 	private isDecidedTarget: boolean;
 	get godzilla() {
 		return this._godzilla;
 	}
 
-	constructor(private main: MainController, private evils: ReqEvilData[]) {
+	constructor(private wsWrapper: WSWrapper, private evils: ReqEvilData[]) {
 	}
 
 	public init() {
@@ -28,16 +27,14 @@ export class GodzillaController {
 			mode: GodzillaMode.init,
 			target: Array.from(new Array(2)).map( () => {return {x: 0, y: 0}; })
 		};
-		this.main.addMsgListner(SocketType.gozzilaDamege, (ws, reqData) => this.onAtkGodzilla(ws));
 		this.actionFrameCount = 0;
-		setInterval(() => this.atkCount = {}, 10 * 1000);
 	}
 
 	public roopAction() {
 		this.actionFrameCount ++;
 		let baseFrame = 0;
 		for (const actionInfo of GodzillaController.ACTION_INFO) {
-			baseFrame += actionInfo.sec * GameController.FRAME;
+			baseFrame += actionInfo.sec * GameController.SEND_FPS;
 			if (this.actionFrameCount < baseFrame) {
 				this._godzilla.mode = actionInfo.mode;
 				break;
@@ -50,22 +47,19 @@ export class GodzillaController {
 		case GodzillaMode.atkEnd:
 			this.isDecidedTarget = false;
 			this.actionFrameCount = 0;
+			GodzillaController.ACTION_INFO[0].sec = Math.floor(0.6 + Math.random() * 10) * 0.1;
 			break;
 		}
 	}
 
-	private onAtkGodzilla(ws: WebSocket) {
-		const skey = this.main.getSercretKey(ws);
-		this.atkCount[skey] = this.atkCount[skey] ? this.atkCount[skey] + 1 : 1;
-		if (this.atkCount[skey] > 100) {
-			ws.close(1008, "一定回数以上攻撃");
-		};
+	public damage(damage: number) {
 		this._godzilla.hp -= 2;
 	}
 
 	private decideTarget() {
-		const livedEvils = this.evils.filter(evil => !evil.isDead);
-		const targetEvils = livedEvils.length ? livedEvils : this.evils;
+		const livedEvils = this.evils.filter(evil => !evil.isDead && evil.x > 200);
+		const deadEvils = this.evils.filter(evil => evil.x > 200);
+		const targetEvils = livedEvils.length ? livedEvils : deadEvils;
 		const targets = Array.from(new Array(2)).map(() => {
 			const targetEvil = GameController.getRandom(targetEvils);
 			return targetEvil ? {x: targetEvil.x + 50, y: targetEvil.y + 30} : {x: 0, y: 0};

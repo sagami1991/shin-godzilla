@@ -36,7 +36,7 @@ export class RankingComponent {
 
 	public init() {
 		document.querySelector(".rank-button").addEventListener("click", () => {
-			this.wsService.send(SocketType.ranking, null);
+			this.wsService.send(SocketType.ranking);
 			document.querySelector(".ranking-area").classList.toggle("disabled");
 		});
 		document.querySelector(".ranking-area").innerHTML = RankingComponent.HTML;

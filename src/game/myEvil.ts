@@ -8,7 +8,6 @@ import {SocketType, DbUserData} from "../../server/share/share";
 import {LvUpEffect} from "./LvEffect";
 
 export interface MyEvilOption extends EvilOption {
-	gozzila: GodzillaMob;
 	exp: number;
 	name: string;
 	dbId: string;
@@ -21,14 +20,12 @@ export class Ebiruai extends SimpleEvil {
 	private static EXP_BAIRITU = 1.2;
 	private static BASE_EXP = 50;
 	private static INIT_MAX_HP = 100;
-	public atksita: boolean;
+	private static MAX_ATACK_LENGTH = 3;
 	public maxExp: number;
 	public isChangeName: boolean;
 	private jumpF: number;
 	private isJumping: boolean;
-	private gozzila: GodzillaMob;
 	private rebirthButton: HTMLButtonElement;
-	private resetButton: HTMLButtonElement;
 	private statusBar: StatusBar;
 	private jumpValue: number;
 	private speed: number;
@@ -39,19 +36,19 @@ export class Ebiruai extends SimpleEvil {
 				private ws: WSService,
 				option: MyEvilOption) {
 		super(ctx, option);
-		this.lv = option.lv;
 		this.exp = option.exp;
-		this.name = option.name;
 		this.maxHp = Ebiruai.INIT_MAX_HP;
 		this.jumpValue = Ebiruai.BASE_JUMP;
 		this.speed = Ebiruai.BASE_SPEED;
 		this.maxExp = this.getMaxExp();
 		this.hp = this.maxHp;
-		this.gozzila = option.gozzila;
 		this.initButtons();
 		this.initStatusBar();
 		this.dbId = option.dbId;
 		this.isChangeName = true;
+		this.ws.addOnReceiveMsgListener(SocketType.userData, (user: DbUserData) => {
+			this.onReceivePersonalData(user);
+		});
 	}
 
 	/** 毎フレーム実行される動作 */
@@ -66,6 +63,10 @@ export class Ebiruai extends SimpleEvil {
 			this.damegeCalc();
 			if (this.hp <= 0) this.deadOnce();
 		}
+		if (this.isLvUp) {
+			LvUpEffect.draw(this.ctx, this);
+			this.isLvUp = false;
+		}
 	}
 
 	private initStatusBar() {
@@ -79,7 +80,7 @@ export class Ebiruai extends SimpleEvil {
 	}
 
 	private refreshStatusBar() {
-		this.statusBar.setExp(this.exp, this.maxExp);
+		this.statusBar.setExp(this.exp, this.getMaxExp());
 		this.statusBar.setLv(this.lv);
 		this.statusBar.setName(this.name);
 	}
@@ -93,31 +94,33 @@ export class Ebiruai extends SimpleEvil {
 				this.rebirthButton.classList.add("disabled");
 			}
 		});
-		this.resetButton = <HTMLButtonElement> document.querySelector(".reset-button");
-		this.resetButton.addEventListener("click", () => {
+		document.querySelector(".reset-button").addEventListener("click", () => {
 			if (window.confirm("レベルが1に戻ります。元に戻せませんがよろしいですか？")) {
-				this.lv = 1;
-				this.maxExp = this.getMaxExp();
-				this.exp = 0;
-				this.saveMyData();
-				this.refreshStatusBar();
+				this.ws.send(SocketType.resetLv);
 			}
 		});
 	}
 
+	private onReceivePersonalData(user: DbUserData) {
+		if (user.lv > this.lv) this.isLvUp = true;
+		this.lv = user.lv;
+		this.exp = user.exp;
+		this.refreshStatusBar();
+	}
+
 	private damegeCalc() {
-		this.hp -= this.gozzila.calcBeamDmg(this.x, this.x + SimpleEvil.WIDTH, this.y, this.y + SimpleEvil.HEIGHT);
-		this.hp -= this.gozzila.calcSessyokuDmg(this.x, this.y);
+		this.hp -= MainCanvas.GOZZILA.calcBeamDmg(this.x, this.x + SimpleEvil.WIDTH, this.y, this.y + SimpleEvil.HEIGHT);
+		this.hp -= MainCanvas.GOZZILA.calcSessyokuDmg(this.x, this.y);
 	}
 
 	private move() {
 		if (GamePadComponent.KeyEvent.hidari) {
 			this.x -= this.speed;
-			this.isMigiMuki = false;
+			this.isMigi = false;
 		}
 		if (GamePadComponent.KeyEvent.migi) {
 			this.x += this.speed;
-			this.isMigiMuki = true;
+			this.isMigi = true;
 		}
 	}
 
@@ -137,30 +140,14 @@ export class Ebiruai extends SimpleEvil {
 	}
 
 	private beforeAtk() {
-		if (GamePadComponent.KeyEvent.atk && this.myTrains.length < 3) {
+		if (GamePadComponent.KeyEvent.atk && this.myTrains.length < Ebiruai.MAX_ATACK_LENGTH) {
 			GamePadComponent.KeyEvent.atk = false;
-			this.atksita = true;
 			super.atk();
-			this.myTrains[this.myTrains.length - 1].setOnAtked(() => this.increaseExp());
+			this.isAtk = true;
+			this.myTrains[this.myTrains.length - 1].setOnAtked(() => {
+				this.ws.send(SocketType.gozzilaDamege);
+			});
 		}
-	}
-
-	private increaseExp() {
-		this.exp += 2;
-		this.statusBar.setExp(this.exp, this.maxExp);
-		if (this.maxExp <= this.exp) {
-			this.lvUp();
-		}
-	}
-
-	private lvUp() {
-		LvUpEffect.draw(this.ctx, this);
-		this.isLvUp = true;
-		this.lv ++;
-		this.exp = 0;
-		this.maxExp = this.getMaxExp();
-		this.refreshStatusBar();
-		this.saveMyData();
 	}
 
 	private drawRespawnCount() {
@@ -175,13 +162,8 @@ export class Ebiruai extends SimpleEvil {
 		this.hp = 0;
 		this.isDead = true;
 		this.rebornTimeCount = MainCanvas.FRAME * 8;
-		setTimeout(() => {
-			this.rebirthButton.classList.remove("disabled");
-		}, 8000);
-		this.exp -= Math.floor(this.maxExp / 8);
-		this.exp = this.exp < 0 ? 0 : this.exp;
-		this.statusBar.setExp(this.exp, this.maxExp);
-		this.saveMyData();
+		setTimeout(() => this.rebirthButton.classList.remove("disabled"), 8000);
+		this.ws.send(SocketType.dead);
 	}
 
 	private drawHp() {
@@ -197,11 +179,8 @@ export class Ebiruai extends SimpleEvil {
 	}
 
 	private saveMyData() {
-		this.ws.send(SocketType.save, <DbUserData> {
-			_id: this.dbId,
-			name: this.name,
-			lv: this.lv,
-			exp: this.exp
+		this.ws.send(SocketType.saveUserData, <DbUserData> {
+			name: this.name
 		});
 	}
 }

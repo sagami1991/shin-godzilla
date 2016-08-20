@@ -1,7 +1,7 @@
 import {MainCanvas} from "./main";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
-import {GodzillaMode} from "../../server/share/share";
+import {GodzillaMode, GodzillaInfo, CONST} from "../../server/share/share";
 
 export class GodzillaMob extends BaseMonster {
 	private static WIDTH = 64;
@@ -16,20 +16,37 @@ export class GodzillaMob extends BaseMonster {
 	};
 	private static BEAM_DMG = 1.3;
 	private static SESSYOKU_DMG = 12;
-	public isDamege: boolean;
-	public target: {x: number, y: number}[];
-	public mode: number;
+	private target: {x: number, y: number}[];
+	private mode: number;
 	/** ビームが発射される座標*/
 	private begin: {x: number, y: number}[];
+	private beamFrame = 0;
 	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {
 		super(ctx, option);
+		this.image = ImageLoader.IMAGES.gozzila;
+		this.x = 550;
+		this.y = CONST.CANVAS.Y0;
 		this.begin = [
 			{x: this.x + 14 * GodzillaMob.BAIRITU, y: this.y + 50 * GodzillaMob.BAIRITU},
 			{x: this.x + 34 * GodzillaMob.BAIRITU, y: this.y + 61 * GodzillaMob.BAIRITU},
 		];
 		this.maxHp = GodzillaMob.MAX_HP;
+		this.target = [];
 	}
 
+	public setGodzilaInfo(info: GodzillaInfo) {
+		if (!info) return;
+		if (info.hp) this.hp = info.hp;
+		if (info.mode) this.mode = info.mode;
+		if (info.target) {
+			info.target.forEach((target, i) => {
+				if (target) this.target[i] = {
+					x: target.x !== undefined ? target.x : this.target[i].x,
+					y: target.y  !== undefined ? target.y : this.target[i].y
+				};
+			});
+		}
+	}
 	public draw() {
 		this.ctx.drawImage(
 			this.image,
@@ -62,7 +79,7 @@ export class GodzillaMob extends BaseMonster {
 	public calcSessyokuDmg(x: number, y: number): number {
 		return this.mode !== GodzillaMode.dead && this.x + 5 <= x ? GodzillaMob.SESSYOKU_DMG : 0;
 	}
-	private beamFrame = 0;
+
 	private drawBeam() {
 		this.beamFrame += 1 / 4;
 		this.target.forEach((target, i) => {

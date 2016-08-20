@@ -1,15 +1,15 @@
 "use strict";
 var share_1 = require("../share/share");
 var InfoMsgController = (function () {
-    function InfoMsgController(main) {
-        this.main = main;
+    function InfoMsgController(wsWrapper) {
+        this.wsWrapper = wsWrapper;
     }
     InfoMsgController.prototype.init = function () {
         var _this = this;
-        this.main.addConnectListner(function (ws) { return _this.onSomebodyConnect(ws); });
+        this.wsWrapper.addConnectListner(function (ws) { return _this.onSomebodyConnect(ws); });
     };
     InfoMsgController.prototype.onSomebodyConnect = function (ws) {
-        this.main.sendAll({
+        this.wsWrapper.sendAll({
             myWs: ws,
             isSelfSend: false,
             type: share_1.SocketType.infolog,

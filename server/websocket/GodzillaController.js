@@ -2,10 +2,9 @@
 var GameController_1 = require("./GameController");
 var share_1 = require("../share/share");
 var GodzillaController = (function () {
-    function GodzillaController(main, evils) {
-        this.main = main;
+    function GodzillaController(wsWrapper, evils) {
+        this.wsWrapper = wsWrapper;
         this.evils = evils;
-        this.atkCount = {};
     }
     Object.defineProperty(GodzillaController.prototype, "godzilla", {
         get: function () {
@@ -15,22 +14,19 @@ var GodzillaController = (function () {
         configurable: true
     });
     GodzillaController.prototype.init = function () {
-        var _this = this;
         this._godzilla = {
             hp: 4000,
             mode: share_1.GodzillaMode.init,
             target: Array.from(new Array(2)).map(function () { return { x: 0, y: 0 }; })
         };
-        this.main.addMsgListner(share_1.SocketType.gozzilaDamege, function (ws, reqData) { return _this.onAtkGodzilla(ws); });
         this.actionFrameCount = 0;
-        setInterval(function () { return _this.atkCount = {}; }, 10 * 1000);
     };
     GodzillaController.prototype.roopAction = function () {
         this.actionFrameCount++;
         var baseFrame = 0;
         for (var _i = 0, _a = GodzillaController.ACTION_INFO; _i < _a.length; _i++) {
             var actionInfo = _a[_i];
-            baseFrame += actionInfo.sec * GameController_1.GameController.FRAME;
+            baseFrame += actionInfo.sec * GameController_1.GameController.SEND_FPS;
             if (this.actionFrameCount < baseFrame) {
                 this._godzilla.mode = actionInfo.mode;
                 break;
@@ -44,21 +40,17 @@ var GodzillaController = (function () {
             case share_1.GodzillaMode.atkEnd:
                 this.isDecidedTarget = false;
                 this.actionFrameCount = 0;
+                GodzillaController.ACTION_INFO[0].sec = Math.floor(0.6 + Math.random() * 10) * 0.1;
                 break;
         }
     };
-    GodzillaController.prototype.onAtkGodzilla = function (ws) {
-        var skey = this.main.getSercretKey(ws);
-        this.atkCount[skey] = this.atkCount[skey] ? this.atkCount[skey] + 1 : 1;
-        if (this.atkCount[skey] > 100) {
-            ws.close(1008, "一定回数以上攻撃");
-        }
-        ;
+    GodzillaController.prototype.damage = function (damage) {
         this._godzilla.hp -= 2;
     };
     GodzillaController.prototype.decideTarget = function () {
-        var livedEvils = this.evils.filter(function (evil) { return !evil.isDead; });
-        var targetEvils = livedEvils.length ? livedEvils : this.evils;
+        var livedEvils = this.evils.filter(function (evil) { return !evil.isDead && evil.x > 200; });
+        var deadEvils = this.evils.filter(function (evil) { return evil.x > 200; });
+        var targetEvils = livedEvils.length ? livedEvils : deadEvils;
         var targets = Array.from(new Array(2)).map(function () {
             var targetEvil = GameController_1.GameController.getRandom(targetEvils);
             return targetEvil ? { x: targetEvil.x + 50, y: targetEvil.y + 30 } : { x: 0, y: 0 };

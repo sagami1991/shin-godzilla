@@ -1,105 +1,134 @@
 import * as WebSocket from 'ws';
-import {MainController, ReqData} from "./MainController";
+import {WSWrapper} from "./WebSocketWrapper";
 import {GodzillaController} from "./GodzillaController";
-import {SocketType, InitialUserData, DbUserData, ReqEvilData, GameData, FieldType} from "../share/share";
-import {UserService} from "../service/UserService";
+import {SocketType, InitialUserData, ReqEvilData, GameData, CONST, MasterEvilData} from "../share/share";
+import {UserDataController} from "./UserDataController";
 import {FieldController} from "./FieldController";
-import * as shortid from "shortid";
+import {DiffExtract} from "../share/util";
 
 export class GameController {
 	public static FRAME = 30;
-	private static INIT_USERDATA = {
-		exp: 0,
-		lv: 1,
-		name: "名前"
-	};
+	public static SEND_FPS = 10;
 	private godzillaController: GodzillaController;
 	private befSendData: GameData;
-	private evils: ReqEvilData[] = [];
+	private masterUsersData: MasterEvilData[] = [];
+	private closeIds: string[] = [];
 	public static getRandom<T>(arr: T[]): T  {
 		return arr ? arr[Math.floor(Math.random() * arr.length)] : null;
 	}
-	constructor(private main: MainController,
-	 private userService: UserService,
-	 private fieldController: FieldController) {
-		this.godzillaController = new GodzillaController(main, this.evils);
+	constructor(private wsWrapper: WSWrapper,
+				private userController: UserDataController) {
+		this.godzillaController = new GodzillaController(wsWrapper, this.masterUsersData);
 		this.godzillaController.init();
 	}
 
 	public init() {
-		this.main.addCloseListner(ws => this.deleteClosedEvil(ws));
-		this.main.addMsgListner(SocketType.init, (ws, reqData) => this.loadUser(ws, reqData));
-		this.main.addMsgListner(SocketType.zahyou, (ws, reqData) => this.updateEvils(ws, reqData));
-		this.main.addMsgListner(SocketType.save, (ws, reqData) => this.saveUserData(ws, reqData));
-		setInterval(() => this.intervalAction(), 1000 / GameController.FRAME);
-	}
+		this.wsWrapper.addCloseListner(ws => this.deleteClosedEvil(ws));
+		this.wsWrapper.addMsgListner(SocketType.zahyou, (ws, reqData) => this.onReceiveEvilData(ws, reqData));
+		this.wsWrapper.addMsgListner(SocketType.gozzilaDamege, (ws, reqData) => this.atkToGodzilla(ws, reqData));	
+		setInterval(() => this.intervalAction(),  1000 / GameController.SEND_FPS);
+		this.userController.onLvUp = (personId: string) => {
+			const evil = this.masterUsersData.find(evil => evil.pid === personId);
+			if (evil) {
+				evil.lv += 1;
+				evil.isLvUp = true;
+			}
+		};
+		this.userController.onFirstConnect = (ws, user) => {
+			const userData: MasterEvilData = {
+				isMigi: true,
+				x: Math.round(Math.random() * 500),
+				y: CONST.CANVAS.Y0,
+				isAtk: false,
+				isDead: false,
+				pid: this.wsWrapper.getPersonId(ws),
+				lv: user.lv,
+				isLvUp: false,
+				name: user.name
+			};
+			this.masterUsersData.push(userData);
 
-	private saveUserData(ws: WebSocket, reqData: DbUserData) {
-		this.userService.updateUser(Object.assign(reqData, {ip: this.main.getIpAddr(ws)}));
-	}
-
-	private loadUser(ws: WebSocket, reqData: {_id: string}) {
-		this.userService.containBanList(this.main.getIpAddr(ws)).catch(() => {
-			console.log(`違反者接続 ip: ${this.main.getIpAddr(ws)}`);
-			ws.close(1008, "違反者リストに含まれています");
-		});
-		if (!reqData._id) {
-			this.sendInitUserData(ws, this.createInitUser(this.main.getIpAddr(ws)));
-		} else {
-			this.userService.getUser(reqData._id).then((user) => {
-				this.sendInitUserData(ws, user ? user : this.createInitUser(this.main.getIpAddr(ws)));
+			this.wsWrapper.send(ws, SocketType.init, <InitialUserData> {
+				pid: this.wsWrapper.getPersonId(ws),
+				user: Object.assign({}, user, userData),
+				users: this.masterUsersData,
+				gozdilla: this.godzillaController.godzilla,
+				bg: FieldController.bgType
 			});
-		}
+		};
+
+		this.userController.onClose = (ws) => {
+			this.closeIds.push(this.wsWrapper.getPersonId(ws));
+		};
+
+		this.userController.onSave = (ws, user) => {
+			const userData = this.masterUsersData.find(user => user.pid === this.wsWrapper.getPersonId(ws));
+			if (userData) userData.name = user.name;
+		};
 	}
 
-	private createInitUser(ipAddr: string): DbUserData {
-		const initialData = Object.assign({_id: shortid.generate(), ip: ipAddr}, GameController.INIT_USERDATA);
-		this.userService.createUser(initialData);
-		return initialData;
-	}
-
-	private sendInitUserData(ws: WebSocket, user: DbUserData) {
-		this.main.send(ws, SocketType.init, <InitialUserData> {
-			personId: this.main.getSercretKey(ws),
-			userData: user,
-			bgType: this.fieldController.bgType
-		});
+	private atkToGodzilla(ws: WebSocket, damage: number) {
+		this.userController.increaseExp(ws);
+		this.godzillaController.damage(damage);
 	}
 
 	private deleteClosedEvil(ws: WebSocket) {
-		const targetIdx = this.evils.findIndex(zahyou => zahyou.personId === this.main.getSercretKey(ws));
-		this.evils.splice(targetIdx, 1);
+		const targetIdx = this.masterUsersData.findIndex(zahyou => zahyou.pid === this.wsWrapper.getPersonId(ws));
+		this.masterUsersData.splice(targetIdx, 1);
 	}
 
 	private intervalAction() {
 		this.godzillaController.roopAction();
-		this.sendGameData();
+		this.sendSnapshot();
 	}
 
-	private sendGameData() {
+	private sendSnapshot() {
 		const sendData: GameData = {
 			gozzila: this.godzillaController.godzilla,
-			evils: this.evils
+			evils: this.masterUsersData,
+			cids: this.closeIds
 		};
-		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
-			this.main.sendAll({
+		const snapShot = <GameData> DiffExtract.diff(this.befSendData, sendData);
+		if (snapShot) {
+			this.wsWrapper.sendAll({
 				type: SocketType.zahyou,
-				value: sendData
+				value: snapShot
 			});
 		}
+		this.masterUsersData.forEach(evil => evil.isLvUp = false);
+		this.closeIds = [];
 		this.befSendData = JSON.parse(JSON.stringify(sendData));
 	}
 
-	private updateEvils(nowWs: WebSocket, reqData: ReqEvilData) {
-		const evilInfo = this.evils.find(zahyou => zahyou.personId === this.main.getSercretKey(nowWs));
+	// MsgListner 
+	private onReceiveEvilData(ws: WebSocket, reqData: ReqEvilData) {
+		const user = this.userController.getUser(ws);
+		if (!user || !this.validateReqData(reqData)) {
+			console.trace("不正なデータ", reqData);
+			ws.close();
+			return;
+		}
+		const evilInfo = this.masterUsersData.find(zahyou => zahyou.pid === this.wsWrapper.getPersonId(ws));
 		if (evilInfo) {
-			Object.assign(evilInfo, reqData);
-		} else {
-			this.evils.push(Object.assign({personId: this.main.getSercretKey(nowWs)}, reqData));
+			Object.assign(evilInfo, this.filterEvilData(reqData));
 		}
 	}
 
-	private filterEvilData() {
+	private filterEvilData(reqData: ReqEvilData): ReqEvilData {
+		return {
+			isMigi: reqData.isMigi,
+			x: reqData.x,
+			y: reqData.y,
+			isAtk: reqData.isAtk,
+			isDead: reqData.isDead,
+		};
+	}
 
+	private validateReqData(reqData: ReqEvilData) {
+		return (
+			typeof reqData.x === "number" &&
+			typeof reqData.y === "number" &&
+			reqData.y >= 150
+		);
 	}
 }

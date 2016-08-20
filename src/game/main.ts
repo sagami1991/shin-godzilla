@@ -4,8 +4,9 @@ import {Ebiruai} from "./myEvil";
 import {GodzillaMob} from "./GozdillaMob";
 import {ImageLoader} from "./ImageLoader";
 import {GamePadComponent} from "./GamePadComponent";
-import {SocketType, InitialUserData, ReqEvilData, GameData} from "../../server/share/share";
+import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData} from "../../server/share/share";
 import {FieldComponent} from "./FieldComponent";
+
 /** ゲーム機能の総合操作クラス */
 export class MainCanvas {
 	public static MOJI_COLOR = "#fff";
@@ -22,20 +23,21 @@ export class MainCanvas {
 		cb: (count: number) => void;
 	}[] =[];
 
-	private ws: WSService;
+	private wsService: WSService;
 	private canvasElm: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
 	private timer: number;
 	private myEvil: Ebiruai;
-	private gozzila: GodzillaMob;
-	private otherPersonEvils: SimpleEvil[] = [];
-	private receiveMyEvilInfo: ReqEvilData;
+	private godzilla: GodzillaMob;
+	private otherPersonsInfo: MasterEvilData[];
+	private otherPersons: SimpleEvil[];
 	private befSendData: ReqEvilData;
 
 	/** 下からのY座標を上からのY座標に変更 */
 	public static convY(y: number, height: number) {
 		return MainCanvas.HEIGHT - y - height;
 	}
+
 	public static addIntervalAction(cb: (count: number) => void, delay: number = 1, roopCount: number = Infinity) {
 		this.intervalActions.push({
 			delay: delay,
@@ -45,14 +47,14 @@ export class MainCanvas {
 		});
 	}
 	constructor(ws: WSService) {
-		this.ws = ws;
+		this.wsService = ws;
 	}
 
 	public init() {
-		this.ws.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
-		this.ws.addOnOpenListener(() => {
+		this.wsService.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
+		this.wsService.addOnOpenListener(() => {
 			ImageLoader.load().then(() => {
-				this.ws.send(SocketType.init, {_id: localStorage.getItem("dbId")});
+				this.wsService.send(SocketType.init, {_id: localStorage.getItem("dbId")});
 			});
 		});
 		this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
@@ -64,61 +66,61 @@ export class MainCanvas {
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
-		new FieldComponent(this.ws).init(resData.bgType);
-		localStorage.setItem("dbId", resData.userData._id);
-		this.gozzila = new GodzillaMob(this.ctx, {
-			image: ImageLoader.IMAGES.gozzila,
-			x: 550,
-			y: MainCanvas.Y0,
-			isMigiMuki: false
-		});
-		MainCanvas.GOZZILA = this.gozzila;
-		this.myEvil = new Ebiruai(this.ctx, this.ws, {
-			image: ImageLoader.IMAGES.evilHidari,
-			x: Math.round(Math.random() * 500),
-			y: MainCanvas.Y0,
-			isMigiMuki: true,
-			isMy: true,
-			personId: resData.personId,
-			gozzila: this.gozzila,
-			lv: resData.userData.lv,
-			exp: resData.userData.exp,
-			name: resData.userData.name,
+		new FieldComponent(this.wsService).init(resData.bg);
+		localStorage.setItem("dbId", resData.user._id);
+		this.godzilla = new GodzillaMob(this.ctx, {});
+		this.godzilla.setGodzilaInfo(resData.gozdilla);
+		MainCanvas.GOZZILA = this.godzilla;
+		this.myEvil = new Ebiruai(this.ctx, this.wsService, {
+			x: resData.user.x,
+			y: resData.user.y,
+			isMigi: resData.user.isMigi,
+			pid: resData.pid,
+			lv: resData.user.lv,
+			exp: resData.user.exp,
+			name: resData.user.name,
 			isAtk: false,
 			isDead: false,
-			dbId: resData.userData._id
+			dbId: resData.user._id
 		});
-		this.gozzila.target = [0, 0].map( () => {return{x: this.myEvil.x, y: this.myEvil.y}; });
+		this.otherPersonsInfo = resData.users;
+		this.otherPersons = resData.users.map((info) => {
+			return new SimpleEvil(MainCanvas.CTX, info);
+		});
+
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
-		this.ws.addOnReceiveMsgListener(SocketType.zahyou, (value) => this.onReceiveGameData(value));
-		this.ws.addOnCloseListener(() => window.clearInterval(this.timer));
+		this.wsService.addOnReceiveMsgListener(SocketType.zahyou, (value) => this.onReceiveIntervalData(value));
+		this.wsService.addOnCloseListener(() => window.clearInterval(this.timer));
 	}
 
-	private onReceiveGameData(value: GameData) {
-		const gozzilaInfo = value.gozzila;
-		this.gozzila.hp = gozzilaInfo.hp;
-		this.gozzila.mode = gozzilaInfo.mode;
-		this.gozzila.target = gozzilaInfo.target;
-		const receiveEvils = value.evils;
-		receiveEvils.forEach(evilInfo => {
-			const existEvil = this.otherPersonEvils.find(existEvil => existEvil.personId === evilInfo.personId);
-			if (existEvil) {
-				Object.assign(existEvil, evilInfo);
-			} else if (evilInfo.personId !== this.myEvil.personId) {
-				this.otherPersonEvils.push(new SimpleEvil(this.ctx, <EvilOption> evilInfo));
-			}
-		});
-		this.otherPersonEvils = this.otherPersonEvils.filter(
-			evil => receiveEvils.find(receiveEvil => receiveEvil.personId === evil.personId)
-		);
-		this.receiveMyEvilInfo = receiveEvils.find(evil => evil.personId === this.myEvil.personId);
+	private onReceiveIntervalData(snapshot: GameData) {
+		if ( snapshot.gozzila) {
+			this.godzilla.setGodzilaInfo(snapshot.gozzila);
+		}
+
+		if (snapshot.evils) {
+			snapshot.evils.forEach(info => {
+				const existEvil = this.otherPersons.find(existEvil => existEvil.pid === info.pid);
+				if (existEvil) {
+					existEvil.setPersonInfo(info);
+				} else {
+					this.otherPersons.push(new SimpleEvil(this.ctx, info));
+				}
+			});
+		}
+
+		if (snapshot.cids) {
+			this.otherPersons = this.otherPersons.filter(
+				evil => snapshot.cids.find(pid => pid !== evil.pid)
+			);
+		}
 	}
 
 	/** 描写 */
 	private draw() {
 		this.ctx.clearRect(0, 0, MainCanvas.WIDTH, MainCanvas.HEIGHT);
-		this.gozzila.draw();
-		this.otherPersonEvils.forEach(evil => evil.draw());
+		this.godzilla.draw();
+		this.otherPersons.forEach(evil => { if (evil.pid !== this.myEvil.pid) evil.draw()});
 		this.myEvil.draw();
 
 		for (let i = MainCanvas.intervalActions.length - 1; i >= 0; i--) {
@@ -134,32 +136,24 @@ export class MainCanvas {
 		this.drawNowPersonCount();
 		this.sendServer();
 	}
+
 	private drawNowPersonCount() {
 		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
-		this.ctx.fillText(`接続数:${this.otherPersonEvils.length + 1}`, 736, 18);
+		this.ctx.fillText(`接続数:${this.otherPersons.length + 1}`, 736, 18);
 	}
+
 	private sendServer() {
 		const sendData: ReqEvilData = {
-			isMigiMuki: this.myEvil.isMigiMuki,
+			isMigi: this.myEvil.isMigi,
 			x: this.myEvil.x,
 			y: this.myEvil.y,
-			isAtk: this.myEvil.atksita,
-			isDead: this.myEvil.isDead,
-			lv: this.myEvil.lv,
-			maxExp: this.myEvil.maxExp,
-			isLvUp: this.myEvil.isLvUp,
-			name: this.myEvil.isChangeName ? this.myEvil.name : undefined
+			isAtk: this.myEvil.isAtk,
+			isDead: this.myEvil.isDead
 		};
-		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData) ||
-			!this.receiveMyEvilInfo || this.receiveMyEvilInfo.isDead !== sendData.isDead) {
-			this.ws.send(SocketType.zahyou, sendData);
-			this.myEvil.atksita = false;
-			this.myEvil.isLvUp = false;
-		}
-		if (this.gozzila.isDamege) {
-			this.ws.send(SocketType.gozzilaDamege, null);
-			this.gozzila.isDamege = false;
+		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
+			this.wsService.send(SocketType.zahyou, sendData);
+			this.myEvil.isAtk = false;
 		}
 		this.befSendData = Object.assign({}, sendData);
 		this.myEvil.isChangeName = false;

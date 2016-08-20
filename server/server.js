@@ -1,14 +1,16 @@
 "use strict";
 require('source-map-support/register'); // エラー時、tsファイルの行数を教える
+require('core-js/es7/object');
 var http_1 = require('http');
 var express = require('express');
 var ws_1 = require('ws');
 var mongodb_1 = require('mongodb');
-var MainController_1 = require("./websocket/MainController");
+var WebSocketWrapper_1 = require("./websocket/WebSocketWrapper");
 var ChatController_1 = require("./websocket/ChatController");
 var InfoMsgController_1 = require("./websocket/InfoMsgController");
 var GameController_1 = require("./websocket/GameController");
 var RankingController_1 = require("./websocket/RankingController");
+var UserDataController_1 = require("./websocket/UserDataController");
 var UserService_1 = require("./service/UserService");
 var FieldController_1 = require("./websocket/FieldController");
 /** DBに接続 */
@@ -46,14 +48,15 @@ connectDB().then(function (db) {
     var app = express();
     app.use(express.static(__dirname + '/../dist'));
     var userService = new UserService_1.UserService(mongo);
-    var main = new MainController_1.MainController(new ws_1.Server({ server: server }), userService);
-    main.init();
-    new ChatController_1.ChatController(main, mongo).init();
-    var field = new FieldController_1.FieldController(main);
-    field.init();
-    new GameController_1.GameController(main, userService, field).init();
-    new RankingController_1.RankingController(main, userService).init();
-    new InfoMsgController_1.InfoMsgController(main).init();
+    var wsWrapper = new WebSocketWrapper_1.WSWrapper(new ws_1.Server({ server: server }));
+    wsWrapper.init();
+    new ChatController_1.ChatController(wsWrapper, mongo).init();
+    new FieldController_1.FieldController(wsWrapper).init();
+    var userController = new UserDataController_1.UserDataController(wsWrapper, userService);
+    userController.init();
+    new GameController_1.GameController(wsWrapper, userController).init();
+    new RankingController_1.RankingController(wsWrapper, userService).init();
+    new InfoMsgController_1.InfoMsgController(wsWrapper).init();
     server.on('request', app);
     server.listen(process.env.PORT || 3000, function () {
         console.log('Server listening on port %s', server.address().port);

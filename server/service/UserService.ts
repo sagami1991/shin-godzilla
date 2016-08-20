@@ -19,20 +19,20 @@ export class UserService {
 	}
 
 	public createUser(user: DbUserData) {
-		return new Promise((resolve, reject) => {
-			this.mongo.getCollection(UserService.C_NAME).insert(this.filterUserData(user)).catch(e => {
-				console.trace(e);
-			});
-			this.validate(user) ? resolve() : reject();
+		return	this.mongo.getCollection(UserService.C_NAME).insert(user).catch(e => {
+			console.trace(e);
 		});
 	}
 
 	public updateUser(user: DbUserData) {
-		return new Promise((resolve, reject) => {
-			this.mongo.getCollection(UserService.C_NAME).update({_id: user._id}, this.filterUserData(user)).catch(e => {
+		return this.mongo.getCollection(UserService.C_NAME).updateOne({_id: user._id}, user).catch(e => {
+			console.trace(e);
+		});
+	}
+
+	public increseExp(userId: string, exp: number) {
+		this.mongo.getCollection(UserService.C_NAME).updateOne({_id: userId}, {exp: exp}).catch(e => {
 				console.trace(e);
-			});
-			this.validate(user) ? resolve() : reject();
 		});
 	}
 
@@ -52,23 +52,4 @@ export class UserService {
 		});
 	}
 
-	private filterUserData(user: DbUserData): DbUserData {
-		return {
-			_id: user._id,
-			ip: user.ip,
-			lv: user.lv,
-			name: user.name,
-			exp: user.exp,
-			date: new Date()
-		};
-	}
-
-	private validate(user: DbUserData) {
-		return (
-			user._id &&
-			user.name !== undefined &&
-			typeof user.lv === "number" &&
-			typeof user.exp === "number"
-			);
-	}
 }

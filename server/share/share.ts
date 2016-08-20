@@ -10,9 +10,12 @@ export enum SocketType {
 	init,
 	closePerson,
 	gozzilaDamege,
-	save,
+	saveUserData,
 	ranking,
-	field
+	field,
+	userData,
+	resetLv,
+	dead
 }
 
 export enum FieldType {
@@ -21,9 +24,11 @@ export enum FieldType {
 	kaning
 }
 export interface InitialUserData {
-	personId: string;
-	userData: DbUserData;
-	bgType: number;
+	pid: string;
+	user: DbUserData & MasterEvilData;
+	users: MasterEvilData[];
+	gozdilla: GodzillaInfo;
+	bg: number;
 }
 
 export interface DbUserData {
@@ -35,16 +40,20 @@ export interface DbUserData {
 	date?: Date;
 }
 
+
 export interface ReqEvilData {
-	isMigiMuki: boolean;
+	isMigi: boolean;
 	x: number;
 	y: number;
 	isAtk: boolean;
 	isDead: boolean;
+}
+
+// サーバーで持つ
+export interface MasterEvilData extends ReqEvilData {
+	pid: string;
 	lv: number;
-	maxExp?: number;
-	personId?: string;
-	isLvUp?: boolean;
+	isLvUp: boolean;
 	name: string;
 }
 
@@ -55,7 +64,8 @@ export interface RankingInfo {
 
 export interface GameData {
 	gozzila: GodzillaInfo;
-	evils: ReqEvilData[];
+	evils: MasterEvilData[];
+	cids: string[];
 }
 
 export interface GodzillaInfo {
@@ -71,3 +81,16 @@ export enum GodzillaMode {
 	atkEnd,
 	dead
 }
+
+export const CONST = {
+	USER: {
+		BASE_EXP: 50,
+		EXP_BAIRITU: 1.2
+	},
+	GAME: {
+		SEND_FPS: 10,
+	},
+	CANVAS: {
+		Y0: 150
+	}
+};

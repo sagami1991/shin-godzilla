@@ -1,16 +1,17 @@
 import 'source-map-support/register'; // エラー時、tsファイルの行数を教える
+import 'core-js/es7/object';
 import {createServer}  from 'http';
 import * as express from 'express';
 import {Server as WebSocketServer} from 'ws';
 import {MongoClient, Db} from 'mongodb';
-import {MainController} from "./websocket/MainController";
+import {WSWrapper} from "./websocket/WebSocketWrapper";
 import {ChatController} from "./websocket/ChatController";
 import {InfoMsgController} from "./websocket/InfoMsgController";
 import {GameController} from "./websocket/GameController";
 import {RankingController} from "./websocket/RankingController";
+import {UserDataController} from "./websocket/UserDataController";
 import {UserService} from "./service/UserService";
 import {FieldController} from "./websocket/FieldController";
-
 /** DBに接続 */
 function connectDB(): Promise<Db> {
 	return new Promise((resolve) => {
@@ -42,15 +43,15 @@ connectDB().then((db) => {
 	const app = express();
 	app.use(express.static(__dirname + '/../dist'));
 	const userService = new UserService(mongo);
-	const main = new MainController(new WebSocketServer({ server: server }), userService);
-	main.init();
-	new ChatController(main, mongo).init();
-	const field = new FieldController(main);
-	field.init();
-	new GameController(main, userService, field).init();
-	new RankingController(main, userService).init();
-	new InfoMsgController(main).init();
-
+	const wsWrapper = new WSWrapper(new WebSocketServer({ server: server }));
+	wsWrapper.init();
+	new ChatController(wsWrapper, mongo).init();
+	new FieldController(wsWrapper).init();
+	const userController = new UserDataController(wsWrapper, userService);
+	userController.init();
+	new GameController(wsWrapper, userController).init();
+	new RankingController(wsWrapper, userService).init();
+	new InfoMsgController(wsWrapper).init();
 	server.on('request', app);
 	server.listen(process.env.PORT || 3000, () => {
 		console.log('Server listening on port %s', server.address().port);

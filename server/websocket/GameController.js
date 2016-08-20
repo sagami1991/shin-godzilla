@@ -1,14 +1,15 @@
 "use strict";
 var GodzillaController_1 = require("./GodzillaController");
 var share_1 = require("../share/share");
-var shortid = require("shortid");
+var FieldController_1 = require("./FieldController");
+var util_1 = require("../share/util");
 var GameController = (function () {
-    function GameController(main, userService, fieldController) {
-        this.main = main;
-        this.userService = userService;
-        this.fieldController = fieldController;
-        this.evils = [];
-        this.godzillaController = new GodzillaController_1.GodzillaController(main, this.evils);
+    function GameController(wsWrapper, userController) {
+        this.wsWrapper = wsWrapper;
+        this.userController = userController;
+        this.masterUsersData = [];
+        this.closeIds = [];
+        this.godzillaController = new GodzillaController_1.GodzillaController(wsWrapper, this.masterUsersData);
         this.godzillaController.init();
     }
     GameController.getRandom = function (arr) {
@@ -16,82 +17,107 @@ var GameController = (function () {
     };
     GameController.prototype.init = function () {
         var _this = this;
-        this.main.addCloseListner(function (ws) { return _this.deleteClosedEvil(ws); });
-        this.main.addMsgListner(share_1.SocketType.init, function (ws, reqData) { return _this.loadUser(ws, reqData); });
-        this.main.addMsgListner(share_1.SocketType.zahyou, function (ws, reqData) { return _this.updateEvils(ws, reqData); });
-        this.main.addMsgListner(share_1.SocketType.save, function (ws, reqData) { return _this.saveUserData(ws, reqData); });
-        setInterval(function () { return _this.intervalAction(); }, 1000 / GameController.FRAME);
-    };
-    GameController.prototype.saveUserData = function (ws, reqData) {
-        this.userService.updateUser(Object.assign(reqData, { ip: this.main.getIpAddr(ws) }));
-    };
-    GameController.prototype.loadUser = function (ws, reqData) {
-        var _this = this;
-        this.userService.containBanList(this.main.getIpAddr(ws)).catch(function () {
-            console.log("\u9055\u53CD\u8005\u63A5\u7D9A ip: " + _this.main.getIpAddr(ws));
-            ws.close(1008, "違反者リストに含まれています");
-        });
-        if (!reqData._id) {
-            this.sendInitUserData(ws, this.createInitUser(this.main.getIpAddr(ws)));
-        }
-        else {
-            this.userService.getUser(reqData._id).then(function (user) {
-                _this.sendInitUserData(ws, user ? user : _this.createInitUser(_this.main.getIpAddr(ws)));
+        this.wsWrapper.addCloseListner(function (ws) { return _this.deleteClosedEvil(ws); });
+        this.wsWrapper.addMsgListner(share_1.SocketType.zahyou, function (ws, reqData) { return _this.onReceiveEvilData(ws, reqData); });
+        this.wsWrapper.addMsgListner(share_1.SocketType.gozzilaDamege, function (ws, reqData) { return _this.atkToGodzilla(ws, reqData); });
+        setInterval(function () { return _this.intervalAction(); }, 1000 / GameController.SEND_FPS);
+        this.userController.onLvUp = function (personId) {
+            var evil = _this.masterUsersData.find(function (evil) { return evil.pid === personId; });
+            if (evil) {
+                evil.lv += 1;
+                evil.isLvUp = true;
+            }
+        };
+        this.userController.onFirstConnect = function (ws, user) {
+            var userData = {
+                isMigi: true,
+                x: Math.round(Math.random() * 500),
+                y: share_1.CONST.CANVAS.Y0,
+                isAtk: false,
+                isDead: false,
+                pid: _this.wsWrapper.getPersonId(ws),
+                lv: user.lv,
+                isLvUp: false,
+                name: user.name
+            };
+            _this.masterUsersData.push(userData);
+            _this.wsWrapper.send(ws, share_1.SocketType.init, {
+                pid: _this.wsWrapper.getPersonId(ws),
+                user: Object.assign({}, user, userData),
+                users: _this.masterUsersData,
+                gozdilla: _this.godzillaController.godzilla,
+                bg: FieldController_1.FieldController.bgType
             });
-        }
+        };
+        this.userController.onClose = function (ws) {
+            _this.closeIds.push(_this.wsWrapper.getPersonId(ws));
+        };
+        this.userController.onSave = function (ws, user) {
+            var userData = _this.masterUsersData.find(function (user) { return user.pid === _this.wsWrapper.getPersonId(ws); });
+            if (userData)
+                userData.name = user.name;
+        };
     };
-    GameController.prototype.createInitUser = function (ipAddr) {
-        var initialData = Object.assign({ _id: shortid.generate(), ip: ipAddr }, GameController.INIT_USERDATA);
-        this.userService.createUser(initialData);
-        return initialData;
-    };
-    GameController.prototype.sendInitUserData = function (ws, user) {
-        this.main.send(ws, share_1.SocketType.init, {
-            personId: this.main.getSercretKey(ws),
-            userData: user,
-            bgType: this.fieldController.bgType
-        });
+    GameController.prototype.atkToGodzilla = function (ws, damage) {
+        this.userController.increaseExp(ws);
+        this.godzillaController.damage(damage);
     };
     GameController.prototype.deleteClosedEvil = function (ws) {
         var _this = this;
-        var targetIdx = this.evils.findIndex(function (zahyou) { return zahyou.personId === _this.main.getSercretKey(ws); });
-        this.evils.splice(targetIdx, 1);
+        var targetIdx = this.masterUsersData.findIndex(function (zahyou) { return zahyou.pid === _this.wsWrapper.getPersonId(ws); });
+        this.masterUsersData.splice(targetIdx, 1);
     };
     GameController.prototype.intervalAction = function () {
         this.godzillaController.roopAction();
-        this.sendGameData();
+        this.sendSnapshot();
     };
-    GameController.prototype.sendGameData = function () {
+    GameController.prototype.sendSnapshot = function () {
         var sendData = {
             gozzila: this.godzillaController.godzilla,
-            evils: this.evils
+            evils: this.masterUsersData,
+            cids: this.closeIds
         };
-        if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
-            this.main.sendAll({
+        var snapShot = util_1.DiffExtract.diff(this.befSendData, sendData);
+        if (snapShot) {
+            this.wsWrapper.sendAll({
                 type: share_1.SocketType.zahyou,
-                value: sendData
+                value: snapShot
             });
         }
+        this.masterUsersData.forEach(function (evil) { return evil.isLvUp = false; });
+        this.closeIds = [];
         this.befSendData = JSON.parse(JSON.stringify(sendData));
     };
-    GameController.prototype.updateEvils = function (nowWs, reqData) {
+    // MsgListner 
+    GameController.prototype.onReceiveEvilData = function (ws, reqData) {
         var _this = this;
-        var evilInfo = this.evils.find(function (zahyou) { return zahyou.personId === _this.main.getSercretKey(nowWs); });
-        if (evilInfo) {
-            Object.assign(evilInfo, reqData);
+        var user = this.userController.getUser(ws);
+        if (!user || !this.validateReqData(reqData)) {
+            console.trace("不正なデータ", reqData);
+            ws.close();
+            return;
         }
-        else {
-            this.evils.push(Object.assign({ personId: this.main.getSercretKey(nowWs) }, reqData));
+        var evilInfo = this.masterUsersData.find(function (zahyou) { return zahyou.pid === _this.wsWrapper.getPersonId(ws); });
+        if (evilInfo) {
+            Object.assign(evilInfo, this.filterEvilData(reqData));
         }
     };
-    GameController.prototype.filterEvilData = function () {
+    GameController.prototype.filterEvilData = function (reqData) {
+        return {
+            isMigi: reqData.isMigi,
+            x: reqData.x,
+            y: reqData.y,
+            isAtk: reqData.isAtk,
+            isDead: reqData.isDead,
+        };
+    };
+    GameController.prototype.validateReqData = function (reqData) {
+        return (typeof reqData.x === "number" &&
+            typeof reqData.y === "number" &&
+            reqData.y >= 150);
     };
     GameController.FRAME = 30;
-    GameController.INIT_USERDATA = {
-        exp: 0,
-        lv: 1,
-        name: "名前"
-    };
+    GameController.SEND_FPS = 10;
     return GameController;
 }());
 exports.GameController = GameController;

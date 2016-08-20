@@ -1,5 +1,6 @@
 import {Notify} from "./util";
 import {SocketType} from "../server/share/share";
+const msgpack = require('msgpack-js');
 
 export interface ResData {
 	type: number;
@@ -36,6 +37,7 @@ export class WSService {
 
 	public init() {
 		this.ws = new WebSocket(WSService.URL);
+		this.ws.binaryType = "arraybuffer";
 		this.ws.onopen = () => this.onOpen();
 		this.ws.onmessage = (msgEvent) => this.onReceiveMsg(msgEvent);
 		this.ws.onclose = (ev) => this.onClose(ev);
@@ -45,18 +47,16 @@ export class WSService {
 		});
 	}
 
-	public send(type: number, value: any) {
+	public send(type: number, value?: any) {
 		if (this.isClose) return;
-		this.ws.send(JSON.stringify({
-			type: type,
-			value: value
-		}));
+		const sendData = value === undefined ? {type: type} : {type: type, value: value};
+		this.ws.send(msgpack.encode(sendData));
 	}
 
 	/** herokuは無通信時、55秒で遮断されるため、50秒ごとに無駄な通信を行う */
 	private pingInterval() {
 		this.pingTimer = window.setInterval(() => {
-			this.ws.send( new Uint8Array(1));
+			this.ws.send(new Uint8Array(1));
 		}, 50 * 1000);
 	}
 	private onClose(ev: CloseEvent) {
@@ -71,7 +71,9 @@ export class WSService {
 	}
 
 	private onReceiveMsg(msgEvent: MessageEvent) {
-		const resData = <ResData> JSON.parse(msgEvent.data);
+		const resData = typeof msgEvent.data === "string" ?
+			<ResData> JSON.parse(msgEvent.data) :
+			<ResData> msgpack.decode(new Uint8Array(msgEvent.data));
 		this.onReceiveMsgEvents.forEach(msgLister => {resData.type === msgLister.type ? msgLister.cb(resData.value) : null; });
 	}
 }

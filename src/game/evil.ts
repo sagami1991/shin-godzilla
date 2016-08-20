@@ -3,12 +3,13 @@ import {Train} from "./train";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
 import {LvUpEffect} from "./LvEffect";
+import {MasterEvilData} from "../../server/share/share";
 
 export interface EvilOption extends BaseMobOption {
 	lv: number;
 	isDead: boolean;
 	isAtk: boolean;
-	personId: string;
+	pid: string;
 	name: string;
 }
 
@@ -16,7 +17,7 @@ export interface EvilOption extends BaseMobOption {
 export class SimpleEvil extends BaseMonster {
 	public static WIDTH = 103;
 	public static HEIGHT = 63;
-	public personId: string;
+	public pid: string;
 	public isAtk: boolean;
 	protected myTrains: Train[] = [];
 	public lv: number;
@@ -24,22 +25,32 @@ export class SimpleEvil extends BaseMonster {
 	public name: string;
 	constructor(protected ctx: CanvasRenderingContext2D, option: EvilOption) {
 		super(ctx, option);
+		this.image = ImageLoader.IMAGES.evilHidari;
 		this.lv = option.lv;
 		this.isDead = option.isDead;
 		this.isAtk = option.isAtk;
-		this.personId = option.personId;
+		this.pid = option.pid;
 		this.isLvUp = false;
 		this.name = option.name;
 	}
 	public draw() {
 		this.action();
 		this.image = this.isDead ? 		ImageLoader.IMAGES.evilSinda :
-					 this.isMigiMuki ? 	ImageLoader.IMAGES.evilmigi :
+					 this.isMigi ? 	ImageLoader.IMAGES.evilmigi :
 										ImageLoader.IMAGES.evilHidari;
 		this.ctx.drawImage(this.image , this.x, MainCanvas.convY(this.y, SimpleEvil.HEIGHT));
 		this.trainDraw();
 		this.drawLv();
 	}
+
+	public setPersonInfo(info: MasterEvilData) {
+		Object.keys(info).forEach(key => {
+			if ((<any>info)[key] !== undefined) {
+				(<any>this)[key] = (<any>info)[key];
+			}
+		});
+	}
+
 	protected action() {
 		if (this.isAtk) {
 			this.atk();
@@ -52,11 +63,9 @@ export class SimpleEvil extends BaseMonster {
 	protected atk() {
 		this.isAtk = false;
 		const train = new Train(this.ctx, {
-			image: ImageLoader.IMAGES.densya,
 			x: this.x,
 			y: this.y,
-			isMigiMuki: this.isMigiMuki,
-			isMy: this.isMy
+			isMigi: this.isMigi,
 		});
 		this.myTrains.push(train);
 	}

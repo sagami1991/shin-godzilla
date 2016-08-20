@@ -2,4 +2,3 @@
 /node_modules
 nodeserver.cmd
 npm-debug.log
-dist/*.map
