@@ -74,7 +74,7 @@ export class Ebiruai extends SimpleEvil {
 		this.statusBar.addOnNameEditListner((name) => {
 			this.name = name;
 			this.isChangeName = true;
-			this.saveMyData();
+			this.changeName();
 		});
 		this.refreshStatusBar();
 	}
@@ -178,8 +178,8 @@ export class Ebiruai extends SimpleEvil {
 		return Math.floor(Ebiruai.BASE_EXP * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
 	}
 
-	private saveMyData() {
-		this.ws.send(SocketType.saveUserData, <DbUserData> {
+	private changeName() {
+		this.ws.send(SocketType.changeName, <DbUserData> {
 			name: this.name
 		});
 	}

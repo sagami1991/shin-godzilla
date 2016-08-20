@@ -1,7 +1,6 @@
 "use strict";
 var share_1 = require("../share/share");
 var shortid = require("shortid");
-var msgpack = require('msgpack-lite');
 var WSWrapper = (function () {
     function WSWrapper(wss) {
         this.wss = wss;
@@ -51,10 +50,10 @@ var WSWrapper = (function () {
                 return;
             }
             try {
-                ws.send(new Uint8Array(msgpack.encode({
+                ws.send(JSON.stringify({
                     type: opt.type,
                     value: opt.value
-                })).buffer, { binary: true });
+                }));
             }
             catch (err) {
                 console.trace(err);
@@ -65,29 +64,15 @@ var WSWrapper = (function () {
      * でーた受け取り時
      */
     WSWrapper.prototype.onReqData = function (ws, data, flags) {
+        if (typeof data !== "string" || data.length > 500) {
+            return;
+        }
         var reqObj;
-        if (flags.binary && data.byteLength !== 1) {
-            var reqBinary = data;
-            try {
-                reqObj = msgpack.decode(reqBinary);
-            }
-            catch (error) {
-                console.trace(error.trace);
-                return;
-            }
+        try {
+            reqObj = JSON.parse(data);
         }
-        else if (typeof data === "string") {
-            if (data.length > 500)
-                return;
-            try {
-                reqObj = JSON.parse(data);
-            }
-            catch (err) {
-                console.trace(err);
-                return;
-            }
-        }
-        else {
+        catch (err) {
+            console.trace(err);
             return;
         }
         if (!this.validateReqData(reqObj)) {
@@ -98,9 +83,6 @@ var WSWrapper = (function () {
     };
     WSWrapper.prototype.validateReqData = function (resData) {
         if (!resData || typeof resData.type !== "number") {
-            return false;
-        }
-        if (resData.type === share_1.SocketType.chatLog && resData.value.length > 50) {
             return false;
         }
         if (resData.type === share_1.SocketType.field) {

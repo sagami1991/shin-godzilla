@@ -11,9 +11,12 @@ var ChatController = (function () {
         this.main.addMsgListner(share_1.SocketType.chatLog, function (ws, reqData) { return _this.onReceiveMsg(ws, reqData); });
     };
     ChatController.prototype.onReceiveMsg = function (ws, reqData) {
-        var chatMsg = { msg: reqData };
-        this.main.sendAll({ type: share_1.SocketType.chatLog, value: chatMsg });
-        this.mongo.getCollection(ChatController.C_NAME).insert(chatMsg);
+        if (this.validate(reqData)) {
+            var chatMsg = { msg: reqData };
+            console.log(chatMsg);
+            this.main.sendAll({ type: share_1.SocketType.chatLog, value: chatMsg });
+            this.mongo.getCollection(ChatController.C_NAME).insert(chatMsg);
+        }
     };
     /**
      * DBから新しい順に数行分のログ取り出して送信
@@ -33,6 +36,9 @@ var ChatController = (function () {
                 console.trace(e);
             }
         });
+    };
+    ChatController.prototype.validate = function (reqData) {
+        return (reqData.length <= 60);
     };
     ChatController.C_NAME = process.env.COLLECTION_NAME || "maplechatlog";
     return ChatController;

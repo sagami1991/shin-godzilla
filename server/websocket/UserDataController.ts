@@ -22,7 +22,7 @@ export class UserDataController {
 
 	public init() {
 		this.wsWrapper.addMsgListner(SocketType.init, (ws, reqData) => this.firstConnect(ws, reqData));
-		this.wsWrapper.addMsgListner(SocketType.saveUserData, (ws, reqData) => this.saveUserDataMemory(ws, reqData));
+		this.wsWrapper.addMsgListner(SocketType.changeName, (ws, reqData) => this.changeName(ws, reqData));
 		this.wsWrapper.addMsgListner(SocketType.dead, (ws) => this.dead(ws));
 		this.wsWrapper.addMsgListner(SocketType.resetLv, (ws) => this.resetLv(ws));
 		this.wsWrapper.addCloseListner((ws) => {
@@ -84,10 +84,17 @@ export class UserDataController {
 		ws.upgradeReq.headers["db-id"] = id;
 	}
 
-	private saveUserDataMemory(ws: WebSocket, reqData: DbUserData) {
-		if (this.validate(reqData)) {
-			this.userData[this.getDbId(ws)] = Object.assign(this.filterUserData(reqData), {ip: this.wsWrapper.getIpAddr(ws)});
+	private changeName(ws: WebSocket, reqData: DbUserData) {
+		const user = this.userData[this.getDbId(ws)];
+		if (user && reqData.name.length <= 8) {
+			user.name = reqData.name;
+			this.onSave(ws, user);
 		}
+	}
+
+	// ユーザーからのアクセスでは使わない
+	private saveUserDataMemory(ws: WebSocket, reqData: DbUserData) {
+		this.userData[this.getDbId(ws)] = Object.assign(this.filterUserData(reqData), {ip: this.wsWrapper.getIpAddr(ws)});
 	}
 
 	private firstConnect(ws: WebSocket, reqData: {_id: string}) {
@@ -118,15 +125,6 @@ export class UserDataController {
 
 	private calcMaxExp(lv: number) {
 		return Math.floor(CONST.USER.BASE_EXP * Math.pow(CONST.USER.EXP_BAIRITU, lv - 1));
-	}
-
-	private validate(user: DbUserData) {
-		return (
-			user._id && typeof user._id === "string" &&
-			typeof user.name === "string" && user.name.length < 9 &&
-			typeof user.lv === "number" &&
-			typeof user.exp === "number"
-		);
 	}
 
 	private filterUserData(user: DbUserData): DbUserData {

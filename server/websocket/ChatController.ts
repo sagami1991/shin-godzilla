@@ -14,10 +14,13 @@ export class ChatController {
 		this.main.addMsgListner(SocketType.chatLog, (ws, reqData) => this.onReceiveMsg(ws, reqData));
 	}
 
-	private onReceiveMsg(ws: WebSocket, reqData: String) {
-		const chatMsg = {msg: reqData};
-		this.main.sendAll({type: SocketType.chatLog, value: chatMsg});
-		this.mongo.getCollection(ChatController.C_NAME).insert(chatMsg);
+	private onReceiveMsg(ws: WebSocket, reqData: string) {
+		if (this.validate(reqData)){
+			const chatMsg = {msg: reqData};
+			console.log(chatMsg);
+			this.main.sendAll({type: SocketType.chatLog, value: chatMsg});
+			this.mongo.getCollection(ChatController.C_NAME).insert(chatMsg);
+		}
 	}
 
 	/**
@@ -34,5 +37,9 @@ export class ChatController {
 				}));
 			}catch (e) {console.trace(e); }
 		});
+	}
+
+	private validate(reqData: string) {
+		return (reqData.length <= 60);
 	}
 }

@@ -15,7 +15,8 @@ export enum SocketType {
 	field,
 	userData,
 	resetLv,
-	dead
+	dead,
+	changeName
 }
 
 export enum FieldType {

@@ -16,6 +16,7 @@
     SocketType[SocketType["userData"] = 11] = "userData";
     SocketType[SocketType["resetLv"] = 12] = "resetLv";
     SocketType[SocketType["dead"] = 13] = "dead";
+    SocketType[SocketType["changeName"] = 14] = "changeName";
 })(exports.SocketType || (exports.SocketType = {}));
 var SocketType = exports.SocketType;
 (function (FieldType) {

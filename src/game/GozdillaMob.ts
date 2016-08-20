@@ -36,8 +36,8 @@ export class GodzillaMob extends BaseMonster {
 
 	public setGodzilaInfo(info: GodzillaInfo) {
 		if (!info) return;
-		if (info.hp) this.hp = info.hp;
-		if (info.mode) this.mode = info.mode;
+		if (info.hp !== undefined) this.hp = info.hp;
+		if (info.mode !== undefined) this.mode = info.mode;
 		if (info.target) {
 			info.target.forEach((target, i) => {
 				if (target) this.target[i] = {
