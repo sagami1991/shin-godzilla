@@ -44,10 +44,11 @@ exports.CONST = {
         EXP_BAIRITU: 1.2
     },
     GAME: {
-        SEND_FPS: 10,
+        SEND_FPS: 30,
+        ANTI_X: 160
     },
     CANVAS: {
-        Y0: 150
+        Y0: 150,
     }
 };
 

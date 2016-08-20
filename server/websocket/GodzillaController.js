@@ -48,8 +48,8 @@ var GodzillaController = (function () {
         this._godzilla.hp -= 2;
     };
     GodzillaController.prototype.decideTarget = function () {
-        var livedEvils = this.evils.filter(function (evil) { return !evil.isDead && evil.x > 200; });
-        var deadEvils = this.evils.filter(function (evil) { return evil.x > 200; });
+        var livedEvils = this.evils.filter(function (evil) { return !evil.isDead && evil.x > share_1.CONST.GAME.ANTI_X; });
+        var deadEvils = this.evils.filter(function (evil) { return evil.x > share_1.CONST.GAME.ANTI_X; });
         var targetEvils = livedEvils.length ? livedEvils : deadEvils;
         var targets = Array.from(new Array(2)).map(function () {
             var targetEvil = GameController_1.GameController.getRandom(targetEvils);

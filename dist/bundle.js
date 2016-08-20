@@ -3839,7 +3839,7 @@
 	            case TrainMode.ikiteru:
 	                this.x += 10 * (this.isMigi ? 1 : -1);
 	                this.isDead = this.x < 0 - Train.WIDTH || 800 < this.x;
-	                if (Math.abs(this.beginX - this.x) > 440) {
+	                if (Math.abs(this.beginX - this.x) > 480) {
 	                    this.isDead = true;
 	                    this.mode = this.mode = TrainMode.sibou;
 	                }
@@ -4290,7 +4290,7 @@
 	            this.isHeal = true;
 	            Effect_1.Effect.draw(this, Effect_1.EffectType.heal);
 	            SkillComponent_1.SkillComponent.SKILL1_BUTTON.classList.add("disabled");
-	            this.hp += 30;
+	            this.hp += 10;
 	            if (this.hp > this.maxHp) {
 	                this.hp = this.maxHp;
 	            }
@@ -4298,7 +4298,7 @@
 	            window.setTimeout(function () {
 	                SkillComponent_1.SkillComponent.SKILL1_BUTTON.classList.remove("disabled");
 	                _this.skillInterval = false;
-	            }, 1300);
+	            }, 1400);
 	        }
 	    };
 	    Ebiruai.prototype.drawRespawnCount = function () {
@@ -4518,10 +4518,11 @@
 	        EXP_BAIRITU: 1.2
 	    },
 	    GAME: {
-	        SEND_FPS: 10,
+	        SEND_FPS: 30,
+	        ANTI_X: 160
 	    },
 	    CANVAS: {
-	        Y0: 150
+	        Y0: 150,
 	    }
 	};
 

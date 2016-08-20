@@ -37,7 +37,7 @@ export class Train extends BaseMonster {
 		case TrainMode.ikiteru:
 			this.x += 10 * (this.isMigi ? 1 : -1) ;
 			this.isDead = this.x < 0 - Train.WIDTH || 800 < this.x;
-			if (Math.abs(this.beginX - this.x) > 440) {
+			if (Math.abs(this.beginX - this.x) > 480) {
 				this.isDead = true;
 				this.mode = this.mode = TrainMode.sibou;
 			}

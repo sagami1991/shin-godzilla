@@ -1,7 +1,7 @@
 import * as WebSocket from 'ws';
 import {WSWrapper} from "./WebSocketWrapper";
 import {GameController} from "./GameController";
-import {SocketType, ReqEvilData, GodzillaMode, GodzillaInfo} from "../share/share";
+import {CONST, ReqEvilData, GodzillaMode, GodzillaInfo} from "../share/share";
 
 export class GodzillaController {
 	private static ACTION_INFO = [
@@ -57,8 +57,8 @@ export class GodzillaController {
 	}
 
 	private decideTarget() {
-		const livedEvils = this.evils.filter(evil => !evil.isDead && evil.x > 200);
-		const deadEvils = this.evils.filter(evil => evil.x > 200);
+		const livedEvils = this.evils.filter(evil => !evil.isDead && evil.x > CONST.GAME.ANTI_X);
+		const deadEvils = this.evils.filter(evil => evil.x > CONST.GAME.ANTI_X);
 		const targetEvils = livedEvils.length ? livedEvils : deadEvils;
 		const targets = Array.from(new Array(2)).map(() => {
 			const targetEvil = GameController.getRandom(targetEvils);

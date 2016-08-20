@@ -160,7 +160,7 @@ export class Ebiruai extends SimpleEvil {
 			this.isHeal = true;
 			Effect.draw(this, EffectType.heal);
 			SkillComponent.SKILL1_BUTTON.classList.add("disabled");
-			this.hp += 30;
+			this.hp += 10;
 			if (this.hp > this.maxHp) {
 				this.hp = this.maxHp;
 			}
@@ -168,7 +168,7 @@ export class Ebiruai extends SimpleEvil {
 			window.setTimeout(() => {
 				SkillComponent.SKILL1_BUTTON.classList.remove("disabled");
 				this.skillInterval = false;
-			}, 1300);
+			}, 1400);
 		}
 	}
 
