@@ -24,7 +24,7 @@ export class ChatComponent {
 	private logElem: HTMLElement;
 	private inputElem: HTMLTextAreaElement;
 	private sendElem: HTMLElement;
-	private isSended: boolean;
+	private isChatCoolTime: boolean;
 	constructor(wsService: WSService) {
 		this.wsService = wsService;
 	}
@@ -77,17 +77,15 @@ export class ChatComponent {
 
 	private send() {
 		const value = this.inputElem.value;
-		if (value && !this.wsService.isClose && !this.isSended) {
+		if (value && !this.wsService.isClose && !this.isChatCoolTime) {
 			this.wsService.send(SocketType.chatLog, value);
 			this.inputElem.value = "";
-			this.inputElem.disabled = true;
-			this.isSended = true;
+			this.isChatCoolTime = true;
 			setTimeout(() => {
 				if (!this.wsService.isClose) {
-					this.inputElem.disabled = false;
-					this.isSended = false;
+					this.isChatCoolTime = false;
 				}
-			}, 2000);
+			}, 1000);
 		}
 	}
 }

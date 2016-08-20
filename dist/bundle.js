@@ -4741,17 +4741,15 @@
 	    ChatComponent.prototype.send = function () {
 	        var _this = this;
 	        var value = this.inputElem.value;
-	        if (value && !this.wsService.isClose && !this.isSended) {
+	        if (value && !this.wsService.isClose && !this.isChatCoolTime) {
 	            this.wsService.send(share_1.SocketType.chatLog, value);
 	            this.inputElem.value = "";
-	            this.inputElem.disabled = true;
-	            this.isSended = true;
+	            this.isChatCoolTime = true;
 	            setTimeout(function () {
 	                if (!_this.wsService.isClose) {
-	                    _this.inputElem.disabled = false;
-	                    _this.isSended = false;
+	                    _this.isChatCoolTime = false;
 	                }
-	            }, 2000);
+	            }, 1000);
 	        }
 	    };
 	    ChatComponent.MAX_LINE = 30;
