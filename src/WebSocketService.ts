@@ -1,6 +1,5 @@
 import {Notify} from "./util";
 import {SocketType} from "../server/share/share";
-const msgpack = require('msgpack-js');
 
 export interface ResData {
 	type: number;
@@ -49,8 +48,7 @@ export class WSService {
 
 	public send(type: number, value?: any) {
 		if (this.isClose) return;
-		const sendData = value === undefined ? {type: type} : {type: type, value: value};
-		this.ws.send(msgpack.encode(sendData));
+		this.ws.send(JSON.stringify({type: type, value: value}));
 	}
 
 	/** herokuは無通信時、55秒で遮断されるため、50秒ごとに無駄な通信を行う */
@@ -71,9 +69,13 @@ export class WSService {
 	}
 
 	private onReceiveMsg(msgEvent: MessageEvent) {
-		const resData = typeof msgEvent.data === "string" ?
-			<ResData> JSON.parse(msgEvent.data) :
-			<ResData> msgpack.decode(new Uint8Array(msgEvent.data));
+		let resData: ResData;
+		try {
+			resData = JSON.parse(msgEvent.data);
+		} catch (err) {
+			console.trace(err);
+			return;
+		}
 		this.onReceiveMsgEvents.forEach(msgLister => {resData.type === msgLister.type ? msgLister.cb(resData.value) : null; });
 	}
 }

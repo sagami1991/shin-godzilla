@@ -1,7 +1,6 @@
 import * as WebSocket from 'ws';
 import {SocketType} from "../share/share";
 import * as shortid from "shortid";
-const msgpack = require('msgpack-lite');
 
 interface Msglistner {
 	type: SocketType;
@@ -74,10 +73,10 @@ export class WSWrapper {
 				return;
 			}
 			try {
-				ws.send(new Uint8Array(msgpack.encode({
+				ws.send(JSON.stringify({
 					type: opt.type,
 					value: opt.value
-				})).buffer, {binary: true});
+				}));
 			} catch (err) {
 				console.trace(err);
 			}
@@ -88,24 +87,14 @@ export class WSWrapper {
 	 * でーた受け取り時
 	 */
 	private onReqData(ws: WebSocket, data: any, flags: {binary: boolean}) {
+		if (typeof data !== "string" || data.length > 500) {
+			return;
+		}
 		let reqObj: any;
-		if (flags.binary && data.byteLength !== 1) {
-			const reqBinary = <ArrayBuffer> data;
-			try {
-				reqObj = msgpack.decode(reqBinary);
-			} catch (error) {
-				console.trace(error.trace);
-				return;
-			}
-		} else if (typeof data === "string") {
-			if (data.length > 500) return;
-			try {
-				reqObj = JSON.parse(data);
-			} catch (err) {
-				console.trace(err);
-				return;
-			}
-		} else {
+		try {
+			reqObj = JSON.parse(data);
+		} catch (err) {
+			console.trace(err);
 			return;
 		}
 		if (!this.validateReqData(reqObj)) {
@@ -117,9 +106,6 @@ export class WSWrapper {
 
 	private validateReqData(resData: ReqData) {
 		if (!resData || typeof resData.type !== "number") {
-			return false;
-		}
-		if (resData.type === SocketType.chatLog && resData.value.length > 50) {
 			return false;
 		}
 		if (resData.type === SocketType.field) {
