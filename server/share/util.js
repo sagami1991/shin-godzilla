@@ -1,4 +1,5 @@
 "use strict";
+/** 変更されたものだけ取り出す */
 var DiffExtract = (function () {
     function DiffExtract() {
     }
@@ -68,7 +69,6 @@ var DiffExtract = (function () {
             return !Object.keys(obj).length ? true : false;
         }
     };
-    DiffExtract.FORCE_KEY = "pid";
     return DiffExtract;
 }());
 exports.DiffExtract = DiffExtract;

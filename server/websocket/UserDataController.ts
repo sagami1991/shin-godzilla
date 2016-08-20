@@ -3,12 +3,14 @@ import {WSWrapper} from "./WebSocketWrapper";
 import {SocketType, InitialUserData, DbUserData, CONST, MasterEvilData} from "../share/share";
 import {UserService} from "../service/UserService";
 import * as shortid from "shortid";
+import * as _ from "lodash";
 
 export class UserDataController {
-	private static INIT_USERDATA = {
+	private static INIT_USERDATA = <DbUserData> {
 		exp: 0,
 		lv: 1,
-		name: "名前"
+		name: "名前",
+		skills: []
 	};
 	public onLvUp: (personId: string) => void;
 	public onFirstConnect: (ws: WebSocket, user: DbUserData) => void;
@@ -28,11 +30,12 @@ export class UserDataController {
 		this.wsWrapper.addCloseListner((ws) => {
 			const user = this.userData[this.getDbId(ws)];
 			if (user) {
-				this.userService.updateUser(user).then(() => {
-					delete this.userData[this.getDbId(ws)];
-				});
+				this.userData[user._id] = undefined;
+				delete this.userData[user._id];
+				console.log("メモリーからユーザーを削除", user.name);
+				this.userService.updateUser(user);
+				this.onClose(ws);
 			}
-			this.onClose(ws);
 		});
 		setInterval(() => {
 			for (let [ipAddr, user] of Object.entries(this.userData)) {
@@ -59,7 +62,9 @@ export class UserDataController {
 	}
 
 	private getDbId(ws: WebSocket) {
-		return ws.upgradeReq.headers["db-id"];
+		const dbID = ws.upgradeReq.headers["db-id"];
+		if (!dbID) console.trace("dbIDとれていない");
+		return dbID;
 	}
 
 	private dead(ws: WebSocket) {
@@ -92,33 +97,37 @@ export class UserDataController {
 		}
 	}
 
-	// ユーザーからのアクセスでは使わない
-	private saveUserDataMemory(ws: WebSocket, reqData: DbUserData) {
-		this.userData[this.getDbId(ws)] = Object.assign(this.filterUserData(reqData), {ip: this.wsWrapper.getIpAddr(ws)});
-	}
-
 	private firstConnect(ws: WebSocket, reqData: {_id: string}) {
 		this.userService.containBanList(this.wsWrapper.getIpAddr(ws)).catch(() => {
 			ws.close(1008, `違反者接続 ip: ${this.wsWrapper.getIpAddr(ws)}`);
 		});
 
 		if (!reqData._id) {
-			this.setUserData(ws, this.createInitUser(this.wsWrapper.getIpAddr(ws)));
+			this.setUserData(ws, null);
 		} else {
 			this.userService.getUser(reqData._id).then((user) => {
-				this.setUserData(ws, user ? user : this.createInitUser(this.wsWrapper.getIpAddr(ws)));
+				this.setUserData(ws, user ? user : null);
 			});
 		}
 	}
 
 	private setUserData(ws: WebSocket, user: DbUserData) {
+		if (!user) {
+			user = this.createInitUser();
+		}
+		user = Object.assign(
+			{},
+			UserDataController.INIT_USERDATA, //アップデートでカラム追加されたときのため
+			user,
+			{ip: this.wsWrapper.getIpAddr(ws)}
+		);
 		this.setDbIdToWs(ws, user._id);
-		this.saveUserDataMemory(ws, user);
+		this.userData[user._id] = user;
 		this.onFirstConnect(ws, user);
 	}
 
-	private createInitUser(ipAddr: string): DbUserData {
-		const initialData = Object.assign({_id: shortid.generate(), ip: ipAddr}, UserDataController.INIT_USERDATA);
+	private createInitUser(): DbUserData {
+		const initialData = Object.assign({_id: shortid.generate()}, UserDataController.INIT_USERDATA);
 		this.userService.createUser(initialData);
 		return initialData;
 	}
@@ -134,6 +143,7 @@ export class UserDataController {
 			lv: user.lv,
 			name: user.name,
 			exp: user.exp,
+			skills: Array.isArray(user.skills) ? user.skills.map(num => typeof num === "number" ? num : undefined) : undefined,
 			date: new Date()
 		};
 	}

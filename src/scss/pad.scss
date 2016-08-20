@@ -1,27 +1,31 @@
-.key-pad {
+.key-pad, .func-buttons {
 	width: 100%;
 	display: flex;
 	flex-wrap: wrap;
 	margin-bottom: 60px;
-	button {
-		box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+	.pad, .func-button {
 		margin-top: 40px;
-		border: none;
-		cursor: pointer;
 	}
-	.func-button {
-		height: 46px;
-		margin-left: 30px;
-		line-height: 46px;
-		font-size: 16px;
-		border-radius: 3px;
-		background-color: #fdfdfd;
-		padding: 0 20px;
-		font-weight: 500;
-		color: #00897b;
-		&:hover, &.hover {
-			background-color: #e0e0e0;
-		}
+}
+.pad, .func-button {
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+	border: none;
+	cursor: pointer;
+}
+.func-buttons .func-button {
+	margin-left: 30px;
+}
+.func-button {
+	height: 46px;
+	line-height: 46px;
+	font-size: 16px;
+	border-radius: 3px;
+	background-color: #fdfdfd;
+	padding: 0 20px;
+	font-weight: 500;
+	color: #00897b;
+	&:hover, &.hover {
+		background-color: #e0e0e0;
 	}
 }
 .pad {

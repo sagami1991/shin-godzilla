@@ -6,7 +6,7 @@ require("./scss/ranking.scss");
 export class RankingComponent {
 	private static HTML = `
 		<h2 class="h2"><i class="material-icons">school</i>ランキング</h2>
-		<table class="rank-table">
+		<table class="table rank-table">
 			<thead>
 				<tr>
 					<th class="rank-th">Rank</th>
@@ -23,12 +23,12 @@ export class RankingComponent {
 	private static RANK_TEMPL = Handlebars.compile(`
 		{{#rankInfos}}
 			<tr>
-				<td><span class="rank-bold">{{addOne @index}}</span> 位</td>
+				<td><span class="bold">{{addOne @index}}</span> 位</td>
 				<td><div class="rank-name">
 					{{#unless @index}}<i class="material-icons">stars</i>{{/unless}}
 					{{name}}
 				</div></td>
-				<td>Lv. <span class="rank-bold">{{lv}}</span></td>
+				<td>Lv. <span class="bold">{{lv}}</span></td>
 			</tr>
 		{{/rankInfos}}
 	`);

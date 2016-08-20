@@ -6,7 +6,7 @@
     SocketType[SocketType["initlog"] = 1] = "initlog";
     SocketType[SocketType["chatLog"] = 2] = "chatLog";
     SocketType[SocketType["infolog"] = 3] = "infolog";
-    SocketType[SocketType["zahyou"] = 4] = "zahyou";
+    SocketType[SocketType["snapshot"] = 4] = "snapshot";
     SocketType[SocketType["init"] = 5] = "init";
     SocketType[SocketType["closePerson"] = 6] = "closePerson";
     SocketType[SocketType["gozzilaDamege"] = 7] = "gozzilaDamege";
@@ -17,6 +17,7 @@
     SocketType[SocketType["resetLv"] = 12] = "resetLv";
     SocketType[SocketType["dead"] = 13] = "dead";
     SocketType[SocketType["changeName"] = 14] = "changeName";
+    SocketType[SocketType["getSkill"] = 15] = "getSkill";
 })(exports.SocketType || (exports.SocketType = {}));
 var SocketType = exports.SocketType;
 (function (FieldType) {
@@ -25,6 +26,10 @@ var SocketType = exports.SocketType;
     FieldType[FieldType["kaning"] = 2] = "kaning";
 })(exports.FieldType || (exports.FieldType = {}));
 var FieldType = exports.FieldType;
+(function (SkillId) {
+    SkillId[SkillId["heal"] = 0] = "heal";
+})(exports.SkillId || (exports.SkillId = {}));
+var SkillId = exports.SkillId;
 (function (GodzillaMode) {
     GodzillaMode[GodzillaMode["init"] = 0] = "init";
     GodzillaMode[GodzillaMode["beforeAtk"] = 1] = "beforeAtk";

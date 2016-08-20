@@ -52,13 +52,15 @@ export class WSWrapper {
 	}
 
 	public getPersonId(ws: WebSocket): string {
-		return ws.upgradeReq.headers["person-id"];
+		const pid = ws.upgradeReq.headers["person-id"];
+		if (!pid) console.warn("pidとれていない");
+		return pid;
 	}
 
 	public getIpAddr(ws: WebSocket) {
 		return ws.upgradeReq.socket.remoteAddress;
 	}
-	public send(ws: WebSocket, type: SocketType, data: any) {
+	public send(ws: WebSocket, type: SocketType, data?: any) {
 		try {
 			ws.send(JSON.stringify({type: type, value: data}));
 		} catch (e) {

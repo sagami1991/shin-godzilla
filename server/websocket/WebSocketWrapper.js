@@ -30,7 +30,10 @@ var WSWrapper = (function () {
         });
     };
     WSWrapper.prototype.getPersonId = function (ws) {
-        return ws.upgradeReq.headers["person-id"];
+        var pid = ws.upgradeReq.headers["person-id"];
+        if (!pid)
+            console.warn("pidとれていない");
+        return pid;
     };
     WSWrapper.prototype.getIpAddr = function (ws) {
         return ws.upgradeReq.socket.remoteAddress;

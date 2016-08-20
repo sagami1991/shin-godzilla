@@ -6,7 +6,7 @@ export enum SocketType {
 	initlog,  //最初に送るログ配列
 	chatLog,  // チャット
 	infolog,  // 情報ログ
-	zahyou, // 座標
+	snapshot, // 座標
 	init,
 	closePerson,
 	gozzilaDamege,
@@ -16,7 +16,8 @@ export enum SocketType {
 	userData,
 	resetLv,
 	dead,
-	changeName
+	changeName,
+	getSkill
 }
 
 export enum FieldType {
@@ -31,13 +32,16 @@ export interface InitialUserData {
 	gozdilla: GodzillaInfo;
 	bg: number;
 }
-
+export enum SkillId {
+	heal
+}
 export interface DbUserData {
 	_id: string;
 	ip?: string;
 	lv: number;
 	name: string;
 	exp: number;
+	skills: number[];
 	date?: Date;
 }
 
@@ -48,6 +52,7 @@ export interface ReqEvilData {
 	y: number;
 	isAtk: boolean;
 	isDead: boolean;
+	isHeal: boolean;
 }
 
 // サーバーで持つ

@@ -6,18 +6,16 @@ export class GamePadComponent {
 		// sita: false,
 		hidari: false,
 		jump: false,
-		atk: false
+		atk: false,
+		skill1: false
 	};
 	private static HTML = `
 		<button class="pad hidari"><i class="material-icons">chevron_left</i></button>
 		<button class="pad migi"><i class="material-icons">chevron_right</i></button>
-		<button class="pad jump">ジャンプ</button>
-		<button class="pad atk">攻撃</button>
+		<button class="pad jump" title="ショートカット: C or スペース">ジャンプ</button>
+		<button class="pad atk" title="ショートカット: X or 画面クリック">攻撃</button>
 		<button class="pad hukkatu disabled">復活</button>
-		<button class="func-button reset-button">リセット</button>
-		<button class="func-button rank-button">ランキング</button>
-		<button class="func-button field-change-button">フィールドを変更</button>
-		<div class="field-change-area"></div>
+		<button class="pad skill1 disabled" title="ショートカット: CTRL">スキル1</button>
 	`;
 	private static KEYSET = [
 		// {keycode: [87, 38], eventName: "ue"},
@@ -25,7 +23,8 @@ export class GamePadComponent {
 		// {keycode: [83, 40], eventName: "sita"},
 		{keycode: [65, 37], eventName: "hidari"},
 		{keycode: [32, 87, 67], eventName: "jump"},
-		{keycode: [88], eventName: "atk"}
+		{keycode: [88], eventName: "atk"},
+		{keycode: [17], eventName: "skill1"}
 	];
 
 	/** ボタンやキーを設定 */
@@ -36,9 +35,9 @@ export class GamePadComponent {
 		});
 		GamePadComponent.KEYSET.forEach((keyset) => {
 			window.addEventListener("keydown", e => {
-				if (keyset.keycode.find(keycode => e.keyCode === keycode)) {
+				if (keyset.keycode.includes(e.keyCode)) {
 					(<any>GamePadComponent.KeyEvent)[keyset.eventName] = true;
-					if (e.keyCode === 32 && document.activeElement === document.body) {
+					if ([32, 37, 39].includes(e.keyCode) && document.activeElement === document.body) {
 						e.preventDefault();
 					}
 				}

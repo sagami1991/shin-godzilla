@@ -1,6 +1,7 @@
 "use strict";
 require('source-map-support/register'); // エラー時、tsファイルの行数を教える
 require('core-js/es7/object');
+require('core-js/es7/array');
 var http_1 = require('http');
 var express = require('express');
 var ws_1 = require('ws');
@@ -13,6 +14,7 @@ var RankingController_1 = require("./websocket/RankingController");
 var UserDataController_1 = require("./websocket/UserDataController");
 var UserService_1 = require("./service/UserService");
 var FieldController_1 = require("./websocket/FieldController");
+var SkillController_1 = require("./websocket/SkillController");
 /** DBに接続 */
 function connectDB() {
     return new Promise(function (resolve) {
@@ -55,6 +57,7 @@ connectDB().then(function (db) {
     var userController = new UserDataController_1.UserDataController(wsWrapper, userService);
     userController.init();
     new GameController_1.GameController(wsWrapper, userController).init();
+    new SkillController_1.SkillController(wsWrapper, userController).init();
     new RankingController_1.RankingController(wsWrapper, userService).init();
     new InfoMsgController_1.InfoMsgController(wsWrapper).init();
     server.on('request', app);
@@ -63,7 +66,7 @@ connectDB().then(function (db) {
     });
     setInterval(function () {
         console.log("memory log: " + process.memoryUsage().heapUsed + " byte of Heap");
-    }, 60 * 1000);
+    }, 10 * 60 * 1000);
 });
 
 //# sourceMappingURL=server.js.map

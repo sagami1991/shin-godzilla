@@ -15,9 +15,9 @@ export class ChatController {
 	}
 
 	private onReceiveMsg(ws: WebSocket, reqData: string) {
-		if (this.validate(reqData)){
+		if (this.validate(reqData)) {
 			const chatMsg = {msg: reqData};
-			console.log(chatMsg);
+			console.log("chatLog =>", chatMsg.msg);
 			this.main.sendAll({type: SocketType.chatLog, value: chatMsg});
 			this.mongo.getCollection(ChatController.C_NAME).insert(chatMsg);
 		}

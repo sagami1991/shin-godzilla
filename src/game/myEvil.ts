@@ -4,13 +4,15 @@ import {StatusBar} from "./StatusBar";
 import {GamePadComponent} from "./GamePadComponent";
 import {MainCanvas} from "./main";
 import {WSService} from "../WebSocketService";
-import {SocketType, DbUserData} from "../../server/share/share";
-import {LvUpEffect} from "./LvEffect";
+import {SocketType, DbUserData, CONST, SkillId} from "../../server/share/share";
+import {Effect, EffectType} from "./Effect";
+import {SkillComponent} from "./SkillComponent";
 
 export interface MyEvilOption extends EvilOption {
 	exp: number;
 	name: string;
 	dbId: string;
+	skills: number[];
 }
 
 /** 自分が操作する機能をもつエビルアイ */
@@ -21,8 +23,7 @@ export class Ebiruai extends SimpleEvil {
 	private static BASE_EXP = 50;
 	private static INIT_MAX_HP = 100;
 	private static MAX_ATACK_LENGTH = 3;
-	public maxExp: number;
-	public isChangeName: boolean;
+	private maxExp: number;
 	private jumpF: number;
 	private isJumping: boolean;
 	private rebirthButton: HTMLButtonElement;
@@ -32,6 +33,7 @@ export class Ebiruai extends SimpleEvil {
 	private rebornTimeCount: number;
 	private exp: number;
 	private dbId: string;
+	private skills: number [];
 	constructor(protected ctx: CanvasRenderingContext2D,
 				private ws: WSService,
 				option: MyEvilOption) {
@@ -45,12 +47,14 @@ export class Ebiruai extends SimpleEvil {
 		this.initButtons();
 		this.initStatusBar();
 		this.dbId = option.dbId;
-		this.isChangeName = true;
+		this.skills = option.skills;
 		this.ws.addOnReceiveMsgListener(SocketType.userData, (user: DbUserData) => {
 			this.onReceivePersonalData(user);
 		});
 	}
-
+	public setSkill(skills: number[]) {
+		this.skills = skills;
+	}
 	/** 毎フレーム実行される動作 */
 	protected action() {
 		this.drawHp();
@@ -60,11 +64,12 @@ export class Ebiruai extends SimpleEvil {
 			this.move();
 			this.jump();
 			this.beforeAtk();
+			this.skill();
 			this.damegeCalc();
 			if (this.hp <= 0) this.deadOnce();
 		}
 		if (this.isLvUp) {
-			LvUpEffect.draw(this.ctx, this);
+			Effect.draw(this, EffectType.lvup);
 			this.isLvUp = false;
 		}
 	}
@@ -73,7 +78,6 @@ export class Ebiruai extends SimpleEvil {
 		this.statusBar = new StatusBar();
 		this.statusBar.addOnNameEditListner((name) => {
 			this.name = name;
-			this.isChangeName = true;
 			this.changeName();
 		});
 		this.refreshStatusBar();
@@ -147,6 +151,24 @@ export class Ebiruai extends SimpleEvil {
 			this.myTrains[this.myTrains.length - 1].setOnAtked(() => {
 				this.ws.send(SocketType.gozzilaDamege);
 			});
+		}
+	}
+	private skillInterval = false;
+	private skill() {
+		this.isHeal = false;
+		if (GamePadComponent.KeyEvent.skill1 && !this.skillInterval && this.skills.includes(SkillId.heal)) {
+			this.isHeal = true;
+			Effect.draw(this, EffectType.heal);
+			SkillComponent.SKILL1_BUTTON.classList.add("disabled");
+			this.hp += 30;
+			if (this.hp > this.maxHp) {
+				this.hp = this.maxHp;
+			}
+			this.skillInterval = true;
+			window.setTimeout(() => {
+				SkillComponent.SKILL1_BUTTON.classList.remove("disabled");
+				this.skillInterval = false;
+			}, 1300);
 		}
 	}
 

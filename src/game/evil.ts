@@ -2,7 +2,7 @@ import {MainCanvas} from "./main";
 import {Train} from "./train";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
-import {LvUpEffect} from "./LvEffect";
+import {Effect, EffectType} from "./Effect";
 import {MasterEvilData} from "../../server/share/share";
 
 export interface EvilOption extends BaseMobOption {
@@ -19,6 +19,7 @@ export class SimpleEvil extends BaseMonster {
 	public static HEIGHT = 63;
 	public pid: string;
 	public isAtk: boolean;
+	public isHeal: boolean;
 	protected myTrains: Train[] = [];
 	public lv: number;
 	public isLvUp: boolean;
@@ -35,9 +36,9 @@ export class SimpleEvil extends BaseMonster {
 	}
 	public draw() {
 		this.action();
-		this.image = this.isDead ? 		ImageLoader.IMAGES.evilSinda :
+		this.image = this.isDead ? 	ImageLoader.IMAGES.evilSinda :
 					 this.isMigi ? 	ImageLoader.IMAGES.evilmigi :
-										ImageLoader.IMAGES.evilHidari;
+									ImageLoader.IMAGES.evilHidari;
 		this.ctx.drawImage(this.image , this.x, MainCanvas.convY(this.y, SimpleEvil.HEIGHT));
 		this.trainDraw();
 		this.drawLv();
@@ -56,8 +57,13 @@ export class SimpleEvil extends BaseMonster {
 			this.atk();
 		}
 		if (this.isLvUp) {
-			LvUpEffect.draw(this.ctx, this);
+			Effect.draw(this, EffectType.lvup);
 			this.isLvUp = false;
+		}
+
+		if (this.isHeal) {
+			Effect.draw(this, EffectType.heal);
+			this.isHeal = false;
 		}
 	}
 	protected atk() {
@@ -69,6 +75,7 @@ export class SimpleEvil extends BaseMonster {
 		});
 		this.myTrains.push(train);
 	}
+
 	private drawLv() {
 		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
 		this.ctx.font = "14px 'ＭＳ Ｐゴシック'";

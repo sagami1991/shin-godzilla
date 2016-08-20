@@ -6,6 +6,10 @@ import {ImageLoader} from "./ImageLoader";
 import {GamePadComponent} from "./GamePadComponent";
 import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData} from "../../server/share/share";
 import {FieldComponent} from "./FieldComponent";
+import {FuncButtonComponent} from "./FuncButtonComponent";
+import {DiffExtract} from "../../server/share/util";
+import {Effect} from "./Effect";
+import {SkillComponent} from "./SkillComponent";
 
 /** ゲーム機能の総合操作クラス */
 export class MainCanvas {
@@ -21,7 +25,7 @@ export class MainCanvas {
 		roopCount: number, //何回ループさせるか
 		count: number
 		cb: (count: number) => void;
-	}[] =[];
+	}[] = [];
 
 	private wsService: WSService;
 	private canvasElm: HTMLCanvasElement;
@@ -31,7 +35,7 @@ export class MainCanvas {
 	private godzilla: GodzillaMob;
 	private otherPersonsInfo: MasterEvilData[];
 	private otherPersons: SimpleEvil[];
-	private befSendData: ReqEvilData;
+	private befSnapshot: ReqEvilData;
 
 	/** 下からのY座標を上からのY座標に変更 */
 	public static convY(y: number, height: number) {
@@ -54,6 +58,7 @@ export class MainCanvas {
 		this.wsService.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
 		this.wsService.addOnOpenListener(() => {
 			ImageLoader.load().then(() => {
+				Effect.init();
 				this.wsService.send(SocketType.init, {_id: localStorage.getItem("dbId")});
 			});
 		});
@@ -63,6 +68,7 @@ export class MainCanvas {
 		this.ctx = this.canvasElm.getContext('2d');
 		MainCanvas.CTX = this.ctx;
 		GamePadComponent.setKeyAndButton();
+		FuncButtonComponent.init();
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
@@ -81,15 +87,17 @@ export class MainCanvas {
 			name: resData.user.name,
 			isAtk: false,
 			isDead: false,
-			dbId: resData.user._id
+			dbId: resData.user._id,
+			skills: resData.user.skills
 		});
+		new SkillComponent(this.wsService, this.myEvil).init(resData.user);
 		this.otherPersonsInfo = resData.users;
 		this.otherPersons = resData.users.map((info) => {
 			return new SimpleEvil(MainCanvas.CTX, info);
 		});
 
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
-		this.wsService.addOnReceiveMsgListener(SocketType.zahyou, (value) => this.onReceiveIntervalData(value));
+		this.wsService.addOnReceiveMsgListener(SocketType.snapshot, (value) => this.onReceiveIntervalData(value));
 		this.wsService.addOnCloseListener(() => window.clearInterval(this.timer));
 	}
 
@@ -140,22 +148,23 @@ export class MainCanvas {
 	private drawNowPersonCount() {
 		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
-		this.ctx.fillText(`接続数:${this.otherPersons.length + 1}`, 736, 18);
+		this.ctx.fillText(`接続数:${this.otherPersons.length}`, 736, 18);
 	}
 
 	private sendServer() {
-		const sendData: ReqEvilData = {
+		const localSnapshot: ReqEvilData = {
 			isMigi: this.myEvil.isMigi,
 			x: this.myEvil.x,
 			y: this.myEvil.y,
 			isAtk: this.myEvil.isAtk,
-			isDead: this.myEvil.isDead
+			isDead: this.myEvil.isDead,
+			isHeal: this.myEvil.isHeal
 		};
-		if (JSON.stringify(this.befSendData) !== JSON.stringify(sendData)) {
-			this.wsService.send(SocketType.zahyou, sendData);
+		const sendSnapshot = DiffExtract.diff(this.befSnapshot, localSnapshot);
+		if (sendSnapshot) {
+			this.wsService.send(SocketType.snapshot, sendSnapshot);
 			this.myEvil.isAtk = false;
 		}
-		this.befSendData = Object.assign({}, sendData);
-		this.myEvil.isChangeName = false;
+		this.befSnapshot = Object.assign({}, localSnapshot);
 	}
 }

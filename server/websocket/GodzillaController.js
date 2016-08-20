@@ -26,7 +26,7 @@ var GodzillaController = (function () {
         var baseFrame = 0;
         for (var _i = 0, _a = GodzillaController.ACTION_INFO; _i < _a.length; _i++) {
             var actionInfo = _a[_i];
-            baseFrame += actionInfo.sec * GameController_1.GameController.SEND_FPS;
+            baseFrame += actionInfo.sec * GameController_1.GameController.FRAME;
             if (this.actionFrameCount < baseFrame) {
                 this._godzilla.mode = actionInfo.mode;
                 break;
@@ -40,7 +40,7 @@ var GodzillaController = (function () {
             case share_1.GodzillaMode.atkEnd:
                 this.isDecidedTarget = false;
                 this.actionFrameCount = 0;
-                GodzillaController.ACTION_INFO[0].sec = Math.floor(0.6 + Math.random() * 10) * 0.1;
+                GodzillaController.ACTION_INFO[0].sec = Math.floor(8 + Math.random() * 10) * 0.1;
                 break;
         }
     };

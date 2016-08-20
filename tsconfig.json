@@ -11,7 +11,8 @@
 			"core-js",
 			"ws",
 			"mongodb",
-			"express"
+			"express",
+			"lodash"
 		]
     },
 	"files": [

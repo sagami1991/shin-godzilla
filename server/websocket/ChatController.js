@@ -13,7 +13,7 @@ var ChatController = (function () {
     ChatController.prototype.onReceiveMsg = function (ws, reqData) {
         if (this.validate(reqData)) {
             var chatMsg = { msg: reqData };
-            console.log(chatMsg);
+            console.log("chatLog =>", chatMsg.msg);
             this.main.sendAll({ type: share_1.SocketType.chatLog, value: chatMsg });
             this.mongo.getCollection(ChatController.C_NAME).insert(chatMsg);
         }

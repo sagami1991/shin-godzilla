@@ -1,8 +1,8 @@
+/** 変更されたものだけ取り出す */
 export class DiffExtract {
-	private static FORCE_KEY = "pid";
-	public static diff(prevObj: Object, nextObj: Object): Object {
+	public static diff<T>(prevObj: T, nextObj: T): T {
 		if (!prevObj || !nextObj) return undefined;
-		return this.objDiff(prevObj, nextObj);
+		return <T> this.objDiff(prevObj, nextObj);
 	}
 
 	private static objDiff(prevObj: {[key: string]: any}, nextObj: {[key: string]: any}): {[key: string]: any} {

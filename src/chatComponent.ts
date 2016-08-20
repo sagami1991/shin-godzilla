@@ -65,6 +65,10 @@ export class ChatComponent {
 			}
 		});
 
+		this.inputElem.addEventListener("keydown", (e) => {
+			e.stopPropagation();
+		});
+
 		this.sendElem.addEventListener("click", e => {
 			this.send();
 		});

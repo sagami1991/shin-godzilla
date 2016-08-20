@@ -1,5 +1,6 @@
 import 'source-map-support/register'; // エラー時、tsファイルの行数を教える
 import 'core-js/es7/object';
+import 'core-js/es7/array';
 import {createServer}  from 'http';
 import * as express from 'express';
 import {Server as WebSocketServer} from 'ws';
@@ -12,6 +13,8 @@ import {RankingController} from "./websocket/RankingController";
 import {UserDataController} from "./websocket/UserDataController";
 import {UserService} from "./service/UserService";
 import {FieldController} from "./websocket/FieldController";
+import {SkillController} from "./websocket/SkillController";
+
 /** DBに接続 */
 function connectDB(): Promise<Db> {
 	return new Promise((resolve) => {
@@ -50,6 +53,7 @@ connectDB().then((db) => {
 	const userController = new UserDataController(wsWrapper, userService);
 	userController.init();
 	new GameController(wsWrapper, userController).init();
+	new SkillController(wsWrapper, userController).init();
 	new RankingController(wsWrapper, userService).init();
 	new InfoMsgController(wsWrapper).init();
 	server.on('request', app);
@@ -59,5 +63,5 @@ connectDB().then((db) => {
 
 	setInterval( () => {
 		console.log(`memory log: ${process.memoryUsage().heapUsed} byte of Heap`);
-	}, 60 * 1000);
+	}, 10 * 60 * 1000);
 });

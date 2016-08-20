@@ -1,6 +1,7 @@
 /// <reference path="./custom-typings.d.ts" />
 import 'core-js/es6/array';
 import 'core-js/es6/promise';
+import 'core-js/es7/array';
 import 'core-js/es6/object';
 require("expose?humane!humane-js");
 require("!style!css!humane-js/themes/libnotify.css");

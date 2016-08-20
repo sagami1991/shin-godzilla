@@ -17,11 +17,12 @@ var UserDataController = (function () {
         this.wsWrapper.addCloseListner(function (ws) {
             var user = _this.userData[_this.getDbId(ws)];
             if (user) {
-                _this.userService.updateUser(user).then(function () {
-                    delete _this.userData[_this.getDbId(ws)];
-                });
+                _this.userData[user._id] = undefined;
+                delete _this.userData[user._id];
+                console.log("メモリーからユーザーを削除", user.name);
+                _this.userService.updateUser(user);
+                _this.onClose(ws);
             }
-            _this.onClose(ws);
         });
         setInterval(function () {
             for (var _i = 0, _a = Object.entries(_this.userData); _i < _a.length; _i++) {
@@ -46,7 +47,10 @@ var UserDataController = (function () {
         }
     };
     UserDataController.prototype.getDbId = function (ws) {
-        return ws.upgradeReq.headers["db-id"];
+        var dbID = ws.upgradeReq.headers["db-id"];
+        if (!dbID)
+            console.trace("dbIDとれていない");
+        return dbID;
     };
     UserDataController.prototype.dead = function (ws) {
         var user = this.userData[this.getDbId(ws)];
@@ -74,31 +78,32 @@ var UserDataController = (function () {
             this.onSave(ws, user);
         }
     };
-    // ユーザーからのアクセスでは使わない
-    UserDataController.prototype.saveUserDataMemory = function (ws, reqData) {
-        this.userData[this.getDbId(ws)] = Object.assign(this.filterUserData(reqData), { ip: this.wsWrapper.getIpAddr(ws) });
-    };
     UserDataController.prototype.firstConnect = function (ws, reqData) {
         var _this = this;
         this.userService.containBanList(this.wsWrapper.getIpAddr(ws)).catch(function () {
             ws.close(1008, "\u9055\u53CD\u8005\u63A5\u7D9A ip: " + _this.wsWrapper.getIpAddr(ws));
         });
         if (!reqData._id) {
-            this.setUserData(ws, this.createInitUser(this.wsWrapper.getIpAddr(ws)));
+            this.setUserData(ws, null);
         }
         else {
             this.userService.getUser(reqData._id).then(function (user) {
-                _this.setUserData(ws, user ? user : _this.createInitUser(_this.wsWrapper.getIpAddr(ws)));
+                _this.setUserData(ws, user ? user : null);
             });
         }
     };
     UserDataController.prototype.setUserData = function (ws, user) {
+        if (!user) {
+            user = this.createInitUser();
+        }
+        user = Object.assign({}, UserDataController.INIT_USERDATA, //アップデートでカラム追加されたときのため
+        user, { ip: this.wsWrapper.getIpAddr(ws) });
         this.setDbIdToWs(ws, user._id);
-        this.saveUserDataMemory(ws, user);
+        this.userData[user._id] = user;
         this.onFirstConnect(ws, user);
     };
-    UserDataController.prototype.createInitUser = function (ipAddr) {
-        var initialData = Object.assign({ _id: shortid.generate(), ip: ipAddr }, UserDataController.INIT_USERDATA);
+    UserDataController.prototype.createInitUser = function () {
+        var initialData = Object.assign({ _id: shortid.generate() }, UserDataController.INIT_USERDATA);
         this.userService.createUser(initialData);
         return initialData;
     };
@@ -112,13 +117,15 @@ var UserDataController = (function () {
             lv: user.lv,
             name: user.name,
             exp: user.exp,
+            skills: Array.isArray(user.skills) ? user.skills.map(function (num) { return typeof num === "number" ? num : undefined; }) : undefined,
             date: new Date()
         };
     };
     UserDataController.INIT_USERDATA = {
         exp: 0,
         lv: 1,
-        name: "名前"
+        name: "名前",
+        skills: []
     };
     return UserDataController;
 }());

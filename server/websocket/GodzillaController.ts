@@ -34,7 +34,7 @@ export class GodzillaController {
 		this.actionFrameCount ++;
 		let baseFrame = 0;
 		for (const actionInfo of GodzillaController.ACTION_INFO) {
-			baseFrame += actionInfo.sec * GameController.SEND_FPS;
+			baseFrame += actionInfo.sec * GameController.FRAME;
 			if (this.actionFrameCount < baseFrame) {
 				this._godzilla.mode = actionInfo.mode;
 				break;
@@ -47,7 +47,7 @@ export class GodzillaController {
 		case GodzillaMode.atkEnd:
 			this.isDecidedTarget = false;
 			this.actionFrameCount = 0;
-			GodzillaController.ACTION_INFO[0].sec = Math.floor(0.6 + Math.random() * 10) * 0.1;
+			GodzillaController.ACTION_INFO[0].sec = Math.floor(8 + Math.random() * 10) * 0.1;
 			break;
 		}
 	}
