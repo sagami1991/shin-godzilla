@@ -32,7 +32,7 @@ export class UserDataController {
 			const now = new Date();
 			Object.keys(this.userData).forEach((key) => {
 				const user = this.userData[key];
-				if (now.getTime() - user.date.getTime() > 5 * 60 * 1000) {
+				if (!user.date || now.getTime() - user.date.getTime() > 20 * 60 * 1000) {
 					const timeoutWs = this.wsWrapper.getWss().clients.find(ws => this.getDbId(ws) === user._id);
 					this.wsWrapper.close(timeoutWs, 1001, "一定時間動作がなかったため、切断しました");
 				} else {

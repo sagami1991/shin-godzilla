@@ -3600,6 +3600,7 @@
 	        this.wsService.addOnReceiveMsgListener(share_1.SocketType.init, function (resData) { return _this.onReceiveInitData(resData); });
 	        this.wsService.addOnOpenListener(function () {
 	            ImageLoader_1.ImageLoader.load().then(function () {
+	                document.querySelector(".loading").classList.remove("loading");
 	                Effect_1.Effect.init();
 	                _this.wsService.send(share_1.SocketType.init, { _id: localStorage.getItem("dbId") });
 	            });

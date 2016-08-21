@@ -58,6 +58,7 @@ export class MainCanvas {
 		this.wsService.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
 		this.wsService.addOnOpenListener(() => {
 			ImageLoader.load().then(() => {
+				document.querySelector(".loading").classList.remove("loading");
 				Effect.init();
 				this.wsService.send(SocketType.init, {_id: localStorage.getItem("dbId")});
 			});

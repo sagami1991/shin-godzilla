@@ -19,7 +19,7 @@ var UserDataController = (function () {
             var now = new Date();
             Object.keys(_this.userData).forEach(function (key) {
                 var user = _this.userData[key];
-                if (now.getTime() - user.date.getTime() > 5 * 60 * 1000) {
+                if (!user.date || now.getTime() - user.date.getTime() > 20 * 60 * 1000) {
                     var timeoutWs = _this.wsWrapper.getWss().clients.find(function (ws) { return _this.getDbId(ws) === user._id; });
                     _this.wsWrapper.close(timeoutWs, 1001, "一定時間動作がなかったため、切断しました");
                 }
