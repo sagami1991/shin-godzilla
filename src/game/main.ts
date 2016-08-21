@@ -91,7 +91,11 @@ export class MainCanvas {
 			dbId: resData.user._id,
 			skills: resData.user.skills
 		});
-		new SkillComponent(this.wsService, this.myEvil).init(resData.user);
+		const skillComponent = new SkillComponent(this.wsService);
+		skillComponent.init(resData.user.lv, resData.user.skills);
+		this.myEvil.onLvUpListener = (lv, skills) => {
+			skillComponent.refreshSkillPanel(lv, skills);
+		};
 		this.otherPersonsInfo = resData.users;
 		this.otherPersons = resData.users.map((info) => {
 			return new SimpleEvil(MainCanvas.CTX, info);
@@ -106,7 +110,6 @@ export class MainCanvas {
 		if ( snapshot.gozzila) {
 			this.godzilla.setGodzilaInfo(snapshot.gozzila);
 		}
-
 		if (snapshot.evils) {
 			snapshot.evils.forEach(info => {
 				const existEvil = this.otherPersons.find(existEvil => existEvil.pid === info.pid);
@@ -117,7 +120,6 @@ export class MainCanvas {
 				}
 			});
 		}
-
 		if (snapshot.cids) {
 			this.otherPersons = this.otherPersons.filter(
 				evil => snapshot.cids.find(pid => pid !== evil.pid)

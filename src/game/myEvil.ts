@@ -23,6 +23,7 @@ export class Ebiruai extends SimpleEvil {
 	private static BASE_EXP = 50;
 	private static INIT_MAX_HP = 100;
 	private static MAX_ATACK_LENGTH = 3;
+	public onLvUpListener: (lv: number, skills: number[]) => void;
 	private maxExp: number;
 	private jumpF: number;
 	private isJumping: boolean;
@@ -51,10 +52,11 @@ export class Ebiruai extends SimpleEvil {
 		this.ws.addOnReceiveMsgListener(SocketType.userData, (user: DbUserData) => {
 			this.onReceivePersonalData(user);
 		});
+		this.ws.addOnReceiveMsgListener(SocketType.getSkill, (user: DbUserData) => {
+			this.skills = user.skills;
+		});
 	}
-	public setSkill(skills: number[]) {
-		this.skills = skills;
-	}
+
 	/** 毎フレーム実行される動作 */
 	protected action() {
 		this.drawHp();
@@ -106,7 +108,10 @@ export class Ebiruai extends SimpleEvil {
 	}
 
 	private onReceivePersonalData(user: DbUserData) {
-		if (user.lv > this.lv) this.isLvUp = true;
+		if (user.lv > this.lv) {
+			this.isLvUp = true;
+			this.onLvUpListener(user.lv, this.skills);
+		}
 		this.lv = user.lv;
 		this.exp = user.exp;
 		this.refreshStatusBar();

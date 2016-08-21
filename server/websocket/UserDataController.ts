@@ -32,7 +32,7 @@ export class UserDataController {
 			const now = new Date();
 			Object.keys(this.userData).forEach((key) => {
 				const user = this.userData[key];
-				if (!user.date || now.getTime() - user.date.getTime() > 20 * 60 * 1000) {
+				if (user.date && now.getTime() - user.date.getTime() > 30 * 60 * 1000) {
 					const timeoutWs = this.wsWrapper.getWss().clients.find(ws => this.getDbId(ws) === user._id);
 					this.wsWrapper.close(timeoutWs, 1001, "一定時間動作がなかったため、切断しました");
 				} else {
@@ -44,6 +44,10 @@ export class UserDataController {
 
 	public getUser(ws: WebSocket) {
 		return this.userData[this.getDbId(ws)];
+	}
+
+	public pushUser(user: DbUserData) {
+		this.userData[user._id] = user;
 	}
 
 	public increaseExp(ws: WebSocket) {
@@ -60,7 +64,8 @@ export class UserDataController {
 	}
 
 	private onCloseUser(ws: WebSocket) {
-		const user = this.userData[this.getDbId(ws)];
+		const dbId = this.getDbId(ws);
+		const user = this.userData[dbId];
 		if (user) {
 			this.userData[user._id] = undefined;
 			delete this.userData[user._id];
@@ -69,7 +74,7 @@ export class UserDataController {
 			this.userService.updateUser(user);
 			this.onClose(ws);
 		} else {
-			console.warn("ユーザー存在せず");
+			console.warn("切断されたユーザーがメモリ上に存在せず dbId=>", dbId);
 		}
 	}
 
@@ -131,10 +136,9 @@ export class UserDataController {
 			{},
 			UserDataController.INIT_USERDATA, //アップデートでカラム追加されたときのため
 			user,
-			{ip: this.wsWrapper.getIpAddr(ws)}
+			{ip: this.wsWrapper.getIpAddr(ws), date: new Date()},
 		);
 		this.setDbIdToWs(ws, user._id);
-		this.userData[user._id] = user;
 		this.onFirstConnect(ws, user);
 	}
 

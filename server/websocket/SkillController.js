@@ -11,17 +11,15 @@ var SkillController = (function () {
     };
     SkillController.prototype.onGetSkill = function (ws, req) {
         var user = this.userController.getUser(ws);
-        if (this.validate(req, user)) {
-            return;
+        if (user && this.validate(req, user)) {
+            user.skills.push(req);
+            this.wsWrapper.send(ws, share_1.SocketType.getSkill, user);
         }
-        ;
-        user.skills.push(req);
-        this.wsWrapper.send(ws, share_1.SocketType.getSkill, user);
     };
     SkillController.prototype.validate = function (req, user) {
-        return (typeof req !== "number" ||
-            user.skills.includes(req)) ||
-            user.lv < (user.skills.length + 1) * 10;
+        return (typeof req === "number" &&
+            !user.skills.includes(req)) &&
+            user.lv >= (user.skills.length + 1) * 10;
     };
     return SkillController;
 }());

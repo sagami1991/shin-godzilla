@@ -19,7 +19,7 @@ var UserDataController = (function () {
             var now = new Date();
             Object.keys(_this.userData).forEach(function (key) {
                 var user = _this.userData[key];
-                if (!user.date || now.getTime() - user.date.getTime() > 20 * 60 * 1000) {
+                if (user.date && now.getTime() - user.date.getTime() > 30 * 60 * 1000) {
                     var timeoutWs = _this.wsWrapper.getWss().clients.find(function (ws) { return _this.getDbId(ws) === user._id; });
                     _this.wsWrapper.close(timeoutWs, 1001, "一定時間動作がなかったため、切断しました");
                 }
@@ -31,6 +31,9 @@ var UserDataController = (function () {
     };
     UserDataController.prototype.getUser = function (ws) {
         return this.userData[this.getDbId(ws)];
+    };
+    UserDataController.prototype.pushUser = function (user) {
+        this.userData[user._id] = user;
     };
     UserDataController.prototype.increaseExp = function (ws) {
         var user = this.userData[this.getDbId(ws)];
@@ -45,7 +48,8 @@ var UserDataController = (function () {
         }
     };
     UserDataController.prototype.onCloseUser = function (ws) {
-        var user = this.userData[this.getDbId(ws)];
+        var dbId = this.getDbId(ws);
+        var user = this.userData[dbId];
         if (user) {
             this.userData[user._id] = undefined;
             delete this.userData[user._id];
@@ -55,7 +59,7 @@ var UserDataController = (function () {
             this.onClose(ws);
         }
         else {
-            console.warn("ユーザー存在せず");
+            console.warn("切断されたユーザーがメモリ上に存在せず dbId=>", dbId);
         }
     };
     UserDataController.prototype.getDbId = function (ws) {
@@ -109,9 +113,8 @@ var UserDataController = (function () {
             user = this.createInitUser();
         }
         user = Object.assign({}, UserDataController.INIT_USERDATA, //アップデートでカラム追加されたときのため
-        user, { ip: this.wsWrapper.getIpAddr(ws) });
+        user, { ip: this.wsWrapper.getIpAddr(ws), date: new Date() });
         this.setDbIdToWs(ws, user._id);
-        this.userData[user._id] = user;
         this.onFirstConnect(ws, user);
     };
     UserDataController.prototype.createInitUser = function () {

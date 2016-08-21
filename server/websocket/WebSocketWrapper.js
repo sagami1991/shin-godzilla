@@ -41,9 +41,11 @@ var WSWrapper = (function () {
     WSWrapper.prototype.send = function (ws, type, data) {
         try {
             ws.send(JSON.stringify({ type: type, value: data }));
+            return true;
         }
         catch (e) {
             console.trace(e);
+            return false;
         }
     };
     /** 全員に送る */

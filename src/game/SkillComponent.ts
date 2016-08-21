@@ -1,7 +1,6 @@
 import {WSService} from "../WebSocketService";
 import * as Handlebars from "handlebars";
 import {SocketType, DbUserData,SkillId} from "../../server/share/share";
-import {Ebiruai} from "./myEvil";
 import {Notify} from "../util";
 require("../scss/skill-panel.scss");
 
@@ -48,11 +47,16 @@ export class SkillComponent {
 	private skillPanel: HTMLElement;
 	private skillTbody: HTMLElement;
 	private isLock: boolean;
-	constructor(private wsService: WSService, private user: Ebiruai) {}
+	private hasSp: boolean;
+	private nokoriSp: number;
+	private isOpen: boolean;
+	constructor(private wsService: WSService) {}
 
-	public init(user: DbUserData) {
+	public init(lv: number, skills: number[]) {
+		this.wsService.addOnReceiveMsgListener(SocketType.getSkill, (user: DbUserData) => {
+			this.refreshSkillPanel(user.lv, user.skills);
+		});
 		SkillComponent.SKILL1_BUTTON = <HTMLButtonElement> document.querySelector(".skill1");
-		this.refreshSkillData(user);
 		this.skillPanel = <HTMLElement> document.querySelector(".skills-area");
 		this.skillPanel.innerHTML = SkillComponent.HTML;
 		this.skillTbody = <HTMLElement> document.querySelector(".skills-tbody");
@@ -63,29 +67,32 @@ export class SkillComponent {
 			}
 		});
 		document.querySelector(".toggle-skill-panel").addEventListener("click", () => {
+			this.isOpen = !this.isOpen;
 			this.skillPanel.classList.toggle("disabled");
-			this.parseSkills(user);
 		});
-		this.wsService.addOnReceiveMsgListener(SocketType.getSkill, (res) => this.onGetSkill(res));
-
+		this.refreshSkillPanel(lv, skills);
+		this.parseSkills();
 	}
 
-	private refreshSkillData(user: DbUserData) {
-		user.skills.forEach(num => {
+	public refreshSkillPanel(lv: number, skills: number[]) {
+		this.isLock = false;
+		skills.forEach(num => {
 			SkillComponent.skills[num].isGet = true;
 			if (num === SkillId.heal) {
 				SkillComponent.SKILL1_BUTTON.classList.remove("disabled");
 			}
 		});
+		const hituyouSP = (skills.length + 1) * 10;
+		this.hasSp = lv >= hituyouSP;
+		this.nokoriSp = hituyouSP - lv;
+		if (this.isOpen) this.parseSkills();
 	}
 
-	private parseSkills(user: DbUserData) {
-		// todo const
-		const hituyouSP = (user.skills.length + 1) * 10;
+	private parseSkills() {
 		this.skillTbody.innerHTML = SkillComponent.SKILLS_TEMPL({
 			skills: SkillComponent.skills,
-			hasSp: user.lv >= hituyouSP,
-			nokoriSp: hituyouSP - user.lv
+			hasSp: this.hasSp,
+			nokoriSp: this.nokoriSp
 		});
 	}
 
@@ -98,13 +105,6 @@ export class SkillComponent {
 		this.wsService.send(SocketType.getSkill, id);
 	}
 
-	private onGetSkill(user: DbUserData) {
-		this.isLock = false;
-		this.refreshSkillData(user);
-		this.parseSkills(user);
-		this.user.setSkill(user.skills);
-
-	}
 
 
 

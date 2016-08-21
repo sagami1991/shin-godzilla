@@ -3633,7 +3633,11 @@
 	            dbId: resData.user._id,
 	            skills: resData.user.skills
 	        });
-	        new SkillComponent_1.SkillComponent(this.wsService, this.myEvil).init(resData.user);
+	        var skillComponent = new SkillComponent_1.SkillComponent(this.wsService);
+	        skillComponent.init(resData.user.lv, resData.user.skills);
+	        this.myEvil.onLvUpListener = function (lv, skills) {
+	            skillComponent.refreshSkillPanel(lv, skills);
+	        };
 	        this.otherPersonsInfo = resData.users;
 	        this.otherPersons = resData.users.map(function (info) {
 	            return new evil_1.SimpleEvil(MainCanvas.CTX, info);
@@ -4184,10 +4188,10 @@
 	        this.ws.addOnReceiveMsgListener(share_1.SocketType.userData, function (user) {
 	            _this.onReceivePersonalData(user);
 	        });
+	        this.ws.addOnReceiveMsgListener(share_1.SocketType.getSkill, function (user) {
+	            _this.skills = user.skills;
+	        });
 	    }
-	    Ebiruai.prototype.setSkill = function (skills) {
-	        this.skills = skills;
-	    };
 	    /** 毎フレーム実行される動作 */
 	    Ebiruai.prototype.action = function () {
 	        this.drawHp();
@@ -4239,8 +4243,10 @@
 	        });
 	    };
 	    Ebiruai.prototype.onReceivePersonalData = function (user) {
-	        if (user.lv > this.lv)
+	        if (user.lv > this.lv) {
 	            this.isLvUp = true;
+	            this.onLvUpListener(user.lv, this.skills);
+	        }
 	        this.lv = user.lv;
 	        this.exp = user.exp;
 	        this.refreshStatusBar();
@@ -4538,14 +4544,15 @@
 	var util_1 = __webpack_require__(153);
 	__webpack_require__(154);
 	var SkillComponent = (function () {
-	    function SkillComponent(wsService, user) {
+	    function SkillComponent(wsService) {
 	        this.wsService = wsService;
-	        this.user = user;
 	    }
-	    SkillComponent.prototype.init = function (user) {
+	    SkillComponent.prototype.init = function (lv, skills) {
 	        var _this = this;
+	        this.wsService.addOnReceiveMsgListener(share_1.SocketType.getSkill, function (user) {
+	            _this.refreshSkillPanel(user.lv, user.skills);
+	        });
 	        SkillComponent.SKILL1_BUTTON = document.querySelector(".skill1");
-	        this.refreshSkillData(user);
 	        this.skillPanel = document.querySelector(".skills-area");
 	        this.skillPanel.innerHTML = SkillComponent.HTML;
 	        this.skillTbody = document.querySelector(".skills-tbody");
@@ -4556,26 +4563,31 @@
 	            }
 	        });
 	        document.querySelector(".toggle-skill-panel").addEventListener("click", function () {
+	            _this.isOpen = !_this.isOpen;
 	            _this.skillPanel.classList.toggle("disabled");
-	            _this.parseSkills(user);
 	        });
-	        this.wsService.addOnReceiveMsgListener(share_1.SocketType.getSkill, function (res) { return _this.onGetSkill(res); });
+	        this.refreshSkillPanel(lv, skills);
+	        this.parseSkills();
 	    };
-	    SkillComponent.prototype.refreshSkillData = function (user) {
-	        user.skills.forEach(function (num) {
+	    SkillComponent.prototype.refreshSkillPanel = function (lv, skills) {
+	        this.isLock = false;
+	        skills.forEach(function (num) {
 	            SkillComponent.skills[num].isGet = true;
 	            if (num === share_1.SkillId.heal) {
 	                SkillComponent.SKILL1_BUTTON.classList.remove("disabled");
 	            }
 	        });
+	        var hituyouSP = (skills.length + 1) * 10;
+	        this.hasSp = lv >= hituyouSP;
+	        this.nokoriSp = hituyouSP - lv;
+	        if (this.isOpen)
+	            this.parseSkills();
 	    };
-	    SkillComponent.prototype.parseSkills = function (user) {
-	        // todo const
-	        var hituyouSP = (user.skills.length + 1) * 10;
+	    SkillComponent.prototype.parseSkills = function () {
 	        this.skillTbody.innerHTML = SkillComponent.SKILLS_TEMPL({
 	            skills: SkillComponent.skills,
-	            hasSp: user.lv >= hituyouSP,
-	            nokoriSp: hituyouSP - user.lv
+	            hasSp: this.hasSp,
+	            nokoriSp: this.nokoriSp
 	        });
 	    };
 	    SkillComponent.prototype.learnSkill = function (id) {
@@ -4585,12 +4597,6 @@
 	        }
 	        this.isLock = true;
 	        this.wsService.send(share_1.SocketType.getSkill, id);
-	    };
-	    SkillComponent.prototype.onGetSkill = function (user) {
-	        this.isLock = false;
-	        this.refreshSkillData(user);
-	        this.parseSkills(user);
-	        this.user.setSkill(user.skills);
 	    };
 	    SkillComponent.skills = [
 	        { name: "ヒール", description: "回復できる", isGet: false, id: share_1.SkillId.heal }

@@ -32,28 +32,31 @@ export class GameController {
 				evil.isLvUp = true;
 			}
 		};
-		this.userController.onFirstConnect = (ws, user) => {
-			const userData: MasterEvilData = {
+		this.userController.onFirstConnect = (ws, dbUserData) => {
+			const sendUserData: MasterEvilData = {
 				isMigi: true,
 				x: Math.round(Math.random() * 500),
 				y: CONST.CANVAS.Y0,
 				isAtk: false,
 				isDead: false,
 				pid: this.wsWrapper.getPersonId(ws),
-				lv: user.lv,
+				lv: dbUserData.lv,
 				isLvUp: false,
 				isHeal: false,
-				name: user.name
+				name: dbUserData.name
 			};
-			this.masterUsersData.push(userData);
 
-			this.wsWrapper.send(ws, SocketType.init, <InitialUserData> {
+			const isSuccessSend = this.wsWrapper.send(ws, SocketType.init, <InitialUserData> {
 				pid: this.wsWrapper.getPersonId(ws),
-				user: Object.assign({}, user, userData),
+				user: Object.assign({}, dbUserData, sendUserData),
 				users: this.masterUsersData,
 				gozdilla: this.godzillaController.godzilla,
 				bg: FieldController.bgType
 			});
+			if (isSuccessSend) {
+				this.masterUsersData.push(sendUserData);
+				this.userController.pushUser(dbUserData);
+			}
 		};
 
 		this.userController.onClose = (ws) => {

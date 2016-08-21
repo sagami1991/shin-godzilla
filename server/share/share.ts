@@ -71,6 +71,7 @@ export interface RankingInfo {
 export interface GameData {
 	gozzila: GodzillaInfo;
 	evils: MasterEvilData[];
+	/** 切断したID */
 	cids: string[];
 }
 

@@ -13,17 +13,16 @@ export class SkillController {
 
 	private onGetSkill(ws: WebSocket, req: SkillId) {
 		const user = this.userController.getUser(ws);
-		if (this.validate(req, user)) {
-			return;
-		};
-		user.skills.push(req);
-		this.wsWrapper.send(ws, SocketType.getSkill, user);
+		if (user && this.validate(req, user)) {
+			user.skills.push(req);
+			this.wsWrapper.send(ws, SocketType.getSkill, user);
+		}
 	}
 
 	private validate(req: number, user: DbUserData) {
 		return (
-			typeof req !== "number" ||
-			user.skills.includes(req)) ||
-			user.lv < (user.skills.length + 1) * 10;
+			typeof req === "number" &&
+			!user.skills.includes(req)) &&
+			user.lv >= (user.skills.length + 1) * 10;
 	}
 }

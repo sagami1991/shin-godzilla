@@ -28,27 +28,30 @@ var GameController = (function () {
                 evil.isLvUp = true;
             }
         };
-        this.userController.onFirstConnect = function (ws, user) {
-            var userData = {
+        this.userController.onFirstConnect = function (ws, dbUserData) {
+            var sendUserData = {
                 isMigi: true,
                 x: Math.round(Math.random() * 500),
                 y: share_1.CONST.CANVAS.Y0,
                 isAtk: false,
                 isDead: false,
                 pid: _this.wsWrapper.getPersonId(ws),
-                lv: user.lv,
+                lv: dbUserData.lv,
                 isLvUp: false,
                 isHeal: false,
-                name: user.name
+                name: dbUserData.name
             };
-            _this.masterUsersData.push(userData);
-            _this.wsWrapper.send(ws, share_1.SocketType.init, {
+            var isSuccessSend = _this.wsWrapper.send(ws, share_1.SocketType.init, {
                 pid: _this.wsWrapper.getPersonId(ws),
-                user: Object.assign({}, user, userData),
+                user: Object.assign({}, dbUserData, sendUserData),
                 users: _this.masterUsersData,
                 gozdilla: _this.godzillaController.godzilla,
                 bg: FieldController_1.FieldController.bgType
             });
+            if (isSuccessSend) {
+                _this.masterUsersData.push(sendUserData);
+                _this.userController.pushUser(dbUserData);
+            }
         };
         this.userController.onClose = function (ws) {
             var pid = _this.wsWrapper.getPersonId(ws);

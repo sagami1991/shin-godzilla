@@ -60,11 +60,13 @@ export class WSWrapper {
 	public getIpAddr(ws: WebSocket) {
 		return ws.upgradeReq.socket.remoteAddress;
 	}
-	public send(ws: WebSocket, type: SocketType, data?: any) {
+	public send(ws: WebSocket, type: SocketType, data?: any): boolean {
 		try {
 			ws.send(JSON.stringify({type: type, value: data}));
+			return true;
 		} catch (e) {
 			console.trace(e);
+			return false;
 		}
 	}
 
