@@ -14,21 +14,19 @@ var UserDataController = (function () {
         this.wsWrapper.addMsgListner(share_1.SocketType.changeName, function (ws, reqData) { return _this.changeName(ws, reqData); });
         this.wsWrapper.addMsgListner(share_1.SocketType.dead, function (ws) { return _this.dead(ws); });
         this.wsWrapper.addMsgListner(share_1.SocketType.resetLv, function (ws) { return _this.resetLv(ws); });
-        this.wsWrapper.addCloseListner(function (ws) {
-            var user = _this.userData[_this.getDbId(ws)];
-            if (user) {
-                _this.userData[user._id] = undefined;
-                delete _this.userData[user._id];
-                console.log("メモリーからユーザーを削除", user.name);
-                _this.userService.updateUser(user);
-                _this.onClose(ws);
-            }
-        });
+        this.wsWrapper.addCloseListner(function (ws) { return _this.onCloseUser(ws); });
         setInterval(function () {
-            for (var _i = 0, _a = Object.entries(_this.userData); _i < _a.length; _i++) {
-                var _b = _a[_i], ipAddr = _b[0], user = _b[1];
-                _this.userService.updateUser(user);
-            }
+            var now = new Date();
+            Object.keys(_this.userData).forEach(function (key) {
+                var user = _this.userData[key];
+                if (now.getTime() - user.date.getTime() > 5 * 60 * 1000) {
+                    var timeoutWs = _this.wsWrapper.getWss().clients.find(function (ws) { return _this.getDbId(ws) === user._id; });
+                    _this.wsWrapper.close(timeoutWs, 1001, "一定時間動作がなかったため、切断しました");
+                }
+                else {
+                    _this.userService.updateUser(user);
+                }
+            });
         }, 30 * 1000);
     };
     UserDataController.prototype.getUser = function (ws) {
@@ -44,6 +42,20 @@ var UserDataController = (function () {
                 this.onLvUp(this.wsWrapper.getPersonId(ws));
             }
             this.wsWrapper.send(ws, share_1.SocketType.userData, { lv: user.lv, exp: user.exp });
+        }
+    };
+    UserDataController.prototype.onCloseUser = function (ws) {
+        var user = this.userData[this.getDbId(ws)];
+        if (user) {
+            this.userData[user._id] = undefined;
+            delete this.userData[user._id];
+            console.log("メモリーからユーザーを削除", user.name, user._id);
+            console.log("現在のアクティブユーザー", Object.keys(this.userData));
+            this.userService.updateUser(user);
+            this.onClose(ws);
+        }
+        else {
+            console.warn("ユーザー存在せず");
         }
     };
     UserDataController.prototype.getDbId = function (ws) {
@@ -81,7 +93,7 @@ var UserDataController = (function () {
     UserDataController.prototype.firstConnect = function (ws, reqData) {
         var _this = this;
         this.userService.containBanList(this.wsWrapper.getIpAddr(ws)).catch(function () {
-            ws.close(1008, "\u9055\u53CD\u8005\u63A5\u7D9A ip: " + _this.wsWrapper.getIpAddr(ws));
+            _this.wsWrapper.close(ws, 1008, "\u539F\u56E0\u4E0D\u660E\u3067\u63A5\u7D9A\u3067\u304D\u307E\u305B\u3093");
         });
         if (!reqData._id) {
             this.setUserData(ws, null);

@@ -5180,7 +5180,7 @@
 	    WSService.prototype.onClose = function (ev) {
 	        console.log(ev);
 	        this.isClose = true;
-	        util_1.Notify.error("切断されました。サーバーが落ちた可能性があります");
+	        util_1.Notify.error("\u5207\u65AD\u3055\u308C\u307E\u3057\u305F\u3002\u3000" + ev.reason);
 	        window.clearInterval(this.pingTimer);
 	        this.onCloseEvents.forEach(function (cb) { return cb(); });
 	    };

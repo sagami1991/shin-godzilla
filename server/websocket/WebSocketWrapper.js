@@ -63,6 +63,17 @@ var WSWrapper = (function () {
             }
         });
     };
+    WSWrapper.prototype.close = function (ws, code, reason) {
+        try {
+            ws.close(code, reason);
+        }
+        catch (error) {
+            console.trace(error);
+        }
+    };
+    WSWrapper.prototype.getWss = function () {
+        return this.wss;
+    };
     /**
      * でーた受け取り時
      */
@@ -79,7 +90,8 @@ var WSWrapper = (function () {
             return;
         }
         if (!this.validateReqData(reqObj)) {
-            ws.close(1008, "\u4E0D\u6B63\u306A\u30C7\u30FC\u30BF\u691C\u51FA " + this.getIpAddr(ws));
+            this.close(ws, 1008, "受信データが処理できませんでした");
+            console.warn("\u4E0D\u6B63\u306A\u30C7\u30FC\u30BF\u691C\u51FA " + this.getIpAddr(ws));
             return;
         }
         this.onMsgListners.forEach(function (msgLister) { reqObj.type === msgLister.type ? msgLister.cb(ws, reqObj.value) : null; });

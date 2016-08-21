@@ -27,20 +27,18 @@ export class UserDataController {
 		this.wsWrapper.addMsgListner(SocketType.changeName, (ws, reqData) => this.changeName(ws, reqData));
 		this.wsWrapper.addMsgListner(SocketType.dead, (ws) => this.dead(ws));
 		this.wsWrapper.addMsgListner(SocketType.resetLv, (ws) => this.resetLv(ws));
-		this.wsWrapper.addCloseListner((ws) => {
-			const user = this.userData[this.getDbId(ws)];
-			if (user) {
-				this.userData[user._id] = undefined;
-				delete this.userData[user._id];
-				console.log("メモリーからユーザーを削除", user.name);
-				this.userService.updateUser(user);
-				this.onClose(ws);
-			}
-		});
+		this.wsWrapper.addCloseListner((ws) => this.onCloseUser(ws));
 		setInterval(() => {
-			for (let [ipAddr, user] of Object.entries(this.userData)) {
-				this.userService.updateUser(user);
-			}
+			const now = new Date();
+			Object.keys(this.userData).forEach((key) => {
+				const user = this.userData[key];
+				if (now.getTime() - user.date.getTime() > 5 * 60 * 1000) {
+					const timeoutWs = this.wsWrapper.getWss().clients.find(ws => this.getDbId(ws) === user._id);
+					this.wsWrapper.close(timeoutWs, 1001, "一定時間動作がなかったため、切断しました");
+				} else {
+					this.userService.updateUser(user);
+				}
+			});
 		}, 30 * 1000);
 	}
 
@@ -58,6 +56,20 @@ export class UserDataController {
 				this.onLvUp(this.wsWrapper.getPersonId(ws));
 			}
 			this.wsWrapper.send(ws, SocketType.userData, {lv: user.lv, exp: user.exp});
+		}
+	}
+
+	private onCloseUser(ws: WebSocket) {
+		const user = this.userData[this.getDbId(ws)];
+		if (user) {
+			this.userData[user._id] = undefined;
+			delete this.userData[user._id];
+			console.log("メモリーからユーザーを削除", user.name, user._id);
+			console.log("現在のアクティブユーザー", Object.keys(this.userData));
+			this.userService.updateUser(user);
+			this.onClose(ws);
+		} else {
+			console.warn("ユーザー存在せず");
 		}
 	}
 
@@ -99,7 +111,7 @@ export class UserDataController {
 
 	private firstConnect(ws: WebSocket, reqData: {_id: string}) {
 		this.userService.containBanList(this.wsWrapper.getIpAddr(ws)).catch(() => {
-			ws.close(1008, `違反者接続 ip: ${this.wsWrapper.getIpAddr(ws)}`);
+			this.wsWrapper.close(ws, 1008, `原因不明で接続できません`);
 		});
 
 		if (!reqData._id) {

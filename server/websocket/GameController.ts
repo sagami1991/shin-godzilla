@@ -99,15 +99,19 @@ export class GameController {
 	// MsgListner 
 	private onReceiveSnapshot(ws: WebSocket, reqData: ReqEvilData) {
 		const user = this.userController.getUser(ws);
-		if (!user || !this.validateReqData(reqData)) {
-			console.trace("不正なデータ", reqData);
-			ws.close();
+		if (!user) {
+			console.trace("存在しないユーザー", reqData);
+			this.wsWrapper.close(ws, 1001, "予期せぬエラー");
+			return;
+		} else if (!this.validateReqData(reqData)) {
+			this.wsWrapper.close(ws, 1001, "予期せぬエラー データ処理できない");
 			return;
 		}
 		const evilInfo = this.masterUsersData.find(zahyou => zahyou.pid === this.wsWrapper.getPersonId(ws));
 		if (evilInfo) {
 			_.merge(evilInfo, this.filterEvilData(reqData));
 		}
+		user.date = new Date();
 	}
 
 	private filterEvilData(reqData: ReqEvilData): ReqEvilData {

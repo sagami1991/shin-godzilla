@@ -60,7 +60,7 @@ export class WSService {
 	private onClose(ev: CloseEvent) {
 		console.log(ev);
 		this.isClose = true;
-		Notify.error("切断されました。サーバーが落ちた可能性があります");
+		Notify.error(`切断されました。　${ev.reason}`);
 		window.clearInterval(this.pingTimer);
 		this.onCloseEvents.forEach(cb => cb());
 	}

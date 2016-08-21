@@ -90,15 +90,20 @@ var GameController = (function () {
     GameController.prototype.onReceiveSnapshot = function (ws, reqData) {
         var _this = this;
         var user = this.userController.getUser(ws);
-        if (!user || !this.validateReqData(reqData)) {
-            console.trace("不正なデータ", reqData);
-            ws.close();
+        if (!user) {
+            console.trace("存在しないユーザー", reqData);
+            this.wsWrapper.close(ws, 1001, "予期せぬエラー");
+            return;
+        }
+        else if (!this.validateReqData(reqData)) {
+            this.wsWrapper.close(ws, 1001, "予期せぬエラー データ処理できない");
             return;
         }
         var evilInfo = this.masterUsersData.find(function (zahyou) { return zahyou.pid === _this.wsWrapper.getPersonId(ws); });
         if (evilInfo) {
             _.merge(evilInfo, this.filterEvilData(reqData));
         }
+        user.date = new Date();
     };
     GameController.prototype.filterEvilData = function (reqData) {
         return {

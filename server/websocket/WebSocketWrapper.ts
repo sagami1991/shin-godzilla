@@ -85,6 +85,18 @@ export class WSWrapper {
 		});
 	}
 
+	public close(ws: WebSocket, code: number, reason: string) {
+		try {
+			ws.close(code, reason);
+		} catch (error) {
+			console.trace(error);
+		}
+	}
+
+	public getWss() {
+		return this.wss;
+	}
+
 	/**
 	 * でーた受け取り時
 	 */
@@ -100,7 +112,8 @@ export class WSWrapper {
 			return;
 		}
 		if (!this.validateReqData(reqObj)) {
-			ws.close(1008, `不正なデータ検出 ${this.getIpAddr(ws)}`);
+			this.close(ws, 1008, "受信データが処理できませんでした");
+			console.warn(`不正なデータ検出 ${this.getIpAddr(ws)}`);
 			return;
 		}
 		this.onMsgListners.forEach(msgLister => {reqObj.type === msgLister.type ? msgLister.cb(ws, reqObj.value) : null; });
