@@ -1,7 +1,7 @@
 
 import {MainCanvas} from "./main";
 import {ImageLoader} from "./ImageLoader";
-import {WSService} from "../WebSocketService";
+import {WSClient} from "../WebSocketClient";
 import * as Handlebars from "handlebars";
 import {SocketType, FieldType} from "../../../server/share/share";
 require("../scss/filed-dropdown.scss");
@@ -20,7 +20,7 @@ export class FieldComponent {
 			{{/fields}}
 		</ul>
 	`);
-	constructor(private wsService: WSService) {}
+	constructor(private wsService: WSClient) {}
 
 	public init(type: number) {
 		const changeButton = document.querySelector(".field-change-button");

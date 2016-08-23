@@ -1,10 +1,10 @@
 import * as WebSocket from 'ws';
-import {WSWrapper} from "./WebSocketWrapper";
+import {WSServer} from "./WebSocketWrapper";
 import {SocketType, SkillId, DbUserData} from "../share/share";
 import {UserDataController} from "./UserDataController";
 
 export class SkillController {
-	constructor(private wsWrapper: WSWrapper, private userController: UserDataController) {
+	constructor(private wsWrapper: WSServer, private userController: UserDataController) {
 	}
 
 	public init() {

@@ -37,6 +37,7 @@ export enum SkillId {
 }
 export interface DbUserData {
 	_id: string;
+	pid: string;
 	ip?: string;
 	lv: number;
 	name: string;

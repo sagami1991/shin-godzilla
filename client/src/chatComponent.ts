@@ -1,4 +1,4 @@
-import {WSService} from "./WebSocketService";
+import {WSClient} from "./WebSocketClient";
 import * as Handlebars from "handlebars";
 import {SocketType} from "../../server/share/share";
 
@@ -19,13 +19,13 @@ export class ChatComponent {
 			<li class="chat-log">{{msg}}</li>
 		{{/logs}}
 	`);
-	private wsService: WSService;
+	private wsService: WSClient;
 	private logs: ChatMsg[] = [];
 	private logElem: HTMLElement;
 	private inputElem: HTMLTextAreaElement;
 	private sendElem: HTMLElement;
 	private isChatCoolTime: boolean;
-	constructor(wsService: WSService) {
+	constructor(wsService: WSClient) {
 		this.wsService = wsService;
 	}
 

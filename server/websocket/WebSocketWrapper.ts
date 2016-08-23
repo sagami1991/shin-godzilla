@@ -19,7 +19,8 @@ interface SendAllOption {
 	value: any;
 }
 
-export class WSWrapper {
+/** wsをラップしたもの */
+export class WSServer {
 	private onConnectListners: Array<(ws: WebSocket) => void > = [];
 	private onMsgListners: Msglistner[] = [];
 	private onCloseListners: Array<(ws: WebSocket) => void > = [];
@@ -55,6 +56,16 @@ export class WSWrapper {
 		const pid = ws.upgradeReq.headers["person-id"];
 		if (!pid) console.warn("pidとれていない");
 		return pid;
+	}
+
+	public getDbId(ws: WebSocket) {
+		const dbID = ws.upgradeReq.headers["db-id"];
+		if (!dbID) console.trace("dbIDとれていない");
+		return dbID;
+	}
+
+	public setDbIdToWs(ws: WebSocket, id: string) {
+		ws.upgradeReq.headers["db-id"] = id;
 	}
 
 	public getIpAddr(ws: WebSocket) {
@@ -95,8 +106,8 @@ export class WSWrapper {
 		}
 	}
 
-	public getWss() {
-		return this.wss;
+	public getClients() {
+		return this.wss.clients;
 	}
 
 	/**

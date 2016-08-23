@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws';
-import {WSWrapper} from "./WebSocketWrapper";
+import {WSServer} from "./WebSocketWrapper";
 import {GameController} from "./GameController";
 import {CONST, ReqEvilData, GodzillaMode, GodzillaInfo} from "../share/share";
 
@@ -18,7 +18,7 @@ export class GodzillaController {
 		return this._godzilla;
 	}
 
-	constructor(private wsWrapper: WSWrapper, private evils: ReqEvilData[]) {
+	constructor(private wsWrapper: WSServer, private evils: ReqEvilData[]) {
 	}
 
 	public init() {

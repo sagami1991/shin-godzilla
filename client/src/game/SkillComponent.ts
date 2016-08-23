@@ -1,4 +1,4 @@
-import {WSService} from "../WebSocketService";
+import {WSClient} from "../WebSocketClient";
 import * as Handlebars from "handlebars";
 import {SocketType, DbUserData,SkillId} from "../../../server/share/share";
 import {Notify} from "../util";
@@ -50,7 +50,7 @@ export class SkillComponent {
 	private hasSp: boolean;
 	private nokoriSp: number;
 	private isOpen: boolean;
-	constructor(private wsService: WSService) {}
+	constructor(private wsService: WSClient) {}
 
 	public init(lv: number, skills: number[]) {
 		this.wsService.addOnReceiveMsgListener(SocketType.getSkill, (user: DbUserData) => {

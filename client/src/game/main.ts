@@ -1,4 +1,4 @@
-import {WSService} from "../WebSocketService";
+import {WSClient} from "../WebSocketClient";
 import {SimpleEvil, EvilOption} from "./evil";
 import {Ebiruai} from "./myEvil";
 import {GodzillaMob} from "./GozdillaMob";
@@ -27,7 +27,7 @@ export class MainCanvas {
 		cb: (count: number) => void;
 	}[] = [];
 
-	private wsService: WSService;
+	private wsService: WSClient;
 	private canvasElm: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
 	private timer: number;
@@ -50,7 +50,7 @@ export class MainCanvas {
 			cb: cb
 		});
 	}
-	constructor(ws: WSService) {
+	constructor(ws: WSClient) {
 		this.wsService = ws;
 	}
 

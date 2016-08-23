@@ -1,55 +1,133 @@
-import {DbUserData, RankingInfo} from "../share/share";
-import {MongoWrapper} from "../server";
+import {DbUserData, MasterEvilData, CONST} from "../share/share";
+import {UserRepository} from "../repository/UserRepository";
+import * as shortid from "shortid";
 
 export class UserService {
-	private static C_NAME = "users";
-	private static BANS_COLLECTION = "banip";
-	constructor(private mongo: MongoWrapper) {
+	private static INIT_USERDATA = <DbUserData> {
+		exp: 0,
+		lv: 1,
+		name: "名前",
+		skills: []
+	};
+	private userData: {[dbId: string]: DbUserData} = {};
+	private snapShotUserData: MasterEvilData[] = [];
+	constructor(private userRepository: UserRepository) {}
+
+	public getUser(dbId: string) {
+		return this.userData[dbId];
 	}
 
-	public getUser(id: string): Promise<DbUserData> {
-		return this.mongo.getCollection(UserService.C_NAME).findOne({_id: id});
+	public getSnapShotUser(personId: string) {
+		const user = this.snapShotUserData.find(user => user.pid === personId);
+		if (!user) console.trace("snapShotユーザーに存在しません");
+		return user;
 	}
 
-	// TODO インデックス貼る
-	/** 上位数人を返す */
-	public getRanker(): Promise<RankingInfo[]> {
-		return this.mongo.getCollection(UserService.C_NAME)
-		.find({}, {_id: 0, lv: 1, name: 1}).limit(10).sort({ lv: -1 }).toArray();
+	public pushUser(user: DbUserData) {
+		this.userData[user._id] = user;
 	}
 
-	public createUser(user: DbUserData) {
-		return	this.mongo.getCollection(UserService.C_NAME).insert(user).catch(e => {
-			console.trace(e);
-		});
+	public getHoutiUser() {
+		const now = new Date();
+		return Object.keys(this.userData).map(key => this.userData[key])
+		.filter(user => user.date && now.getTime() - user.date.getTime() > 30 * 60 * 1000);
+	}
+
+	public deleteAndSaveUser(dbId: string) {
+		const user = this.userData[dbId];
+		if (user) {
+			this.userData[user._id] = undefined;
+			delete this.userData[user._id];
+			console.log("メモリーからユーザーを削除", user.name, user._id);
+			console.log("現在のアクティブユーザー", Object.keys(this.userData));
+			this.userRepository.updateUser(user);
+		} else {
+			console.warn("切断されたユーザーがメモリ上に存在せず dbId=>", dbId);
+		}
+	}
+	public allUpdate() {
+		Object.keys(this.userData).forEach(key => this.userRepository.updateUser(this.userData[key]));
 	}
 
 	public updateUser(user: DbUserData) {
-		return this.mongo.getCollection(UserService.C_NAME).updateOne({_id: user._id}, user).catch(e => {
-			console.trace(e);
-		});
+		this.userRepository.updateUser(user);
 	}
 
-	public increseExp(userId: string, exp: number) {
-		this.mongo.getCollection(UserService.C_NAME).updateOne({_id: userId}, {exp: exp}).catch(e => {
-				console.trace(e);
-		});
-	}
-
-	public deleteUser(id: string) {
-		this.mongo.getCollection(UserService.C_NAME).deleteOne({_id: id});
-	}
-
-	public insertBanList(ipAddr: string) {
-		this.mongo.getCollection(UserService.BANS_COLLECTION).insertOne({ip: ipAddr});
-	}
-
-	public containBanList(ipAddr: string): Promise<void> {
-		return new Promise<void>((resolve, reject) => {
-			this.mongo.getCollection(UserService.BANS_COLLECTION).findOne({ip: ipAddr}).then(value => {
-				!value ? resolve() : reject();
+	public generateOrGetUser(dbId: string, pid: string, ipAddr: string): Promise<DbUserData> {
+		return new Promise((resolve, reject) => {
+			this.userRepository.containBanList(ipAddr).catch(() => {
+				reject("原因不明で接続できません");
+			}).then(() => {
+				if (!dbId) {
+					resolve(this.generateUser(pid, ipAddr));
+				} else {
+					this.userRepository.getUser(dbId).then((user) => {
+						if (!user) {
+							reject("予期せぬエラー、データベースが落ちてる可能性があります。");
+						} else {
+							resolve(this.setInfoToUser(user, pid, ipAddr));
+						}
+					});
+				}
 			});
 		});
 	}
 
+	public changeName(dbId: string, newName: string) {
+		const user = this.getUser(dbId);
+		const snapUser = this.getSnapShotUser(user.pid);
+		if (user && snapUser) {
+			user.name = newName;
+			snapUser.name = newName;
+		} else {
+			console.trace("ユーザーが存在しません");
+		}
+	}
+
+	public increaseExp(dbId: string) {
+		const user = this.getUser(dbId);
+		const snapUser = this.getSnapShotUser(user.pid);
+		if (user && snapUser) {
+			user.exp += 2;
+			if (user.exp > this.calcMaxExp(user.lv)) {
+				user.exp = 0;
+				user.lv ++;
+				snapUser.lv += 1;
+				snapUser.isLvUp = true;
+			}
+			return user;
+		}
+	}
+
+	public dead(dbId: string) {
+		const user = this.getUser(dbId);
+		if (user) {
+			user.exp -= Math.floor(this.calcMaxExp(user.lv) / 8);
+			user.exp = user.exp < 0 ? 0 : user.exp;
+			return user;
+		}
+	}
+
+	private setInfoToUser(user: DbUserData, pid: string, ipAddr: string) {
+		user = Object.assign(
+			{},
+			UserService.INIT_USERDATA, //アップデートでカラム追加されたときのため
+			user,
+			{ip: ipAddr, pid: pid, date: new Date()},
+		);
+		return user;
+	}
+
+	private generateUser(pid: string, ipAddr: string) {
+		const user = Object.assign(
+			{_id: shortid.generate(), pid: pid, ip: ipAddr, date: new Date()},
+			UserService.INIT_USERDATA
+		);
+		this.userRepository.createUser(user);
+		return user;
+	}
+
+	private calcMaxExp(lv: number) {
+		return Math.floor(CONST.USER.BASE_EXP * Math.pow(CONST.USER.EXP_BAIRITU, lv - 1));
+	}
 }

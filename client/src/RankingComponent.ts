@@ -1,4 +1,4 @@
-import {WSService} from "./WebSocketService";
+import {WSClient} from "./WebSocketClient";
 import * as Handlebars from "handlebars";
 import {SocketType, RankingInfo} from "../../server/share/share";
 require("./scss/ranking.scss");
@@ -32,7 +32,7 @@ export class RankingComponent {
 			</tr>
 		{{/rankInfos}}
 	`);
-	constructor(private wsService: WSService) {}
+	constructor(private wsService: WSClient) {}
 
 	public init() {
 		document.querySelector(".rank-button").addEventListener("click", () => {

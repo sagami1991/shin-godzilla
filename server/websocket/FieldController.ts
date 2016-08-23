@@ -1,9 +1,9 @@
 import * as WebSocket from 'ws';
-import {WSWrapper} from "./WebSocketWrapper";
+import {WSServer} from "./WebSocketWrapper";
 import {SocketType, FieldType} from "../share/share";
 export class FieldController {
 	public static bgType: FieldType = FieldType.henesys;
-	constructor(private main: WSWrapper) {
+	constructor(private main: WSServer) {
 	}
 
 	public init() {

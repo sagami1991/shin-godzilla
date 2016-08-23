@@ -8,7 +8,7 @@ require("!style!css!humane-js/themes/libnotify.css");
 require("./scss/main.scss");
 import {MainCanvas} from "./game/main";
 import {ChatComponent} from "./chatComponent";
-import {WSService} from "./WebSocketService";
+import {WSClient} from "./WebSocketClient";
 import {RankingComponent} from "./RankingComponent";
 import * as Handlebars from "handlebars";
 
@@ -17,7 +17,7 @@ class MainComponent {
 	private chat: ChatComponent;
 	private ranking: RankingComponent;
 	constructor() {
-		const wsService = new WSService();
+		const wsService = new WSClient();
 		wsService.init();
 		this.canvas = new MainCanvas(wsService);
 		this.chat = new ChatComponent(wsService);

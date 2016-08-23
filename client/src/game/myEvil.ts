@@ -3,7 +3,7 @@ import {GodzillaMob} from "./GozdillaMob";
 import {StatusBar} from "./StatusBar";
 import {GamePadComponent} from "./GamePadComponent";
 import {MainCanvas} from "./main";
-import {WSService} from "../WebSocketService";
+import {WSClient} from "../WebSocketClient";
 import {SocketType, DbUserData, CONST, SkillId} from "../../../server/share/share";
 import {Effect, EffectType} from "./Effect";
 import {SkillComponent} from "./SkillComponent";
@@ -36,7 +36,7 @@ export class Ebiruai extends SimpleEvil {
 	private dbId: string;
 	private skills: number [];
 	constructor(protected ctx: CanvasRenderingContext2D,
-				private ws: WSService,
+				private ws: WSClient,
 				option: MyEvilOption) {
 		super(ctx, option);
 		this.exp = option.exp;

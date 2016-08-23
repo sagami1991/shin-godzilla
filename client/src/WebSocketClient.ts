@@ -11,7 +11,7 @@ interface Msglistner {
 	cb: (data: any) => void;
 }
 
-export class WSService {
+export class WSClient {
 	private static URL = location.origin.replace(/^http/, 'ws');
 	public isClose: boolean;
 	private ws: WebSocket;
@@ -35,7 +35,7 @@ export class WSService {
 	}
 
 	public init() {
-		this.ws = new WebSocket(WSService.URL);
+		this.ws = new WebSocket(WSClient.URL);
 		this.ws.binaryType = "arraybuffer";
 		this.ws.onopen = () => this.onOpen();
 		this.ws.onmessage = (msgEvent) => this.onReceiveMsg(msgEvent);
