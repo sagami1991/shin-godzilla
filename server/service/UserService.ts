@@ -17,6 +17,10 @@ export class UserService {
 		return this.userData[dbId];
 	}
 
+	public getAllSnapShotUser() {
+		return this.snapShotUserData;
+	}
+
 	public getSnapShotUser(personId: string) {
 		const user = this.snapShotUserData.find(user => user.pid === personId);
 		if (!user) console.trace("snapShotユーザーに存在しません");
@@ -25,6 +29,10 @@ export class UserService {
 
 	public pushUser(user: DbUserData) {
 		this.userData[user._id] = user;
+	}
+
+	public pushSnapShotUser(snapShotUser: MasterEvilData) {
+		this.snapShotUserData.push(snapShotUser);
 	}
 
 	public getHoutiUser() {
@@ -38,9 +46,11 @@ export class UserService {
 		if (user) {
 			this.userData[user._id] = undefined;
 			delete this.userData[user._id];
-			console.log("メモリーからユーザーを削除", user.name, user._id);
-			console.log("現在のアクティブユーザー", Object.keys(this.userData));
+			const removedUser = _.remove(this.snapShotUserData, snapshotUser => snapshotUser.pid === user.pid);
 			this.userRepository.updateUser(user);
+			console.log("メモリーからユーザーを削除", user.name, user._id);
+			if (removedUser[0]) console.log("snapshotからユーザーを削除", removedUser[0].name, removedUser[0].pid);
+			console.log("現在のアクティブユーザー", Object.keys(this.userData), this.snapShotUserData);
 		} else {
 			console.warn("切断されたユーザーがメモリ上に存在せず dbId=>", dbId);
 		}
@@ -53,19 +63,19 @@ export class UserService {
 		this.userRepository.updateUser(user);
 	}
 
-	public generateOrGetUser(dbId: string, pid: string, ipAddr: string): Promise<DbUserData> {
+	public generateOrGetUser(dbId: string, ipAddr: string): Promise<DbUserData> {
 		return new Promise((resolve, reject) => {
 			this.userRepository.containBanList(ipAddr).catch(() => {
 				reject("原因不明で接続できません");
 			}).then(() => {
 				if (!dbId) {
-					resolve(this.generateUser(pid, ipAddr));
+					resolve(this.generateUser(ipAddr));
 				} else {
 					this.userRepository.getUser(dbId).then((user) => {
 						if (!user) {
 							reject("予期せぬエラー、データベースが落ちてる可能性があります。");
 						} else {
-							resolve(this.setInfoToUser(user, pid, ipAddr));
+							resolve(this.setInfoToUser(user, ipAddr));
 						}
 					});
 				}
@@ -108,19 +118,19 @@ export class UserService {
 		}
 	}
 
-	private setInfoToUser(user: DbUserData, pid: string, ipAddr: string) {
+	private setInfoToUser(user: DbUserData, ipAddr: string) {
 		user = Object.assign(
 			{},
 			UserService.INIT_USERDATA, //アップデートでカラム追加されたときのため
 			user,
-			{ip: ipAddr, pid: pid, date: new Date()},
+			{ip: ipAddr, pid: shortid.generate(), date: new Date()},
 		);
 		return user;
 	}
 
-	private generateUser(pid: string, ipAddr: string) {
+	private generateUser(ipAddr: string) {
 		const user = Object.assign(
-			{_id: shortid.generate(), pid: pid, ip: ipAddr, date: new Date()},
+			{_id: shortid.generate(), pid: shortid.generate(), ip: ipAddr, date: new Date()},
 			UserService.INIT_USERDATA
 		);
 		this.userRepository.createUser(user);

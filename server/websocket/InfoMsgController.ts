@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws';
-import {WSServer} from "./WebSocketWrapper";
+import {WSServer} from "./WebSocketServer";
 import {SocketType} from "../share/share";
 export class InfoMsgController {
 	constructor(private wsWrapper: WSServer) {

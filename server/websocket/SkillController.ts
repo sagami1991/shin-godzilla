@@ -1,21 +1,22 @@
 import * as WebSocket from 'ws';
-import {WSServer} from "./WebSocketWrapper";
+import {WSServer} from "./WebSocketServer";
 import {SocketType, SkillId, DbUserData} from "../share/share";
-import {UserDataController} from "./UserDataController";
+import {UserService} from "../service/UserService";
 
 export class SkillController {
-	constructor(private wsWrapper: WSServer, private userController: UserDataController) {
+	constructor(private wsServer: WSServer,
+				private userService: UserService) {
 	}
 
 	public init() {
-		this.wsWrapper.addMsgListner(SocketType.getSkill, (ws, req) => this.onGetSkill(ws, req));
+		this.wsServer.addMsgListner(SocketType.getSkill, (ws, req) => this.onGetSkill(ws, req));
 	}
 
 	private onGetSkill(ws: WebSocket, req: SkillId) {
-		const user = this.userController.getUser(ws);
+		const user = this.userService.getUser(this.wsServer.getDbId(ws));
 		if (user && this.validate(req, user)) {
 			user.skills.push(req);
-			this.wsWrapper.send(ws, SocketType.getSkill, user);
+			this.wsServer.send(ws, SocketType.getSkill, user);
 		}
 	}
 

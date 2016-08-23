@@ -1,25 +1,21 @@
 import * as WebSocket from 'ws';
-import {WSServer} from "./WebSocketWrapper";
-import {GodzillaController} from "./GodzillaController";
+import {WSServer} from "./WebSocketServer";
+import {GodzillaService} from "../service/GodzillaService";
 import {SocketType, InitialUserData, ReqEvilData, GameData, CONST, MasterEvilData} from "../share/share";
-import {UserDataController} from "./UserDataController";
 import {FieldController} from "./FieldController";
 import {DiffExtract} from "../share/util";
 import {UserService} from "../service/UserService";
 import * as _ from "lodash";
 export class GameController {
 	public static FRAME = 30;
-	private godzillaController: GodzillaController;
 	private befSendData: GameData;
-	private masterUsersData: MasterEvilData[] = [];
 	private closeIds: string[] = [];
 	public static getRandom<T>(arr: T[]): T  {
 		return arr ? arr[Math.floor(Math.random() * arr.length)] : null;
 	}
 	constructor(private wsWrapper: WSServer,
-				private userService: UserService) {
-		this.godzillaController = new GodzillaController(wsWrapper, this.masterUsersData);
-		this.godzillaController.init();
+				private userService: UserService,
+				private godzillaService: GodzillaService) {
 	}
 
 	public init() {
@@ -32,8 +28,7 @@ export class GameController {
 
 	private onFirstRequest(ws: WebSocket, reqData: {_id: string}) {
 		const ip = this.wsWrapper.getIpAddr(ws);
-		const personId = this.wsWrapper.getPersonId(ws);
-		this.userService.generateOrGetUser(reqData._id, personId, ip).catch((msg) => {
+		this.userService.generateOrGetUser(reqData._id, ip).catch((msg) => {
 			this.wsWrapper.close(ws, 1008, msg);
 		}).then((dbUserData) => {
 			if (!dbUserData) {
@@ -46,7 +41,7 @@ export class GameController {
 				y: CONST.CANVAS.Y0,
 				isAtk: false,
 				isDead: false,
-				pid: this.wsWrapper.getPersonId(ws),
+				pid: dbUserData.pid,
 				lv: dbUserData.lv,
 				isLvUp: false,
 				isHeal: false,
@@ -56,14 +51,15 @@ export class GameController {
 			const isSendSuccess = this.wsWrapper.send(ws, SocketType.init, <InitialUserData> {
 				pid: this.wsWrapper.getPersonId(ws),
 				user: Object.assign({}, dbUserData, sendUserData),
-				users: this.masterUsersData,
-				gozdilla: this.godzillaController.godzilla,
+				users: this.userService.getAllSnapShotUser(),
+				gozdilla: this.godzillaService.godzilla,
 				bg: FieldController.bgType
 			});
 			if (isSendSuccess) {
-				this.masterUsersData.push(sendUserData);
-				this.userService.pushUser(dbUserData);
 				this.wsWrapper.setDbIdToWs(ws, dbUserData._id);
+				this.wsWrapper.setPersonIdToWs(ws, dbUserData.pid);
+				this.userService.pushSnapShotUser(sendUserData);
+				this.userService.pushUser(dbUserData);
 			}
 		});
 	}
@@ -72,11 +68,10 @@ export class GameController {
 		const pid = this.wsWrapper.getPersonId(ws);
 		this.closeIds.push(pid);
 		this.userService.deleteAndSaveUser(this.wsWrapper.getDbId(ws));
-		_.remove(this.masterUsersData, user => user.pid === pid);
 	}
 
 	private atkToGodzilla(ws: WebSocket, damage: number) {
-		this.godzillaController.damage(damage);
+		this.godzillaService.damage(damage);
 		const user = this.userService.increaseExp(this.wsWrapper.getDbId(ws));
 		if (user) {
 			this.wsWrapper.send(ws, SocketType.userData, {lv: user.lv, exp: user.exp});
@@ -84,14 +79,14 @@ export class GameController {
 	}
 
 	private intervalAction() {
-		this.godzillaController.roopAction();
+		this.godzillaService.roopAction();
 		this.sendSnapshot();
 	}
 
 	private sendSnapshot() {
 		const sendData: GameData = {
-			gozzila: this.godzillaController.godzilla,
-			evils: this.masterUsersData,
+			gozzila: this.godzillaService.godzilla,
+			evils: this.userService.getAllSnapShotUser(),
 			cids: this.closeIds
 		};
 		const snapShot = <GameData> DiffExtract.diff(this.befSendData, sendData);
@@ -101,7 +96,7 @@ export class GameController {
 				value: snapShot
 			});
 		}
-		this.masterUsersData.forEach(evil => evil.isLvUp = false);
+		this.userService.getAllSnapShotUser().forEach(evil => evil.isLvUp = false);
 		this.closeIds = [];
 		this.befSendData = JSON.parse(JSON.stringify(sendData));
 	}
@@ -114,7 +109,7 @@ export class GameController {
 			this.wsWrapper.close(ws, 1001, "予期せぬエラー 処理できないsnapShotデータを受信");
 		} else {
 			user.date = new Date();
-			const evilInfo = this.masterUsersData.find(zahyou => zahyou.pid === this.wsWrapper.getPersonId(ws));
+			const evilInfo = this.userService.getSnapShotUser(this.wsWrapper.getPersonId(ws));
 			if (evilInfo) {
 				_.merge(evilInfo, this.filterEvilData(reqData));
 			}

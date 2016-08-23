@@ -1,9 +1,7 @@
-import * as WebSocket from 'ws';
-import {WSServer} from "./WebSocketWrapper";
-import {GameController} from "./GameController";
+import {GameController} from "../websocket/GameController";
 import {CONST, ReqEvilData, GodzillaMode, GodzillaInfo} from "../share/share";
-
-export class GodzillaController {
+import {UserService} from "../service/UserService";
+export class GodzillaService {
 	private static ACTION_INFO = [
 		{sec: 1, mode: GodzillaMode.init},
 		{sec: 0.8, mode: GodzillaMode.beforeAtk},
@@ -18,7 +16,7 @@ export class GodzillaController {
 		return this._godzilla;
 	}
 
-	constructor(private wsWrapper: WSServer, private evils: ReqEvilData[]) {
+	constructor(private userService: UserService) {
 	}
 
 	public init() {
@@ -33,8 +31,8 @@ export class GodzillaController {
 	public roopAction() {
 		this.actionFrameCount ++;
 		let baseFrame = 0;
-		for (const actionInfo of GodzillaController.ACTION_INFO) {
-			baseFrame += actionInfo.sec * GameController.FRAME;
+		for (const actionInfo of GodzillaService.ACTION_INFO) {
+			baseFrame += actionInfo.sec * CONST.GAME.SEND_FPS;
 			if (this.actionFrameCount < baseFrame) {
 				this._godzilla.mode = actionInfo.mode;
 				break;
@@ -47,7 +45,7 @@ export class GodzillaController {
 		case GodzillaMode.atkEnd:
 			this.isDecidedTarget = false;
 			this.actionFrameCount = 0;
-			GodzillaController.ACTION_INFO[0].sec = Math.floor(8 + Math.random() * 10) * 0.1;
+			GodzillaService.ACTION_INFO[0].sec = Math.floor(8 + Math.random() * 10) * 0.1;
 			break;
 		}
 	}
@@ -57,8 +55,8 @@ export class GodzillaController {
 	}
 
 	private decideTarget() {
-		const livedEvils = this.evils.filter(evil => !evil.isDead && evil.x > CONST.GAME.ANTI_X);
-		const deadEvils = this.evils.filter(evil => evil.x > CONST.GAME.ANTI_X);
+		const livedEvils = this.userService.getAllSnapShotUser().filter(evil => !evil.isDead && evil.x > CONST.GAME.ANTI_X);
+		const deadEvils = this.userService.getAllSnapShotUser().filter(evil => evil.x > CONST.GAME.ANTI_X);
 		const targetEvils = livedEvils.length ? livedEvils : deadEvils;
 		const targets = Array.from(new Array(2)).map(() => {
 			const targetEvil = GameController.getRandom(targetEvils);

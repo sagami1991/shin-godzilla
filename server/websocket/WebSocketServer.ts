@@ -1,6 +1,5 @@
 import * as WebSocket from 'ws';
 import {SocketType} from "../share/share";
-import * as shortid from "shortid";
 
 interface Msglistner {
 	type: SocketType;
@@ -42,7 +41,6 @@ export class WSServer {
 
 	public init() {
 		this.wss.on('connection', (ws) => {
-			ws.upgradeReq.headers["person-id"] = shortid.generate();
 			this.onConnectListners.forEach(cb => cb(ws));
 			ws.on('message', (data, flags) => this.onReqData(ws, data, flags));
 			ws.on("close", (code, message) => {
@@ -58,14 +56,18 @@ export class WSServer {
 		return pid;
 	}
 
+	public setPersonIdToWs(ws: WebSocket, pId: string) {
+		ws.upgradeReq.headers["person-id"] = pId;
+	}
+
 	public getDbId(ws: WebSocket) {
 		const dbID = ws.upgradeReq.headers["db-id"];
 		if (!dbID) console.trace("dbIDとれていない");
 		return dbID;
 	}
 
-	public setDbIdToWs(ws: WebSocket, id: string) {
-		ws.upgradeReq.headers["db-id"] = id;
+	public setDbIdToWs(ws: WebSocket, dbId: string) {
+		ws.upgradeReq.headers["db-id"] = dbId;
 	}
 
 	public getIpAddr(ws: WebSocket) {

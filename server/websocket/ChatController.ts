@@ -1,24 +1,23 @@
 import * as WebSocket from 'ws';
-import {Collection} from 'mongodb';
-import {WSServer} from "./WebSocketWrapper";
+import {WSServer} from "./WebSocketServer";
 import {SocketType} from "../share/share";
 import {MongoWrapper} from "../server";
 
 export class ChatController {
 	private static C_NAME = process.env.COLLECTION_NAME || "maplechatlog";
-	constructor(private main: WSServer, private mongo: MongoWrapper) {
+	constructor(private wsServer: WSServer, private mongo: MongoWrapper) {
 	}
 
 	public init() {
-		this.main.addConnectListner(ws => this.sendInitLog(ws));
-		this.main.addMsgListner(SocketType.chatLog, (ws, reqData) => this.onReceiveMsg(ws, reqData));
+		this.wsServer.addConnectListner(ws => this.sendInitLog(ws));
+		this.wsServer.addMsgListner(SocketType.chatLog, (ws, reqData) => this.onReceiveMsg(ws, reqData));
 	}
 
 	private onReceiveMsg(ws: WebSocket, reqData: string) {
 		if (this.validate(reqData)) {
 			const chatMsg = {msg: reqData};
 			console.log("chatLog =>", chatMsg.msg);
-			this.main.sendAll({type: SocketType.chatLog, value: chatMsg});
+			this.wsServer.sendAll({type: SocketType.chatLog, value: chatMsg});
 			this.mongo.getCollection(ChatController.C_NAME).insert(chatMsg);
 		}
 	}

@@ -1,10 +1,7 @@
 import * as WebSocket from 'ws';
-import {WSServer} from "./WebSocketWrapper";
-import {SocketType, InitialUserData, DbUserData, CONST, MasterEvilData} from "../share/share";
-import {UserRepository} from "../repository/UserRepository";
+import {WSServer} from "./WebSocketServer";
+import {SocketType, DbUserData} from "../share/share";
 import {UserService} from "../service/UserService";
-import * as shortid from "shortid";
-import * as _ from "lodash";
 
 export class UserDataController {
 	public onLvUp: (personId: string) => void;
