@@ -1,6 +1,6 @@
 import {WSService} from "./WebSocketService";
 import * as Handlebars from "handlebars";
-import {SocketType} from "../server/share/share";
+import {SocketType} from "../../server/share/share";
 
 interface ChatMsg {
 	msg: string;

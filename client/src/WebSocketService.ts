@@ -1,5 +1,5 @@
 import {Notify} from "./util";
-import {SocketType} from "../server/share/share";
+import {SocketType} from "../../server/share/share";
 
 export interface ResData {
 	type: number;

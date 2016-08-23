@@ -12,8 +12,9 @@ gulp.task('ts', function () {
 });
 
 
-gulp.task('watch', function() {  
+gulp.task('watch', function() {
+	gulp.start(["ts"]);
 	gulp.watch('./server/**/*.ts', ['ts']);
 });
 
-gulp.task('default', ["ts","watch"]);
+gulp.task('default', ["ts"]);

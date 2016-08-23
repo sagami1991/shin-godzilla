@@ -6,5 +6,6 @@
 		"**/*.js.map": {"when": "$(basename)"},
 		"**/*.js": { "when": "$(basename).ts" }
 	},
+	"tslint.configFile": "./tslint.json",
 	"typescript.tsdk": "node_modules\\typescript\\lib"
 }

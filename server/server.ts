@@ -1,5 +1,4 @@
 import 'source-map-support/register'; // エラー時、tsファイルの行数を教える
-import 'core-js/es7/object';
 import 'core-js/es7/array';
 import {createServer}  from 'http';
 import * as express from 'express';
@@ -44,7 +43,7 @@ connectDB().then((db) => {
 	const mongo = new MongoWrapper(db);
 	const server = createServer();
 	const app = express();
-	app.use(express.static(__dirname + '/../dist'));
+	app.use(express.static(__dirname + '/public'));
 	const userService = new UserService(mongo);
 	const wsWrapper = new WSWrapper(new WebSocketServer({ server: server }));
 	wsWrapper.init();

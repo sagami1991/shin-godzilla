@@ -1,7 +1,7 @@
 import {MainCanvas} from "./main";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
-import {GodzillaMode, GodzillaInfo, CONST} from "../../server/share/share";
+import {GodzillaMode, GodzillaInfo, CONST} from "../../../server/share/share";
 
 export class GodzillaMob extends BaseMonster {
 	private static WIDTH = 64;

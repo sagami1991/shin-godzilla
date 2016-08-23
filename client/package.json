@@ -4,42 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:client": "webpack --progress --colors --watch --config ./webpack.config.dev.js",
-    "build:server": "gulp",
-    "localserver": "set MONGODB_URI=mongodb://localhost:27017 && node server/server.js"
+    "build": "webpack --progress --colors --watch --config ./webpack.dev.js",
+    "build:prod": "webpack --progress --colors --config ./webpack.prod.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "core-js": "^2.4.1",
-    "dateformat": "^1.0.12",
-    "express": "^4.14.0",
     "handlebars": "^4.0.5",
-    "humane-js": "^3.2.2",
-    "lodash": "^4.15.0",
-    "mongodb": "^2.2.5",
-    "shortid": "^2.2.6",
-    "source-map-support": "^0.4.2",
-    "ws": "^1.1.1"
+    "humane-js": "^3.2.2"
   },
   "devDependencies": {
     "@types/core-js": "^0.9.29",
-    "@types/express": "^4.0.30",
     "@types/handlebars": "^3.0.28",
-    "@types/lodash": "^4.14.32",
-    "@types/mongodb": "^2.1.30",
-    "@types/node": "^6.0.31",
-    "@types/shortid": "0.0.27",
-    "@types/ws": "0.0.28",
+    "@types/node": "^6.0.37",
     "copy-webpack-plugin": "^3.0.1",
     "css-loader": "^0.23.1",
+    "dateformat": "^1.0.12",
     "expose-loader": "^0.7.1",
     "file-loader": "^0.9.0",
-    "gulp": "^3.9.1",
-    "gulp-nodemon": "^2.1.0",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-typescript": "^2.13.6",
     "json-loader": "^0.5.4",
     "lite-server": "^2.2.2",
     "node-sass": "^3.8.0",
@@ -50,6 +34,7 @@
     "tslint": "^3.14.0",
     "typescript": "^2.0.0",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.1"
+    "webpack": "^1.13.1",
+    "webpack-merge": "^0.14.1"
   }
 }

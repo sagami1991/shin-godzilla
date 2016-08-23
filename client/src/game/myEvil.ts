@@ -4,7 +4,7 @@ import {StatusBar} from "./StatusBar";
 import {GamePadComponent} from "./GamePadComponent";
 import {MainCanvas} from "./main";
 import {WSService} from "../WebSocketService";
-import {SocketType, DbUserData, CONST, SkillId} from "../../server/share/share";
+import {SocketType, DbUserData, CONST, SkillId} from "../../../server/share/share";
 import {Effect, EffectType} from "./Effect";
 import {SkillComponent} from "./SkillComponent";
 

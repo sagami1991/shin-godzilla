@@ -3,7 +3,7 @@ import {MainCanvas} from "./main";
 import {ImageLoader} from "./ImageLoader";
 import {WSService} from "../WebSocketService";
 import * as Handlebars from "handlebars";
-import {SocketType, FieldType} from "../../server/share/share";
+import {SocketType, FieldType} from "../../../server/share/share";
 require("../scss/filed-dropdown.scss");
 
 export class FieldComponent {

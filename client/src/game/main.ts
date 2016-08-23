@@ -4,10 +4,10 @@ import {Ebiruai} from "./myEvil";
 import {GodzillaMob} from "./GozdillaMob";
 import {ImageLoader} from "./ImageLoader";
 import {GamePadComponent} from "./GamePadComponent";
-import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData} from "../../server/share/share";
+import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData} from "../../../server/share/share";
 import {FieldComponent} from "./FieldComponent";
 import {FuncButtonComponent} from "./FuncButtonComponent";
-import {DiffExtract} from "../../server/share/util";
+import {DiffExtract} from "../../../server/share/util";
 import {Effect} from "./Effect";
 import {SkillComponent} from "./SkillComponent";
 

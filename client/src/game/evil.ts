@@ -3,7 +3,7 @@ import {Train} from "./train";
 import {BaseMonster, BaseMobOption} from "./BaseMonster";
 import {ImageLoader} from "./ImageLoader";
 import {Effect, EffectType} from "./Effect";
-import {MasterEvilData} from "../../server/share/share";
+import {MasterEvilData} from "../../../server/share/share";
 
 export interface EvilOption extends BaseMobOption {
 	lv: number;

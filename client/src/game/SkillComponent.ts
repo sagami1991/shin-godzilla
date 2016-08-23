@@ -1,6 +1,6 @@
 import {WSService} from "../WebSocketService";
 import * as Handlebars from "handlebars";
-import {SocketType, DbUserData,SkillId} from "../../server/share/share";
+import {SocketType, DbUserData,SkillId} from "../../../server/share/share";
 import {Notify} from "../util";
 require("../scss/skill-panel.scss");
 
