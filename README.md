@@ -32,11 +32,16 @@
 * Webpack, gulp
   * 主にフロントエンドの開発に使われるビルドツール
   * Typescriptをjavascriptにビルドするのに使っている
+  * webpackはcssや画像等も一緒にjs化してくれる
 * mongoDB
   * JSONのまま保存できるデータベース
 * heroku
   * 無料のサーバー
 
+
+## 以下古い記述
+
+```
 ## 環境構築
  0. 必要なものをインストール
     * mongoDB
@@ -73,3 +78,4 @@
   * webpackの設定ファイル
 * Procfile
   * herokuにデプロイするとこれが実行される
+```
