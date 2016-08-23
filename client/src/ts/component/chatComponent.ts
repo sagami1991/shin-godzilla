@@ -1,17 +1,16 @@
 import {WSClient} from "../WebSocketClient";
 import * as Handlebars from "handlebars";
-import {SocketType} from "../../../../server/share/share";
+import {SocketType, CONST} from "../../../../server/share/share";
 require("./scss/chat.scss");
 
 interface ChatMsg {
 	msg: string;
 }
 export class ChatComponent {
-	private static MAX_LINE = 30;
 	private static HTML = `
 		<ul class="chat-logs"></ul>
 		<div class="chat-input">
-			<textarea id="chat" maxlength="50"></textarea>
+			<textarea id="chat" maxlength="${CONST.CHAT.MAX_LENGTH}"></textarea>
 			<div class="chat-send"><i class="material-icons">send</i></div>
 		</div>
 	`;
@@ -48,7 +47,7 @@ export class ChatComponent {
 
 	private onReceiveMsg(msg: ChatMsg) {
 		this.logs.push(msg);
-		if (this.logs.length > ChatComponent.MAX_LINE) this.logs.shift();
+		if (this.logs.length > CONST.CHAT.MAX_LINE) this.logs.shift();
 		this.logElem.innerHTML =  ChatComponent.logsTmpl({logs: this.logs});
 		this.logElem.scrollTop = this.logElem.scrollHeight;
 	}

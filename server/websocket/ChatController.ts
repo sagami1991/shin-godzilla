@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import {WSServer} from "./WebSocketServer";
-import {SocketType} from "../share/share";
+import {SocketType, CONST} from "../share/share";
 import {MongoWrapper} from "../server";
 
 export class ChatController {
@@ -26,7 +26,7 @@ export class ChatController {
 	 * DBから新しい順に数行分のログ取り出して送信
 	 */
 	private sendInitLog(ws: WebSocket) {
-		this.mongo.getCollection(ChatController.C_NAME).find().limit(30).sort({ $natural: -1 })
+		this.mongo.getCollection(ChatController.C_NAME).find().limit(CONST.CHAT.MAX_LINE).sort({ $natural: -1 })
 		.toArray((err, arr) => {
 			if (err) console.log(err);
 			try {

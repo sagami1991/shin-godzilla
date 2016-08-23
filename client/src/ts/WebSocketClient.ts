@@ -7,8 +7,7 @@ export interface ResData {
 }
 
 interface Msglistner {
-	type: SocketType;
-	cb: (data: any) => void;
+	[key: number]: (data: any) => void;
 }
 
 export class WSClient {
@@ -16,14 +15,12 @@ export class WSClient {
 	public isClose: boolean;
 	private ws: WebSocket;
 	private pingTimer: number;
-	private onReceiveMsgEvents: Msglistner[] = [];
+	private onReceiveMsgEvents: Msglistner = {};
 	private onOpenEvents: Array<() => void> = [];
 	private onCloseEvents: Array<() => void> = [];
 	public addOnReceiveMsgListener(type: number, cb: (value: any) => void) {
-		this.onReceiveMsgEvents.push({
-			type: type,
-			cb: cb
-		});
+		if (this.onReceiveMsgEvents[type]) console.warn("すでにMsgListnerが登録されています");
+		this.onReceiveMsgEvents[type] = cb;
 	}
 
 	public addOnOpenListener(callback: () => void) {
@@ -36,7 +33,6 @@ export class WSClient {
 
 	public init() {
 		this.ws = new WebSocket(WSClient.URL);
-		this.ws.binaryType = "arraybuffer";
 		this.ws.onopen = () => this.onOpen();
 		this.ws.onmessage = (msgEvent) => this.onReceiveMsg(msgEvent);
 		this.ws.onclose = (ev) => this.onClose(ev);
@@ -51,11 +47,12 @@ export class WSClient {
 		this.ws.send(JSON.stringify({type: type, value: value}));
 	}
 
-	/** herokuは無通信時、55秒で遮断されるため、50秒ごとに無駄な通信を行う */
-	private pingInterval() {
-		this.pingTimer = window.setInterval(() => {
-			this.ws.send(new Uint8Array(1));
-		}, 50 * 1000);
+	/** リクエスト後、同じタイプのレスポンスを待つ */
+	public sendPromise(type: number, value?: any) {
+		if (this.isClose) return;
+		this.ws.send(JSON.stringify({type: type, value: value}));
+		return new Promise(resolve => this.addOnReceiveMsgListener(type, value => resolve(type)))
+		.then(() => delete this.onReceiveMsgEvents[type]);
 	}
 
 	private onClose(ev: CloseEvent) {
@@ -71,13 +68,16 @@ export class WSClient {
 	}
 
 	private onReceiveMsg(msgEvent: MessageEvent) {
-		let resData: ResData;
-		try {
-			resData = JSON.parse(msgEvent.data);
-		} catch (err) {
-			console.trace(err);
-			return;
+		const resData: ResData = JSON.parse(msgEvent.data);
+		if (this.onReceiveMsgEvents[resData.type]) {
+			this.onReceiveMsgEvents[resData.type](resData.value);
 		}
-		this.onReceiveMsgEvents.forEach(msgLister => {resData.type === msgLister.type ? msgLister.cb(resData.value) : null; });
+	}
+
+	/** herokuは無通信時、55秒で遮断されるため、50秒ごとに無駄な通信を行う */
+	private pingInterval() {
+		this.pingTimer = window.setInterval(() => {
+			this.ws.send(new Uint8Array(1));
+		}, 50 * 1000);
 	}
 }

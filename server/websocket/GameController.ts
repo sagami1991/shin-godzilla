@@ -7,7 +7,6 @@ import {DiffExtract} from "../share/util";
 import {UserService} from "../service/UserService";
 import * as _ from "lodash";
 export class GameController {
-	public static FRAME = 30;
 	private befSendData: GameData;
 	private closeIds: string[] = [];
 	public static getRandom<T>(arr: T[]): T  {
@@ -23,7 +22,7 @@ export class GameController {
 		this.wsWrapper.addMsgListner(SocketType.gozzilaDamege, (ws, reqData) => this.atkToGodzilla(ws, reqData));
 		this.wsWrapper.addMsgListner(SocketType.init, (ws, reqData) => this.onFirstRequest(ws, reqData));
 		this.wsWrapper.addCloseListner((ws) => this.onClose(ws));
-		setInterval(() => this.intervalAction(),  1000 / GameController.FRAME);
+		setInterval(() => this.intervalAction(),  1000 / CONST.GAME.SEND_FPS);
 	}
 
 	private onFirstRequest(ws: WebSocket, reqData: {_id: string}) {

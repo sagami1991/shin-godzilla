@@ -101,5 +101,9 @@ export const CONST = {
 	},
 	CANVAS: {
 		Y0: 150,
+	},
+	CHAT: {
+		MAX_LINE: 30,
+		MAX_LENGTH: 50
 	}
 };

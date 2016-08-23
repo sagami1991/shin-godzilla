@@ -56,7 +56,7 @@ connectDB().then((db) => {
 	userController.init();
 	const godzillaService = new GodzillaService(userService);
 	new GameController(wsServer, userService, godzillaService).init();
-	new SkillController(wsServer, userController).init();
+	new SkillController(wsServer, userService).init();
 	new RankingController(wsServer, userRepository).init();
 	new InfoMsgController(wsServer).init();
 	server.on('request', app);

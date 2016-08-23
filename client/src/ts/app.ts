@@ -6,7 +6,7 @@ require("expose?humane!humane-js");
 require("!style!css!humane-js/themes/libnotify.css");
 require("./scss/main.scss");
 import {MainCanvas} from "./game/main";
-import {ChatComponent} from "./component/chatComponent";
+import {ChatComponent} from "./component/ChatComponent";
 import {WSClient} from "./WebSocketClient";
 import {RankingComponent} from "./component/RankingComponent";
 import * as Handlebars from "handlebars";
