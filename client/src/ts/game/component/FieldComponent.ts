@@ -44,7 +44,7 @@ export class FieldComponent {
 			this.draw();
 		});
 
-		this.wsService.addOnReceiveMsgListener(SocketType.field, (typeNum: number) => {
+		this.wsService.addOnReceiveMsgListener(SocketType.field, (typeNum: FieldType) => {
 			ImageLoader.fieldImageLoad(FieldComponent.FIELD_LIST[typeNum].type).then(() => {
 				this.draw();
 			});

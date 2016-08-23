@@ -27,7 +27,6 @@ export class MainCanvas {
 		cb: (count: number) => void;
 	}[] = [];
 
-	private wsService: WSClient;
 	private canvasElm: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
 	private timer: number;
@@ -50,17 +49,16 @@ export class MainCanvas {
 			cb: cb
 		});
 	}
-	constructor(ws: WSClient) {
-		this.wsService = ws;
+	constructor(private wsClient: WSClient) {
 	}
 
 	public init() {
-		this.wsService.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
-		this.wsService.addOnOpenListener(() => {
+		this.wsClient.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
+		this.wsClient.addOnOpenListener(() => {
 			ImageLoader.load().then(() => {
 				document.querySelector(".loading").classList.remove("loading");
 				Effect.init();
-				this.wsService.send(SocketType.init, {_id: localStorage.getItem("dbId")});
+				this.wsClient.send(SocketType.init, {_id: localStorage.getItem("dbId")});
 			});
 		});
 		this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
@@ -73,12 +71,12 @@ export class MainCanvas {
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
-		new FieldComponent(this.wsService).init(resData.bg);
+		new FieldComponent(this.wsClient).init(resData.bg);
 		localStorage.setItem("dbId", resData.user._id);
 		this.godzilla = new GodzillaMob(this.ctx, {});
 		this.godzilla.setGodzilaInfo(resData.gozdilla);
 		MainCanvas.GOZZILA = this.godzilla;
-		this.myEvil = new MyUser(this.ctx, this.wsService, {
+		this.myEvil = new MyUser(this.ctx, this.wsClient, {
 			x: resData.user.x,
 			y: resData.user.y,
 			isMigi: resData.user.isMigi,
@@ -91,10 +89,13 @@ export class MainCanvas {
 			dbId: resData.user._id,
 			skills: resData.user.skills
 		});
-		const skillComponent = new SkillComponent(this.wsService);
+		const skillComponent = new SkillComponent(this.wsClient);
 		skillComponent.init(resData.user.lv, resData.user.skills);
 		this.myEvil.onLvUpListener = (lv, skills) => {
 			skillComponent.refreshSkillPanel(lv, skills);
+		};
+		skillComponent.onGetSkill = (skills) => {
+			this.myEvil.setSkill(skills);
 		};
 		this.otherPersonsInfo = resData.users;
 		this.otherPersons = resData.users.map((info) => {
@@ -102,8 +103,8 @@ export class MainCanvas {
 		});
 
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
-		this.wsService.addOnReceiveMsgListener(SocketType.snapshot, (value) => this.onReceiveIntervalData(value));
-		this.wsService.addOnCloseListener(() => window.clearInterval(this.timer));
+		this.wsClient.addOnReceiveMsgListener(SocketType.snapshot, (value) => this.onReceiveIntervalData(value));
+		this.wsClient.addOnCloseListener(() => window.clearInterval(this.timer));
 	}
 
 	private onReceiveIntervalData(snapshot: GameData) {
@@ -165,7 +166,7 @@ export class MainCanvas {
 		};
 		const sendSnapshot = DiffExtract.diff(this.befSnapshot, localSnapshot);
 		if (sendSnapshot) {
-			this.wsService.send(SocketType.snapshot, sendSnapshot);
+			this.wsClient.send(SocketType.snapshot, sendSnapshot);
 			this.myEvil.isAtk = false;
 		}
 		this.befSnapshot = Object.assign({}, localSnapshot);

@@ -44,6 +44,7 @@ export class SkillComponent {
 			</tr>
 		{{/skills}}
 	`);
+	public onGetSkill: (skills: SkillId[]) => void;
 	private skillPanel: HTMLElement;
 	private skillTbody: HTMLElement;
 	private isLock: boolean;
@@ -53,9 +54,6 @@ export class SkillComponent {
 	constructor(private wsService: WSClient) {}
 
 	public init(lv: number, skills: number[]) {
-		this.wsService.addOnReceiveMsgListener(SocketType.getSkill, (user: DbUserData) => {
-			this.refreshSkillPanel(user.lv, user.skills);
-		});
 		SkillComponent.SKILL1_BUTTON = <HTMLButtonElement> document.querySelector(".skill1");
 		this.skillPanel = <HTMLElement> document.querySelector(".skills-area");
 		this.skillPanel.innerHTML = SkillComponent.HTML;
@@ -102,7 +100,11 @@ export class SkillComponent {
 			return;
 		}
 		this.isLock = true;
-		this.wsService.send(SocketType.getSkill, id);
+		this.wsService.sendPromise<DbUserData>(SocketType.getSkill, id)
+		.then(user => {
+			this.refreshSkillPanel(user.lv, user.skills);
+			this.onGetSkill(user.skills);
+		});
 	}
 
 

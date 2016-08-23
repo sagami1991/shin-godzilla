@@ -51,10 +51,11 @@ export class MyUser extends SimpleUser {
 		this.ws.addOnReceiveMsgListener(SocketType.userData, (user: DbUserData) => {
 			this.onReceivePersonalData(user);
 		});
-		this.ws.addOnReceiveMsgListener(SocketType.getSkill, (user: DbUserData) => {
-			this.skills = user.skills;
-		});
 	}
+
+	public setSkill(skills: SkillId[]) {
+		this.skills = skills;
+	};
 
 	/** 毎フレーム実行される動作 */
 	protected action() {

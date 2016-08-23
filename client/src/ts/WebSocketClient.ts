@@ -48,11 +48,14 @@ export class WSClient {
 	}
 
 	/** リクエスト後、同じタイプのレスポンスを待つ */
-	public sendPromise(type: number, value?: any) {
+	public sendPromise<T>(type: number, value?: any): Promise<T> {
 		if (this.isClose) return;
 		this.ws.send(JSON.stringify({type: type, value: value}));
-		return new Promise(resolve => this.addOnReceiveMsgListener(type, value => resolve(type)))
-		.then(() => delete this.onReceiveMsgEvents[type]);
+		return new Promise(resolve => this.addOnReceiveMsgListener(type, value => resolve(<T>value)))
+		.then((value) => {
+			delete this.onReceiveMsgEvents[type];
+			return value;
+		});
 	}
 
 	private onClose(ev: CloseEvent) {

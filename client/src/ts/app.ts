@@ -16,11 +16,11 @@ class MainComponent {
 	private chat: ChatComponent;
 	private ranking: RankingComponent;
 	constructor() {
-		const wsService = new WSClient();
-		wsService.init();
-		this.canvas = new MainCanvas(wsService);
-		this.chat = new ChatComponent(wsService);
-		this.ranking = new RankingComponent(wsService);
+		const wsClient = new WSClient();
+		wsClient.init();
+		this.canvas = new MainCanvas(wsClient);
+		this.chat = new ChatComponent(wsClient);
+		this.ranking = new RankingComponent(wsClient);
 	}
 
 	public init() {

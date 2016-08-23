@@ -35,12 +35,11 @@ export class RankingComponent {
 	constructor(private wsService: WSClient) {}
 
 	public init() {
+		document.querySelector(".ranking-area").innerHTML = RankingComponent.HTML;
 		document.querySelector(".rank-button").addEventListener("click", () => {
-			this.wsService.send(SocketType.ranking);
+			this.wsService.sendPromise<RankingInfo[]>(SocketType.ranking).then(ranks => this.parseRanking(ranks));
 			document.querySelector(".ranking-area").classList.toggle("disabled");
 		});
-		document.querySelector(".ranking-area").innerHTML = RankingComponent.HTML;
-		this.wsService.addOnReceiveMsgListener(SocketType.ranking, (resData) => this.parseRanking(resData));
 	}
 
 	private parseRanking(ranks: RankingInfo[]) {
