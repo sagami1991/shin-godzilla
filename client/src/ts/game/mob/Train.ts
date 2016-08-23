@@ -1,7 +1,6 @@
-import {MainCanvas} from "./main";
-import {GodzillaMob} from "./GozdillaMob";
-import {BaseMonster, BaseMobOption} from "./BaseMonster";
-import {ImageLoader} from "./ImageLoader";
+import {MainCanvas} from "../main";
+import {BaseMob, BaseMobOption} from "./BaseMob";
+import {ImageLoader} from "../ImageLoader";
 
 enum TrainMode {
 	ikiteru,
@@ -10,7 +9,7 @@ enum TrainMode {
 }
 
 /** 攻撃時出現する電車 */
-export class Train extends BaseMonster {
+export class Train extends BaseMob {
 	public static WIDTH = 102;
 	public static HEIGHT = 20;
 	private static BAKUHATU_SEC = 0.5;

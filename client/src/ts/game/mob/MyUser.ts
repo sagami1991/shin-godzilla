@@ -1,14 +1,13 @@
-import {SimpleEvil, EvilOption} from "./evil";
-import {GodzillaMob} from "./GozdillaMob";
-import {StatusBar} from "./StatusBar";
-import {GamePadComponent} from "./GamePadComponent";
-import {MainCanvas} from "./main";
-import {WSClient} from "../WebSocketClient";
-import {SocketType, DbUserData, CONST, SkillId} from "../../../server/share/share";
-import {Effect, EffectType} from "./Effect";
-import {SkillComponent} from "./SkillComponent";
+import {SimpleUser, SimpleUserOption} from "./SimpleUser";
+import {StatusBarComponent} from "../component/StatusBarComponent";
+import {GamePadComponent} from "../component/GamePadComponent";
+import {MainCanvas} from "../main";
+import {WSClient} from "../../WebSocketClient";
+import {SocketType, DbUserData, CONST, SkillId} from "../../../../../server/share/share";
+import {Effect, EffectType} from "../Effect";
+import {SkillComponent} from "../component/SkillComponent";
 
-export interface MyEvilOption extends EvilOption {
+export interface MyUserOption extends SimpleUserOption {
 	exp: number;
 	name: string;
 	dbId: string;
@@ -16,7 +15,7 @@ export interface MyEvilOption extends EvilOption {
 }
 
 /** 自分が操作する機能をもつエビルアイ */
-export class Ebiruai extends SimpleEvil {
+export class MyUser extends SimpleUser {
 	private static BASE_JUMP = 10;
 	private static BASE_SPEED = 5;
 	private static EXP_BAIRITU = 1.2;
@@ -28,7 +27,7 @@ export class Ebiruai extends SimpleEvil {
 	private jumpF: number;
 	private isJumping: boolean;
 	private rebirthButton: HTMLButtonElement;
-	private statusBar: StatusBar;
+	private statusBar: StatusBarComponent;
 	private jumpValue: number;
 	private speed: number;
 	private rebornTimeCount: number;
@@ -37,12 +36,12 @@ export class Ebiruai extends SimpleEvil {
 	private skills: number [];
 	constructor(protected ctx: CanvasRenderingContext2D,
 				private ws: WSClient,
-				option: MyEvilOption) {
+				option: MyUserOption) {
 		super(ctx, option);
 		this.exp = option.exp;
-		this.maxHp = Ebiruai.INIT_MAX_HP;
-		this.jumpValue = Ebiruai.BASE_JUMP;
-		this.speed = Ebiruai.BASE_SPEED;
+		this.maxHp = MyUser.INIT_MAX_HP;
+		this.jumpValue = MyUser.BASE_JUMP;
+		this.speed = MyUser.BASE_SPEED;
 		this.maxExp = this.getMaxExp();
 		this.hp = this.maxHp;
 		this.initButtons();
@@ -77,7 +76,7 @@ export class Ebiruai extends SimpleEvil {
 	}
 
 	private initStatusBar() {
-		this.statusBar = new StatusBar();
+		this.statusBar = new StatusBarComponent();
 		this.statusBar.addOnNameEditListner((name) => {
 			this.name = name;
 			this.changeName();
@@ -118,7 +117,7 @@ export class Ebiruai extends SimpleEvil {
 	}
 
 	private damegeCalc() {
-		this.hp -= MainCanvas.GOZZILA.calcBeamDmg(this.x, this.x + SimpleEvil.WIDTH, this.y, this.y + SimpleEvil.HEIGHT);
+		this.hp -= MainCanvas.GOZZILA.calcBeamDmg(this.x, this.x + SimpleUser.WIDTH, this.y, this.y + SimpleUser.HEIGHT);
 		this.hp -= MainCanvas.GOZZILA.calcSessyokuDmg(this.x, this.y);
 	}
 
@@ -149,7 +148,7 @@ export class Ebiruai extends SimpleEvil {
 	}
 
 	private beforeAtk() {
-		if (GamePadComponent.KeyEvent.atk && this.myTrains.length < Ebiruai.MAX_ATACK_LENGTH) {
+		if (GamePadComponent.KeyEvent.atk && this.myTrains.length < MyUser.MAX_ATACK_LENGTH) {
 			GamePadComponent.KeyEvent.atk = false;
 			super.atk();
 			this.isAtk = true;
@@ -195,14 +194,14 @@ export class Ebiruai extends SimpleEvil {
 
 	private drawHp() {
 		this.ctx.fillStyle = "#000";
-		this.ctx.fillRect(this.x + 10, MainCanvas.convY(this.y + SimpleEvil.HEIGHT, 10), 82, 10);
+		this.ctx.fillRect(this.x + 10, MainCanvas.convY(this.y + SimpleUser.HEIGHT, 10), 82, 10);
 		this.ctx.fillStyle = "#fff";
-		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleEvil.HEIGHT + 1, 8), 80, 8);
+		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleUser.HEIGHT + 1, 8), 80, 8);
 		this.ctx.fillStyle = "#e60c0c";
-		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleEvil.HEIGHT + 1, 8), 80 * this.hp / this.maxHp , 8);
+		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleUser.HEIGHT + 1, 8), 80 * this.hp / this.maxHp , 8);
 	}
 	private getMaxExp() {
-		return Math.floor(Ebiruai.BASE_EXP * Math.pow(Ebiruai.EXP_BAIRITU, this.lv - 1));
+		return Math.floor(MyUser.BASE_EXP * Math.pow(MyUser.EXP_BAIRITU, this.lv - 1));
 	}
 
 	private changeName() {

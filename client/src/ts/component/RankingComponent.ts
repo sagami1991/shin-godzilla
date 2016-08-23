@@ -1,6 +1,6 @@
-import {WSClient} from "./WebSocketClient";
+import {WSClient} from "../WebSocketClient";
 import * as Handlebars from "handlebars";
-import {SocketType, RankingInfo} from "../../server/share/share";
+import {SocketType, RankingInfo} from "../../../../server/share/share";
 require("./scss/ranking.scss");
 
 export class RankingComponent {

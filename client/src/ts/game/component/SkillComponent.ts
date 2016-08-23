@@ -1,8 +1,8 @@
-import {WSClient} from "../WebSocketClient";
+import {WSClient} from "../../WebSocketClient";
 import * as Handlebars from "handlebars";
-import {SocketType, DbUserData,SkillId} from "../../../server/share/share";
-import {Notify} from "../util";
-require("../scss/skill-panel.scss");
+import {SocketType, DbUserData, SkillId} from "../../../../../server/share/share";
+import {Notify} from "../../util";
+require("../../scss/skill-panel.scss");
 
 export class SkillComponent {
 	public static SKILL1_BUTTON: HTMLButtonElement;

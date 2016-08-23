@@ -1,11 +1,11 @@
-import {MainCanvas} from "./main";
+import {MainCanvas} from "../main";
 import {Train} from "./train";
-import {BaseMonster, BaseMobOption} from "./BaseMonster";
-import {ImageLoader} from "./ImageLoader";
-import {Effect, EffectType} from "./Effect";
-import {MasterEvilData} from "../../../server/share/share";
+import {BaseMob, BaseMobOption} from "./BaseMob";
+import {ImageLoader} from "../ImageLoader";
+import {Effect, EffectType} from "../Effect";
+import {MasterEvilData} from "../../../../../server/share/share";
 
-export interface EvilOption extends BaseMobOption {
+export interface SimpleUserOption extends BaseMobOption {
 	lv: number;
 	isDead: boolean;
 	isAtk: boolean;
@@ -14,7 +14,7 @@ export interface EvilOption extends BaseMobOption {
 }
 
 /** 人間が操作する機能の入っていないエビルアイ */
-export class SimpleEvil extends BaseMonster {
+export class SimpleUser extends BaseMob {
 	public static WIDTH = 103;
 	public static HEIGHT = 63;
 	public pid: string;
@@ -24,7 +24,7 @@ export class SimpleEvil extends BaseMonster {
 	public lv: number;
 	public isLvUp: boolean;
 	public name: string;
-	constructor(protected ctx: CanvasRenderingContext2D, option: EvilOption) {
+	constructor(protected ctx: CanvasRenderingContext2D, option: SimpleUserOption) {
 		super(ctx, option);
 		this.image = ImageLoader.IMAGES.evilHidari;
 		this.lv = option.lv;
@@ -39,7 +39,7 @@ export class SimpleEvil extends BaseMonster {
 		this.image = this.isDead ? 	ImageLoader.IMAGES.evilSinda :
 					 this.isMigi ? 	ImageLoader.IMAGES.evilmigi :
 									ImageLoader.IMAGES.evilHidari;
-		this.ctx.drawImage(this.image , this.x, MainCanvas.convY(this.y, SimpleEvil.HEIGHT));
+		this.ctx.drawImage(this.image , this.x, MainCanvas.convY(this.y, SimpleUser.HEIGHT));
 		this.trainDraw();
 		this.drawLv();
 	}

@@ -1,15 +1,15 @@
 import {WSClient} from "../WebSocketClient";
-import {SimpleEvil, EvilOption} from "./evil";
-import {Ebiruai} from "./myEvil";
-import {GodzillaMob} from "./GozdillaMob";
+import {SimpleUser} from "./mob/SimpleUser";
+import {MyUser} from "./mob/MyUser";
+import {GodzillaMob} from "./mob/GozdillaMob";
 import {ImageLoader} from "./ImageLoader";
-import {GamePadComponent} from "./GamePadComponent";
-import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData} from "../../../server/share/share";
-import {FieldComponent} from "./FieldComponent";
-import {FuncButtonComponent} from "./FuncButtonComponent";
-import {DiffExtract} from "../../../server/share/util";
+import {GamePadComponent} from "./component/GamePadComponent";
+import {FieldComponent} from "./component/FieldComponent";
+import {FuncButtonComponent} from "./component/FuncButtonComponent";
+import {SkillComponent} from "./component/SkillComponent";
+import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData} from "../../../../server/share/share";
+import {DiffExtract} from "../../../../server/share/util";
 import {Effect} from "./Effect";
-import {SkillComponent} from "./SkillComponent";
 
 /** ゲーム機能の総合操作クラス */
 export class MainCanvas {
@@ -31,10 +31,10 @@ export class MainCanvas {
 	private canvasElm: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
 	private timer: number;
-	private myEvil: Ebiruai;
+	private myEvil: MyUser;
 	private godzilla: GodzillaMob;
 	private otherPersonsInfo: MasterEvilData[];
-	private otherPersons: SimpleEvil[];
+	private otherPersons: SimpleUser[];
 	private befSnapshot: ReqEvilData;
 
 	/** 下からのY座標を上からのY座標に変更 */
@@ -78,7 +78,7 @@ export class MainCanvas {
 		this.godzilla = new GodzillaMob(this.ctx, {});
 		this.godzilla.setGodzilaInfo(resData.gozdilla);
 		MainCanvas.GOZZILA = this.godzilla;
-		this.myEvil = new Ebiruai(this.ctx, this.wsService, {
+		this.myEvil = new MyUser(this.ctx, this.wsService, {
 			x: resData.user.x,
 			y: resData.user.y,
 			isMigi: resData.user.isMigi,
@@ -98,7 +98,7 @@ export class MainCanvas {
 		};
 		this.otherPersonsInfo = resData.users;
 		this.otherPersons = resData.users.map((info) => {
-			return new SimpleEvil(MainCanvas.CTX, info);
+			return new SimpleUser(MainCanvas.CTX, info);
 		});
 
 		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
@@ -107,7 +107,7 @@ export class MainCanvas {
 	}
 
 	private onReceiveIntervalData(snapshot: GameData) {
-		if ( snapshot.gozzila) {
+		if (snapshot.gozzila) {
 			this.godzilla.setGodzilaInfo(snapshot.gozzila);
 		}
 		if (snapshot.evils) {
@@ -116,7 +116,7 @@ export class MainCanvas {
 				if (existEvil) {
 					existEvil.setPersonInfo(info);
 				} else {
-					this.otherPersons.push(new SimpleEvil(this.ctx, info));
+					this.otherPersons.push(new SimpleUser(this.ctx, info));
 				}
 			});
 		}

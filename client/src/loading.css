@@ -1,3 +1,5 @@
+/** js読み込み中のアニメーション */
+
 .loading:after{
     border-radius: 50%;
     border-width: 2px;

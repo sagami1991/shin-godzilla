@@ -1,5 +1,5 @@
 import {Notify} from "./util";
-import {SocketType} from "../../server/share/share";
+import {SocketType} from "../../../server/share/share";
 
 export interface ResData {
 	type: number;
@@ -57,6 +57,7 @@ export class WSClient {
 			this.ws.send(new Uint8Array(1));
 		}, 50 * 1000);
 	}
+
 	private onClose(ev: CloseEvent) {
 		console.log(ev);
 		this.isClose = true;
@@ -64,6 +65,7 @@ export class WSClient {
 		window.clearInterval(this.pingTimer);
 		this.onCloseEvents.forEach(cb => cb());
 	}
+
 	private onOpen() {
 		this.onOpenEvents.forEach(cb => cb());
 	}

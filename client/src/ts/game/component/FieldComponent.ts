@@ -1,10 +1,10 @@
 
-import {MainCanvas} from "./main";
-import {ImageLoader} from "./ImageLoader";
-import {WSClient} from "../WebSocketClient";
+import {MainCanvas} from "../main";
+import {ImageLoader} from "../ImageLoader";
+import {WSClient} from "../../WebSocketClient";
 import * as Handlebars from "handlebars";
-import {SocketType, FieldType} from "../../../server/share/share";
-require("../scss/filed-dropdown.scss");
+import {SocketType, FieldType} from "../../../../../server/share/share";
+require("../../scss/filed-dropdown.scss");
 
 export class FieldComponent {
 	public static FIELD_LIST = [

@@ -3,9 +3,9 @@ const DefinePlugin = require('webpack/lib/DefinePlugin');
 const dateFormat = require('dateformat');
 
 module.exports = {
-	entry: ["./src/app.ts"],
+	entry: ["./src/ts/app.ts"],
 	output: {
-		path:"../server/public",
+		path:"../../server/public",
 		filename: "bundle.js",
 	},
 	devtool: "source-map",
@@ -28,6 +28,7 @@ module.exports = {
 	plugins: [
 		new CopyWebpackPlugin([
 			{ from: 'src/index.html', to: 'index.html' },
+			{ from: 'src/loading.css', to: 'loading.css' },
 			{ from: 'src/assets', to: 'assets' },
 		]),
 		new DefinePlugin({

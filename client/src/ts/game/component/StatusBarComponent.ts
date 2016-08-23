@@ -1,5 +1,5 @@
 
-export class StatusBar {
+export class StatusBarComponent {
 	private static HTML = `
 		<div class="lv-panel">
 			<span class="label">Lv </span><span class="value"></span>
@@ -29,7 +29,7 @@ export class StatusBar {
 	private onNameEditeds: Array<(name: string) => void> = [];
 	constructor() {
 		this.statusBarElem = <HTMLElement> document.querySelector(".status-bar");
-		this.statusBarElem.innerHTML = StatusBar.HTML;
+		this.statusBarElem.innerHTML = StatusBarComponent.HTML;
 		this.lvElem = <HTMLElement> this.statusBarElem.querySelector(".lv-panel .value");
 		this.nameElem = <HTMLElement> document.querySelector(".name-panel .name");
 		this.nameDisplayElem = <HTMLElement> document.querySelector(".name-panel .display");

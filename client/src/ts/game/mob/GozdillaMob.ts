@@ -1,9 +1,9 @@
-import {MainCanvas} from "./main";
-import {BaseMonster, BaseMobOption} from "./BaseMonster";
-import {ImageLoader} from "./ImageLoader";
-import {GodzillaMode, GodzillaInfo, CONST} from "../../../server/share/share";
+import {MainCanvas} from "../main";
+import {BaseMob, BaseMobOption} from "./BaseMob";
+import {ImageLoader} from "../ImageLoader";
+import {GodzillaMode, GodzillaInfo, CONST} from "../../../../../server/share/share";
 
-export class GodzillaMob extends BaseMonster {
+export class GodzillaMob extends BaseMob {
 	private static WIDTH = 64;
 	private static HEIGHT = 64;
 	private static BAIRITU = 5;

@@ -1,6 +1,6 @@
 import {MainCanvas} from "./main";
 import {ImageLoader} from "./ImageLoader";
-import {BaseMonster} from "./BaseMonster";
+import {BaseMob} from "./mob/BaseMob";
 export enum EffectType {
 	lvup,
 	heal
@@ -19,7 +19,7 @@ export class Effect {
 			{image: ImageLoader.ANIME_IMAGE.heal, info: require("./effect/heal.json")},
 		];
 	}
-	public static draw(mob: BaseMonster, type: EffectType) {
+	public static draw(mob: BaseMob, type: EffectType) {
 		MainCanvas.addIntervalAction((i) => {
 			const position = this.EFFECT[type].info;
 			const image = this.EFFECT[type].image;

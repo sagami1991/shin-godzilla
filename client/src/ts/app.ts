@@ -1,15 +1,14 @@
-/// <reference path="./custom-typings.d.ts" />
 import 'core-js/es6/array';
 import 'core-js/es6/promise';
-import 'core-js/es7/array';
 import 'core-js/es6/object';
+import 'core-js/es7/array';
 require("expose?humane!humane-js");
 require("!style!css!humane-js/themes/libnotify.css");
 require("./scss/main.scss");
 import {MainCanvas} from "./game/main";
-import {ChatComponent} from "./chatComponent";
+import {ChatComponent} from "./component/chatComponent";
 import {WSClient} from "./WebSocketClient";
-import {RankingComponent} from "./RankingComponent";
+import {RankingComponent} from "./component/RankingComponent";
 import * as Handlebars from "handlebars";
 
 class MainComponent {
