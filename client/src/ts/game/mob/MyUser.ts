@@ -1,4 +1,5 @@
-import {SimpleUser, SimpleUserOption} from "./SimpleUser";
+import {SimpleUser} from "./SimpleUser";
+import {MyUserModel} from "../myuser/UserModel";
 import {StatusBarComponent} from "../component/StatusBarComponent";
 import {GamePadComponent} from "../component/GamePadComponent";
 import {GameMain} from "../main";
@@ -7,18 +8,6 @@ import {SocketType, DbUserData, CONST, SkillId} from "../../../../../server/shar
 import {EffectService, EffectType} from "../service/EffectService";
 import {SkillComponent} from "../component/SkillComponent";
 
-export interface UserBody extends MyUserOption{
-
-}
-
-export interface MyUserOption extends SimpleUserOption {
-	exp: number;
-	name: string;
-	dbId: string;
-	skills: number[];
-	hp: number;
-	maxHp: number;
-}
 
 /** 自分が操作する機能をもつエビルアイ */
 export class MyUser extends SimpleUser {
@@ -42,9 +31,8 @@ export class MyUser extends SimpleUser {
 	private skills: number [];
 	constructor(protected ctx: CanvasRenderingContext2D,
 				protected effect: EffectService,
-				private skillComponent: SkillComponent,
 				private ws: WSClient,
-				option: MyUserOption) {
+				private model: MyUserModel) {
 		super(ctx, effect, option);
 		this.exp = option.exp;
 		this.maxHp = MyUser.INIT_MAX_HP;

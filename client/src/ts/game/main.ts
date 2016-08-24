@@ -1,6 +1,7 @@
 import {WSClient} from "../WebSocketClient";
 import {SimpleUser} from "./mob/SimpleUser";
 import {MyUser} from "./mob/MyUser";
+import {MyUserModel} from "./myuser/UserModel";
 import {GodzillaMob} from "./mob/GozdillaMob";
 import {ImageLoader} from "./ImageLoader";
 import {GamePadComponent} from "./component/GamePadComponent";
@@ -36,7 +37,7 @@ export class GameMain {
 	private otherPersons: SimpleUser[];
 	private befSnapshot: ReqEvilData;
 	private effect: EffectService;
-
+	private myUserModel: MyUserModel;
 	/** 下からのY座標を上からのY座標に変更 */
 	public static convY(y: number, height: number) {
 		return GameMain.HEIGHT - y - height;
@@ -54,12 +55,12 @@ export class GameMain {
 	}
 
 	public init() {
-		this.wsClient.addOnReceiveMsgListener(SocketType.init, (resData) => this.onReceiveInitData(resData));
 		this.wsClient.addOnOpenListener(() => {
 			ImageLoader.load().then(() => {
 				document.querySelector(".loading").classList.remove("loading");
 				this.effect.init();
-				this.wsClient.send(SocketType.init, {_id: localStorage.getItem("dbId")});
+				this.wsClient.sendPromise<InitialUserData>(SocketType.init, {_id: localStorage.getItem("dbId")})
+				.then((resData) => this.onReceiveInitData(resData));
 			});
 		});
 		this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
@@ -73,6 +74,25 @@ export class GameMain {
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
+		this.myUserModel = new MyUserModel({
+			pid: resData.pid,
+			name: resData.user.name,
+			lv: resData.user.lv,
+			x: resData.user.x,
+			y: resData.user.y,
+			isMigi: resData.user.isMigi,
+			isAtk: false,
+			isDead: false,
+			isLvUp: false,
+			isHeal: false,
+			isHest: false,
+			isHb: false,
+			dbId: resData.user._id,
+			hp: 100,
+			maxHp: 100,
+			exp: resData.user.exp,
+			skills: resData.user.skills
+		});
 		new FieldComponent(this.wsClient).init(resData.bg);
 		const skillComponent = new SkillComponent(this.wsClient);
 		skillComponent.init(resData.user.lv, resData.user.skills);
@@ -80,19 +100,7 @@ export class GameMain {
 		this.godzilla = new GodzillaMob(this.ctx, {});
 		this.godzilla.setGodzilaInfo(resData.gozdilla);
 		GameMain.GOZZILA = this.godzilla;
-		this.myEvil = new MyUser(this.ctx, this.effect, skillComponent, this.wsClient, {
-			x: resData.user.x,
-			y: resData.user.y,
-			isMigi: resData.user.isMigi,
-			pid: resData.pid,
-			lv: resData.user.lv,
-			exp: resData.user.exp,
-			name: resData.user.name,
-			isAtk: false,
-			isDead: false,
-			dbId: resData.user._id,
-			skills: resData.user.skills
-		});
+		this.myEvil = new MyUser(this.ctx, this.effect, this.wsClient, this.myUserModel);
 		this.myEvil.onLvUpListener = (lv, skills) => {
 			skillComponent.refreshSkillPanel(lv, skills);
 		};
