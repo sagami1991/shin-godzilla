@@ -1,17 +1,23 @@
 import {SimpleUser, SimpleUserOption} from "./SimpleUser";
 import {StatusBarComponent} from "../component/StatusBarComponent";
 import {GamePadComponent} from "../component/GamePadComponent";
-import {MainCanvas} from "../main";
+import {GameMain} from "../main";
 import {WSClient} from "../../WebSocketClient";
 import {SocketType, DbUserData, CONST, SkillId} from "../../../../../server/share/share";
-import {Effect, EffectType} from "../Effect";
+import {EffectService, EffectType} from "../service/EffectService";
 import {SkillComponent} from "../component/SkillComponent";
+
+export interface UserBody extends MyUserOption{
+
+}
 
 export interface MyUserOption extends SimpleUserOption {
 	exp: number;
 	name: string;
 	dbId: string;
 	skills: number[];
+	hp: number;
+	maxHp: number;
 }
 
 /** 自分が操作する機能をもつエビルアイ */
@@ -35,9 +41,11 @@ export class MyUser extends SimpleUser {
 	private dbId: string;
 	private skills: number [];
 	constructor(protected ctx: CanvasRenderingContext2D,
+				protected effect: EffectService,
+				private skillComponent: SkillComponent,
 				private ws: WSClient,
 				option: MyUserOption) {
-		super(ctx, option);
+		super(ctx, effect, option);
 		this.exp = option.exp;
 		this.maxHp = MyUser.INIT_MAX_HP;
 		this.jumpValue = MyUser.BASE_JUMP;
@@ -71,7 +79,7 @@ export class MyUser extends SimpleUser {
 			if (this.hp <= 0) this.deadOnce();
 		}
 		if (this.isLvUp) {
-			Effect.draw(this, EffectType.lvup);
+			this.effect.draw(this, EffectType.lvup);
 			this.isLvUp = false;
 		}
 	}
@@ -118,8 +126,8 @@ export class MyUser extends SimpleUser {
 	}
 
 	private damegeCalc() {
-		this.hp -= MainCanvas.GOZZILA.calcBeamDmg(this.x, this.x + SimpleUser.WIDTH, this.y, this.y + SimpleUser.HEIGHT);
-		this.hp -= MainCanvas.GOZZILA.calcSessyokuDmg(this.x, this.y);
+		this.hp -= GameMain.GOZZILA.calcBeamDmg(this.x, this.x + SimpleUser.WIDTH, this.y, this.y + SimpleUser.HEIGHT);
+		this.hp -= GameMain.GOZZILA.calcSessyokuDmg(this.x, this.y);
 	}
 
 	private move() {
@@ -140,10 +148,10 @@ export class MyUser extends SimpleUser {
 		}
 		if (this.isJumping) {
 			this.jumpF ++ ;
-			this.y = MainCanvas.Y0 + this.jumpValue * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
+			this.y = GameMain.Y0 + this.jumpValue * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
 		}
-		if (this.isJumping && this.y < MainCanvas.Y0) {
-			this.y = MainCanvas.Y0;
+		if (this.isJumping && this.y < GameMain.Y0) {
+			this.y = GameMain.Y0;
 			this.isJumping = false;
 		}
 	}
@@ -163,7 +171,7 @@ export class MyUser extends SimpleUser {
 		this.isHeal = false;
 		if (GamePadComponent.KeyEvent.skill1 && !this.skillInterval && this.skills.includes(SkillId.heal)) {
 			this.isHeal = true;
-			Effect.draw(this, EffectType.heal);
+			this.effect.draw(this, EffectType.heal);
 			SkillComponent.SKILL1_BUTTON.classList.add("disabled");
 			this.hp += 10;
 			if (this.hp > this.maxHp) {
@@ -179,7 +187,7 @@ export class MyUser extends SimpleUser {
 
 	private drawRespawnCount() {
 		if (this.rebornTimeCount >= 0) this.rebornTimeCount--;
-		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
+		this.ctx.fillStyle = GameMain.MOJI_COLOR;
 		this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`死にました。${Math.ceil(this.rebornTimeCount / 30)}秒後に復活ボタンが使用可能になります`, 80, 180);
 	}
@@ -188,18 +196,18 @@ export class MyUser extends SimpleUser {
 	private deadOnce() {
 		this.hp = 0;
 		this.isDead = true;
-		this.rebornTimeCount = MainCanvas.FRAME * 8;
+		this.rebornTimeCount = GameMain.FRAME * 8;
 		setTimeout(() => this.rebirthButton.classList.remove("disabled"), 8000);
 		this.ws.send(SocketType.dead);
 	}
 
 	private drawHp() {
 		this.ctx.fillStyle = "#000";
-		this.ctx.fillRect(this.x + 10, MainCanvas.convY(this.y + SimpleUser.HEIGHT, 10), 82, 10);
+		this.ctx.fillRect(this.x + 10, GameMain.convY(this.y + SimpleUser.HEIGHT, 10), 82, 10);
 		this.ctx.fillStyle = "#fff";
-		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleUser.HEIGHT + 1, 8), 80, 8);
+		this.ctx.fillRect(this.x + 10 + 1, GameMain.convY(this.y + SimpleUser.HEIGHT + 1, 8), 80, 8);
 		this.ctx.fillStyle = "#e60c0c";
-		this.ctx.fillRect(this.x + 10 + 1, MainCanvas.convY(this.y + SimpleUser.HEIGHT + 1, 8), 80 * this.hp / this.maxHp , 8);
+		this.ctx.fillRect(this.x + 10 + 1, GameMain.convY(this.y + SimpleUser.HEIGHT + 1, 8), 80 * this.hp / this.maxHp , 8);
 	}
 	private getMaxExp() {
 		return Math.floor(MyUser.BASE_EXP * Math.pow(MyUser.EXP_BAIRITU, this.lv - 1));

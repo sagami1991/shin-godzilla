@@ -33,7 +33,9 @@ export interface InitialUserData {
 	bg: number;
 }
 export enum SkillId {
-	heal
+	heal,
+	hest,
+	hb
 }
 export interface DbUserData {
 	_id: string;

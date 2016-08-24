@@ -5,9 +5,10 @@ import {Notify} from "../../util";
 require("../../scss/skill-panel.scss");
 
 export class SkillComponent {
-	public static SKILL1_BUTTON: HTMLButtonElement;
 	private static skills = [
-		{name: "ヒール", description: "回復できる", isGet: false, id: SkillId.heal}
+		{name: "ヒール", description: "回復できる", isGet: false, id: SkillId.heal},
+		{name: "hest", description: "kari", isGet: false, id: SkillId.hest},
+		{name: "hb", description: "kari", isGet: false, id: SkillId.hb}
 	];
 	private static HTML = `
 		<h2 class="h2"><i class="material-icons">lightbulb_outline</i>スキル一覧</h2>
@@ -45,6 +46,7 @@ export class SkillComponent {
 		{{/skills}}
 	`);
 	public onGetSkill: (skills: SkillId[]) => void;
+	private skillButtons: HTMLButtonElement[];
 	private skillPanel: HTMLElement;
 	private skillTbody: HTMLElement;
 	private isLock: boolean;
@@ -54,7 +56,7 @@ export class SkillComponent {
 	constructor(private wsService: WSClient) {}
 
 	public init(lv: number, skills: number[]) {
-		SkillComponent.SKILL1_BUTTON = <HTMLButtonElement> document.querySelector(".skill1");
+		this.skillButtons = Array.from(new Array(3)).map( (val, i) => <HTMLButtonElement> document.querySelector(`.skill_${i}`));
 		this.skillPanel = <HTMLElement> document.querySelector(".skills-area");
 		this.skillPanel.innerHTML = SkillComponent.HTML;
 		this.skillTbody = <HTMLElement> document.querySelector(".skills-tbody");
@@ -72,18 +74,25 @@ export class SkillComponent {
 		this.parseSkills();
 	}
 
-	public refreshSkillPanel(lv: number, skills: number[]) {
+
+	private refreshSkillPanel(lv: number, skills: number[]) {
 		this.isLock = false;
-		skills.forEach(num => {
-			SkillComponent.skills[num].isGet = true;
-			if (num === SkillId.heal) {
-				SkillComponent.SKILL1_BUTTON.classList.remove("disabled");
-			}
+		skills.forEach(i => {
+			SkillComponent.skills[i].isGet = true;
+			this.skillButtons[i].classList.remove("disabled");
 		});
 		const hituyouSP = (skills.length + 1) * 10;
 		this.hasSp = lv >= hituyouSP;
 		this.nokoriSp = hituyouSP - lv;
 		if (this.isOpen) this.parseSkills();
+	}
+
+	public disableSkillButton(skillType: SkillId) {
+		this.skillButtons[skillType].classList.add("disabled");
+	}
+
+	public enableSkillButton(skillType: SkillId) {
+		this.skillButtons[skillType].classList.remove("disabled");
 	}
 
 	private parseSkills() {
@@ -106,9 +115,4 @@ export class SkillComponent {
 			this.onGetSkill(user.skills);
 		});
 	}
-
-
-
-
-
 }

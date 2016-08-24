@@ -9,10 +9,10 @@ import {FuncButtonComponent} from "./component/FuncButtonComponent";
 import {SkillComponent} from "./component/SkillComponent";
 import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData} from "../../../../server/share/share";
 import {DiffExtract} from "../../../../server/share/util";
-import {Effect} from "./Effect";
-
+import {EffectService} from "./service/EffectService";
+import {SkillAction} from "./skill/SkillAction";
 /** ゲーム機能の総合操作クラス */
-export class MainCanvas {
+export class GameMain {
 	public static MOJI_COLOR = "#fff";
 	public static FRAME = 30;
 	public static HEIGHT = 500;
@@ -35,10 +35,11 @@ export class MainCanvas {
 	private otherPersonsInfo: MasterEvilData[];
 	private otherPersons: SimpleUser[];
 	private befSnapshot: ReqEvilData;
+	private effect: EffectService;
 
 	/** 下からのY座標を上からのY座標に変更 */
 	public static convY(y: number, height: number) {
-		return MainCanvas.HEIGHT - y - height;
+		return GameMain.HEIGHT - y - height;
 	}
 
 	public static addIntervalAction(cb: (count: number) => void, delay: number = 1, roopCount: number = Infinity) {
@@ -57,26 +58,29 @@ export class MainCanvas {
 		this.wsClient.addOnOpenListener(() => {
 			ImageLoader.load().then(() => {
 				document.querySelector(".loading").classList.remove("loading");
-				Effect.init();
+				this.effect.init();
 				this.wsClient.send(SocketType.init, {_id: localStorage.getItem("dbId")});
 			});
 		});
 		this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
-		this.canvasElm.width = MainCanvas.WIDTH;
-		this.canvasElm.height = MainCanvas.HEIGHT;
+		this.canvasElm.width = GameMain.WIDTH;
+		this.canvasElm.height = GameMain.HEIGHT;
 		this.ctx = this.canvasElm.getContext('2d');
-		MainCanvas.CTX = this.ctx;
+		this.effect = new EffectService(this.ctx);
+		GameMain.CTX = this.ctx;
 		GamePadComponent.setKeyAndButton();
 		FuncButtonComponent.init();
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
 		new FieldComponent(this.wsClient).init(resData.bg);
+		const skillComponent = new SkillComponent(this.wsClient);
+		skillComponent.init(resData.user.lv, resData.user.skills);
 		localStorage.setItem("dbId", resData.user._id);
 		this.godzilla = new GodzillaMob(this.ctx, {});
 		this.godzilla.setGodzilaInfo(resData.gozdilla);
-		MainCanvas.GOZZILA = this.godzilla;
-		this.myEvil = new MyUser(this.ctx, this.wsClient, {
+		GameMain.GOZZILA = this.godzilla;
+		this.myEvil = new MyUser(this.ctx, this.effect, skillComponent, this.wsClient, {
 			x: resData.user.x,
 			y: resData.user.y,
 			isMigi: resData.user.isMigi,
@@ -89,8 +93,6 @@ export class MainCanvas {
 			dbId: resData.user._id,
 			skills: resData.user.skills
 		});
-		const skillComponent = new SkillComponent(this.wsClient);
-		skillComponent.init(resData.user.lv, resData.user.skills);
 		this.myEvil.onLvUpListener = (lv, skills) => {
 			skillComponent.refreshSkillPanel(lv, skills);
 		};
@@ -99,10 +101,10 @@ export class MainCanvas {
 		};
 		this.otherPersonsInfo = resData.users;
 		this.otherPersons = resData.users.map((info) => {
-			return new SimpleUser(MainCanvas.CTX, info);
+			return new SimpleUser(this.ctx, this.effect, info);
 		});
 
-		this.timer = window.setInterval(() => this.draw(), 1000 / MainCanvas.FRAME);
+		this.timer = window.setInterval(() => this.draw(), 1000 / GameMain.FRAME);
 		this.wsClient.addOnReceiveMsgListener(SocketType.snapshot, (value) => this.onReceiveIntervalData(value));
 		this.wsClient.addOnCloseListener(() => window.clearInterval(this.timer));
 	}
@@ -117,7 +119,7 @@ export class MainCanvas {
 				if (existEvil) {
 					existEvil.setPersonInfo(info);
 				} else {
-					this.otherPersons.push(new SimpleUser(this.ctx, info));
+					this.otherPersons.push(new SimpleUser(this.ctx, this.effect, info));
 				}
 			});
 		}
@@ -130,16 +132,16 @@ export class MainCanvas {
 
 	/** 描写 */
 	private draw() {
-		this.ctx.clearRect(0, 0, MainCanvas.WIDTH, MainCanvas.HEIGHT);
+		this.ctx.clearRect(0, 0, GameMain.WIDTH, GameMain.HEIGHT);
 		this.godzilla.draw();
-		this.otherPersons.forEach(evil => { if (evil.pid !== this.myEvil.pid) evil.draw()});
+		this.otherPersons.forEach(evil => { if (evil.pid !== this.myEvil.pid) evil.draw(); });
 		this.myEvil.draw();
 
-		for (let i = MainCanvas.intervalActions.length - 1; i >= 0; i--) {
-			const roopInfo = MainCanvas.intervalActions[i];
+		for (let i = GameMain.intervalActions.length - 1; i >= 0; i--) {
+			const roopInfo = GameMain.intervalActions[i];
 			roopInfo.count += 1 / roopInfo.delay;
 			if (roopInfo.count >= roopInfo.roopCount) {
-				MainCanvas.intervalActions.splice( i, 1 ) ;
+				GameMain.intervalActions.splice( i, 1 ) ;
 				break;
 			}
 			roopInfo.cb(Math.floor(roopInfo.count));
@@ -150,7 +152,7 @@ export class MainCanvas {
 	}
 
 	private drawNowPersonCount() {
-		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
+		this.ctx.fillStyle = GameMain.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`接続数:${this.otherPersons.length}`, 736, 18);
 	}

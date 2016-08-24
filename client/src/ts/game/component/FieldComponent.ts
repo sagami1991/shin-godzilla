@@ -1,5 +1,5 @@
 
-import {MainCanvas} from "../main";
+import {GameMain} from "../main";
 import {ImageLoader} from "../ImageLoader";
 import {WSClient} from "../../WebSocketClient";
 import * as Handlebars from "handlebars";
@@ -58,15 +58,15 @@ export class FieldComponent {
         ctx.rect(0, 0, 800, 500);
 		ctx.fill();
 		const asiba = ImageLoader.FIELD_IMAGE.asiba;
-		const y0 = MainCanvas.Y0 - asiba.height / 2;
+		const y0 = GameMain.Y0 - asiba.height / 2;
 		const jimen = ImageLoader.FIELD_IMAGE.sita;
-		for (let i = 0; i < MainCanvas.WIDTH / jimen.width; i++) {
+		for (let i = 0; i < GameMain.WIDTH / jimen.width; i++) {
 			for (let j = 0; j < y0 / jimen.height + 1; j++) {
-				ctx.drawImage(jimen, i * jimen.width , MainCanvas.HEIGHT - y0 + j * jimen.height);
+				ctx.drawImage(jimen, i * jimen.width , GameMain.HEIGHT - y0 + j * jimen.height);
 			}
 		}
-		for (let i = 0; i < MainCanvas.WIDTH / asiba.width; i++) {
-			ctx.drawImage(asiba, i * asiba.width , MainCanvas.convY(y0, asiba.height));
+		for (let i = 0; i < GameMain.WIDTH / asiba.width; i++) {
+			ctx.drawImage(asiba, i * asiba.width , GameMain.convY(y0, asiba.height));
 		}
 	}
 }

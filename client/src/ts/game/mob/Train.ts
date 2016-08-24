@@ -1,4 +1,4 @@
-import {MainCanvas} from "../main";
+import {GameMain} from "../main";
 import {BaseMob, BaseMobOption} from "./BaseMob";
 import {ImageLoader} from "../ImageLoader";
 
@@ -27,7 +27,7 @@ export class Train extends BaseMob {
 		this.onBakuhatu.push(callback);
 	}
 	public draw() {
-		this.ctx.drawImage(this.image , this.x, MainCanvas.convY(this.y, Train.HEIGHT));
+		this.ctx.drawImage(this.image , this.x, GameMain.convY(this.y, Train.HEIGHT));
 		this.move();
 	}
 
@@ -40,10 +40,10 @@ export class Train extends BaseMob {
 				this.isDead = true;
 				this.mode = this.mode = TrainMode.sibou;
 			}
-			if ( MainCanvas.GOZZILA.x + 100 < this.x ) {
+			if ( GameMain.GOZZILA.x + 100 < this.x ) {
 				this.mode = TrainMode.bakuhatu;
 				this.image = ImageLoader.IMAGES.bakuhatu;
-				this.bakuhatuCount = MainCanvas.FRAME * Train.BAKUHATU_SEC;
+				this.bakuhatuCount = GameMain.FRAME * Train.BAKUHATU_SEC;
 				this.onBakuhatu.forEach(cb => cb());
 			}
 			break;

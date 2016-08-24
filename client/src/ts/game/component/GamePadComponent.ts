@@ -7,7 +7,9 @@ export class GamePadComponent {
 		hidari: false,
 		jump: false,
 		atk: false,
-		skill1: false
+		skill_0: false,
+		skill_1: false,
+		skill_2: false
 	};
 	private static HTML = `
 		<button class="pad hidari"><i class="material-icons">chevron_left</i></button>
@@ -15,7 +17,9 @@ export class GamePadComponent {
 		<button class="pad jump" title="ショートカット: C or スペース">ジャンプ</button>
 		<button class="pad atk" title="ショートカット: X or 画面クリック">攻撃</button>
 		<button class="pad hukkatu disabled">復活</button>
-		<button class="pad skill1 disabled" title="ショートカット: CTRL">スキル1</button>
+		<button class="pad skill_0 disabled" title="ショートカット: CTRL">スキル1</button>
+		<button class="pad skill_1 disabled" title="ショートカット: V">スキル2</button>
+		<button class="pad skill_2 disabled" title="ショートカット: F">スキル3</button>
 	`;
 	private static KEYSET = [
 		// {keycode: [87, 38], eventName: "ue"},
@@ -24,7 +28,9 @@ export class GamePadComponent {
 		{keycode: [65, 37], eventName: "hidari"},
 		{keycode: [32, 87, 67], eventName: "jump"},
 		{keycode: [88], eventName: "atk"},
-		{keycode: [17], eventName: "skill1"}
+		{keycode: [17], eventName: "skill_0"},
+		{keycode: [18], eventName: "skill_1"},
+		{keycode: [19], eventName: "skill_2"},
 	];
 
 	/** ボタンやキーを設定 */

@@ -1,4 +1,4 @@
-import {MainCanvas} from "../main";
+import {GameMain} from "../main";
 import {BaseMob, BaseMobOption} from "./BaseMob";
 import {ImageLoader} from "../ImageLoader";
 import {GodzillaMode, GodzillaInfo, CONST} from "../../../../../server/share/share";
@@ -51,7 +51,7 @@ export class GodzillaMob extends BaseMob {
 		this.ctx.drawImage(
 			this.image,
 			this.x,
-			MainCanvas.convY(this.y, GodzillaMob.HEIGHT * GodzillaMob.BAIRITU),
+			GameMain.convY(this.y, GodzillaMob.HEIGHT * GodzillaMob.BAIRITU),
 			GodzillaMob.WIDTH * GodzillaMob.BAIRITU,
 			GodzillaMob.HEIGHT * GodzillaMob.BAIRITU
 			);
@@ -90,7 +90,7 @@ export class GodzillaMob extends BaseMob {
 			// const endX = this.begin[i].x < target.x ? MainCanvas.WIDTH : 0;
 			// const endY = (target.y - this.begin[i].y) * (endX - this.begin[i].x) / (target.x - this.begin[i].x) + this.begin[i].y;
 			this.ctx.save();
-			this.ctx.translate(begin.x - 10, MainCanvas.convY(begin.y - 30, 0));
+			this.ctx.translate(begin.x - 10, GameMain.convY(begin.y - 30, 0));
 			this.ctx.rotate(angle);
 			this.ctx.drawImage(beamImg, 0, 0);
 			this.ctx.restore();
@@ -105,7 +105,7 @@ export class GodzillaMob extends BaseMob {
 		this.ctx.fillRect(GodzillaMob.HP_BAR.X + 1, GodzillaMob.HP_BAR.Y + 1, GodzillaMob.HP_BAR.WIDTH, GodzillaMob.HP_BAR.HEIGHT );
 		this.ctx.fillStyle = "#4f1ae8";
 		this.ctx.fillRect(GodzillaMob.HP_BAR.X + 1, GodzillaMob.HP_BAR.Y + 1, GodzillaMob.HP_BAR.WIDTH * this.hp / this.maxHp , GodzillaMob.HP_BAR.HEIGHT );
-		this.ctx.fillStyle = MainCanvas.MOJI_COLOR;
+		this.ctx.fillStyle = GameMain.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`${this.hp} / ${this.maxHp}`, this.x + 30, 40);
 	}

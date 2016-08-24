@@ -5,20 +5,20 @@ import 'core-js/es7/array';
 require("expose?humane!humane-js");
 require("!style!css!humane-js/themes/libnotify.css");
 require("./scss/main.scss");
-import {MainCanvas} from "./game/main";
+import {GameMain} from "./game/main";
 import {ChatComponent} from "./component/ChatComponent";
 import {WSClient} from "./WebSocketClient";
 import {RankingComponent} from "./component/RankingComponent";
 import * as Handlebars from "handlebars";
 
 class MainComponent {
-	private canvas: MainCanvas;
+	private canvas: GameMain;
 	private chat: ChatComponent;
 	private ranking: RankingComponent;
 	constructor() {
 		const wsClient = new WSClient();
 		wsClient.init();
-		this.canvas = new MainCanvas(wsClient);
+		this.canvas = new GameMain(wsClient);
 		this.chat = new ChatComponent(wsClient);
 		this.ranking = new RankingComponent(wsClient);
 	}

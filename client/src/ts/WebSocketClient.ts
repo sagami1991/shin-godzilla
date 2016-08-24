@@ -10,6 +10,7 @@ interface Msglistner {
 	[key: number]: (data: any) => void;
 }
 
+/** WebSocketをラッパーしたクラス */
 export class WSClient {
 	private static URL = location.origin.replace(/^http/, 'ws');
 	public isClose: boolean;
@@ -19,7 +20,7 @@ export class WSClient {
 	private onOpenEvents: Array<() => void> = [];
 	private onCloseEvents: Array<() => void> = [];
 	public addOnReceiveMsgListener(type: number, cb: (value: any) => void) {
-		if (this.onReceiveMsgEvents[type]) console.warn("すでにMsgListnerが登録されています");
+		console.assert(!this.onReceiveMsgEvents[type], "すでにMsgListnerが登録されています");
 		this.onReceiveMsgEvents[type] = cb;
 	}
 
