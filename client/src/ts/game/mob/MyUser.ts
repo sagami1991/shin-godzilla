@@ -28,8 +28,9 @@ export class MyUserModel extends SimpleUserModel {
 	get exp() { return this.option.exp; }
 	set exp(exp: number) { this.set("exp", exp); }
 	get maxExp() { return this.option.maxExp; }
+	set maxExp(maxExp: number) { this.set("maxExp", maxExp); }
 	get skills() {return this.option.skills; }
-	set skills(skills: number[]) { this.option.skills = skills;}
+	set skills(skills: number[]) { this.option.skills = skills; }
 	get speed() { return this.option.speed; }
 	set speed(speed: number) { this.set("speed", speed); }
 	get jump() { return this.option.jump; }
@@ -37,6 +38,7 @@ export class MyUserModel extends SimpleUserModel {
 	constructor(protected option: MyUserOption) {
 		super(option);
 		this.option.maxExp = this.calcMaxExp();
+		this.addChangeListener("lv", () => this.maxExp = this.calcMaxExp());
 	}
 	private calcMaxExp() {
 		return Math.floor(CONST.USER.BASE_EXP * Math.pow(CONST.USER.EXP_BAIRITU, this.lv - 1));

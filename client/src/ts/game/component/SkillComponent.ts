@@ -90,7 +90,7 @@ export class SkillComponent {
 		const hituyouSP = (this.userBody.skills.length + 1) * CONST.SKILL.SP;
 		this.hasSp = this.userBody.lv >= hituyouSP;
 		this.nokoriSp = hituyouSP - this.userBody.lv;
-		if (this.isOpen) this.parseSkills();
+		this.parseSkills();
 	}
 
 	private disablePad(skillType: SkillId) {
