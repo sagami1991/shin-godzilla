@@ -1,5 +1,5 @@
 import {GameMain} from "../main";
-import {Train} from "./train";
+import {Train} from "./Train";
 import {ImageLoader} from "../ImageLoader";
 import {EffectService, EffectType} from "../service/EffectService";
 import {MasterEvilData} from "../../../../../server/share/share";

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "cd ./client && npm i && npm run build:prod && cd ../ && npm run build:prod",
-    "start": "node server/server.js",
+    "postinstall": "cd ./client && npm i && npm run build:prod",
+    "start": "npm run build:prod && node server/server.js",
     "build:client": "webpack --progress --colors --watch --config ./webpack.config.dev.js",
     "build": "gulp watch",
     "build:prod": "gulp ",
