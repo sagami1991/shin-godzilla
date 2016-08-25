@@ -76,6 +76,7 @@ export class GameMain {
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
+		localStorage.setItem("dbId", resData.user._id);
 		this.initUserModel(resData);
 		// this.myUserModel.addChangeListener("isAtk", (isAtk) => isAtk ? this.localSnapShot.isAtk = true : null);
 		// this.myUserModel.addChangeListener("isHeal", (isHeal) => isHeal ? this.localSnapShot.isHeal = true : null);
@@ -85,7 +86,6 @@ export class GameMain {
 		new FieldComponent(this.wsClient).init(resData.bg);
 		new SkillComponent(this.wsClient, this.myUserModel, cooltimes).init();
 		new SkillAction(this.myUserModel, cooltimes);
-		localStorage.setItem("dbId", resData.user._id);
 		this.godzilla = new GodzillaMob(this.ctx, {}, this.myUserModel);
 		this.godzilla.setGodzilaInfo(resData.gozdilla);
 		GameMain.GOZZILA = this.godzilla;
