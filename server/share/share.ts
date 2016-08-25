@@ -98,13 +98,20 @@ export enum GodzillaMode {
 export const CONST = {
 	USER: {
 		BASE_EXP: 50,
-		EXP_BAIRITU: 1.2
+		EXP_BAIRITU: 1.2,
+		MAX_ATK: 3,
+		BASE_MAX_HP: 100,
+		BASE_SPEED: 5,
+		BASE_JUMP: 10,
 	},
 	GAME: {
+		FPS: 30,
 		SEND_FPS: 30,
 		ANTI_X: 160
 	},
 	CANVAS: {
+		HEIGHT: 500,
+		WIDTH: 800,
 		Y0: 150,
 	},
 	CHAT: {
@@ -112,7 +119,9 @@ export const CONST = {
 		MAX_LENGTH: 50
 	},
 	SKILL: {
+		SP: 6,
 		HEAL: {
+			AMOUNT: 10,
 			COOL_TIME: 1400
 		},
 		HEST: {

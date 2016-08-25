@@ -5,7 +5,7 @@ const dateFormat = require('dateformat');
 module.exports = {
 	entry: ["./src/ts/app.ts"],
 	output: {
-		path:"../../server/public",
+		path:"../server/public",
 		filename: "bundle.js",
 	},
 	devtool: "source-map",

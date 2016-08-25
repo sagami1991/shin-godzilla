@@ -15,7 +15,6 @@ import {RankingController} from "./websocket/RankingController";
 import {UserDataController} from "./websocket/UserDataController";
 import {FieldController} from "./websocket/FieldController";
 import {SkillController} from "./websocket/SkillController";
-
 /** DBに接続 */
 function connectDB(): Promise<Db> {
 	return new Promise((resolve) => {
@@ -55,6 +54,7 @@ connectDB().then((db) => {
 	const userController = new UserDataController(wsServer, userService);
 	userController.init();
 	const godzillaService = new GodzillaService(userService);
+	godzillaService.init();
 	new GameController(wsServer, userService, godzillaService).init();
 	new SkillController(wsServer, userService).init();
 	new RankingController(wsServer, userRepository).init();

@@ -10,54 +10,27 @@ export class SimpleUserModel extends Observable<MasterEvilData>{
 	public static HEIGHT = 63;
 	get pid() { return this.option.pid; }
 	get name() { return this.option.name; }
-	set name(name: string) {
-		this.option.name = name;
-	}
+	set name(name: string) { this.option.name = name; }
 	get lv() { return this.option.lv; }
-	set lv(lv: number) {
-		const old = this.option.lv;
-		this.option.lv = lv;
-		this.onChange("lv", old, lv);
-	}
+	set lv(lv: number) { this.set("lv", lv); }
 	get x() { return this.option.x; }
-	set x(x: number) {
-		this.option.x = x;
-	}
+	set x(x: number) { this.option.x = x; }
 	get y() { return this.option.y; }
-	set y(y: number) {
-		this.option.y = y;
-	}
+	set y(y: number) { this.option.y = y; }
 	get isMigi() { return this.option.isMigi; }
-	set isMigi(isMigi: boolean) {
-		this.option.isMigi = isMigi;
-	}
-	set isAtk(isAtk: boolean) {
-		const old = this.option.isAtk;
-		this.option.isAtk = isAtk;
-		this.onChange("isAtk", old, isAtk);
-	}
+	set isMigi(isMigi: boolean) { this.set("isMigi", isMigi); }
+	get isAtk() { return this.option.isAtk; }
+	set isAtk(isAtk: boolean) { this.set("isAtk", isAtk); }
 	get isDead() {return this.option.isDead; }
-	set isDead(isDead: boolean) {
-		const old = this.option.isDead;
-		this.option.isDead = isDead;
-		this.onChange("isDead", old, isDead);
-	}
-	set isLvUp(isLvUp: boolean) {this.option.isLvUp = isLvUp; }
-	set isHeal(isHeal: boolean) {
-		const old = this.option.isHeal;
-		this.option.isHeal = isHeal;
-		this.onChange("isHeal", old, isHeal);
-	}
-	set isHest(isHest: boolean) {
-		const old = this.option.isHest;
-		this.option.isHest = isHest;
-		this.onChange("isHest", old, isHest);
-	}
-	set isHb(isHb: boolean) {
-		const old = this.option.isHb;
-		this.option.isHb = isHb;
-		this.onChange("isHb", old, isHb);
-	}
+	set isDead(isDead: boolean) { this.set("isDead", isDead); }
+	get isLvUp() { return this.option.isLvUp; }
+	set isLvUp(isLvUp: boolean) { this.option.isLvUp = isLvUp; }
+	get isHeal() { return this.option.isHeal; }
+	set isHeal(isHeal: boolean) { this.set("isHeal", isHeal); }
+	get isHest() { return this.option.isHest; }
+	set isHest(isHest: boolean) { this.set("isHest", isHest); }
+	get isHb() { return this.option.isHb; }
+	set isHb(isHb: boolean) { this.set("isHb", isHb); }
 }
 
 /** 人間が操作する機能の入っていないエビルアイ */
@@ -89,13 +62,24 @@ export class SimpleUser {
 	}
 
 	protected atk() {
-		this.model.isAtk = false;
 		const train = new Train(this.ctx, {
 			x: this.model.x,
 			y: this.model.y,
 			isMigi: this.model.isMigi,
 		});
 		this.myTrains.push(train);
+	}
+
+	protected heal() {
+		this.effect.draw(this.model, EffectType.heal);
+	}
+
+	protected hest() {
+		this.effect.draw(this.model, EffectType.hest);
+	}
+
+	protected hb() {
+		this.effect.draw(this.model, EffectType.hb);
 	}
 
 	private changeDirection(isMigi: boolean) {
@@ -107,25 +91,10 @@ export class SimpleUser {
 		this.effect.draw(this.model, EffectType.lvup);
 	}
 
-	private heal() {
-		this.model.isHeal = false;
-		this.effect.draw(this.model, EffectType.heal);
-	}
-
-	private hest() {
-		this.model.isHest = false;
-		this.effect.draw(this.model, EffectType.heal);
-	}
-
-	private hb() {
-		this.model.isHb = false;
-		this.effect.draw(this.model, EffectType.heal);
-	}
-
 	private drawLv() {
 		this.ctx.fillStyle = GameMain.MOJI_COLOR;
 		this.ctx.font = "14px 'ＭＳ Ｐゴシック'";
-		this.ctx.fillText(`${this.model.name} Lv ${this.model.lv}`, this.model.x + 34, GameMain.convY(this.model.y - 10, 0));
+		this.ctx.fillText(`${this.model.name} Lv ${this.model.lv}`, this.model.x + 20, GameMain.convY(this.model.y - 10, 0));
 	}
 
 	private drawTrain() {

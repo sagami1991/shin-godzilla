@@ -8,8 +8,7 @@
 			"node",
 			"ws",
 			"mongodb",
-			"express",
-			"lodash"
+			"express"
 		],
 		"lib": [
 			"es2016"

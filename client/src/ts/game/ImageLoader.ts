@@ -14,6 +14,8 @@ export class ImageLoader {
 		lvup: HTMLImageElement[];
 		beam: HTMLImageElement[];
 		heal: HTMLImageElement[];
+		hest: HTMLImageElement[];
+		hb: HTMLImageElement[];
 	} = <any>{};
 
 	public static FIELD_IMAGE: {
@@ -42,7 +44,9 @@ export class ImageLoader {
 	private static AnimationPath = [
 		{name: "lvup", pathName: "lvup/LevelUp.", length: 21},
 		{name: "beam", pathName: "beam/", length: 3},
-		{name: "heal", pathName: "heal/effect.", length: 10}
+		{name: "heal", pathName: "heal/effect.", length: 10},
+		{name: "hest", pathName: "hest/effect.", length: 9},
+		{name: "hb", pathName: "hb/effect.", length: 11},
 	];
 
 	public static load(): Promise<any> {

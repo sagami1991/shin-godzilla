@@ -1,7 +1,7 @@
 import {WSClient} from "../WebSocketClient";
 import * as Handlebars from "handlebars";
 import {SocketType, RankingInfo} from "../../../../server/share/share";
-require("./scss/ranking.scss");
+require("../../scss/ranking.scss");
 
 export class RankingComponent {
 	private static HTML = `

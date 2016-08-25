@@ -4,7 +4,7 @@ import 'core-js/es6/object';
 import 'core-js/es7/array';
 require("expose?humane!humane-js");
 require("!style!css!humane-js/themes/libnotify.css");
-require("./scss/main.scss");
+require("../scss/main.scss");
 import {GameMain} from "./game/main";
 import {ChatComponent} from "./component/ChatComponent";
 import {WSClient} from "./WebSocketClient";

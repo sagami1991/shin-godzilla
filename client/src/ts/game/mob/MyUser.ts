@@ -1,13 +1,14 @@
 import {SimpleUser, SimpleUserModel} from "./SimpleUser";
-import {StatusBarComponent} from "../component/StatusBarComponent";
 import {GamePadComponent} from "../component/GamePadComponent";
 import {GameMain} from "../main";
 import {WSClient} from "../../WebSocketClient";
 import {SocketType, DbUserData, CONST, SkillId, MasterEvilData} from "../../../../../server/share/share";
 import {EffectService, EffectType} from "../service/EffectService";
-import {SkillComponent} from "../component/SkillComponent";
 import {BaseSkill} from "../skill/BaseSkill";
-
+import {IsEndCoolTimeModel} from "../skill/SkillModel";
+import {HealSkill} from "../skill/HealSkill";
+import {HestSkill} from "../skill/HestSkill";
+import {HbSkill} from "../skill/HbSkill";
 export interface MyUserOption extends MasterEvilData {
 	dbId: string;
 	hp: number;
@@ -21,26 +22,21 @@ export interface MyUserOption extends MasterEvilData {
 
 export class MyUserModel extends SimpleUserModel {
 	get hp() { return this.option.hp; }
-	set hp(hp: number) {
-		const old = this.option.hp;
-		this.option.hp = hp;
-		this.onChange("hp", old, hp);
-	}
+	set hp(hp: number) { this.set("hp", hp); }
 	get maxHp() { return this.option.maxHp; }
+	set maxHp(maxHp: number) { this.set("maxHp", maxHp); }
 	get exp() { return this.option.exp; }
-	set exp(exp: number) {
-		const old = this.option.exp;
-		this.option.exp = exp;
-		this.onChange("exp", old, exp);
-	}
+	set exp(exp: number) { this.set("exp", exp); }
 	get maxExp() { return this.option.maxExp; }
+	get skills() {return this.option.skills; }
+	set skills(skills: number[]) { this.option.skills = skills;}
+	get speed() { return this.option.speed; }
+	set speed(speed: number) { this.set("speed", speed); }
+	get jump() { return this.option.jump; }
+	set jump(jump: number) { this.set("jump", jump); }
 	constructor(protected option: MyUserOption) {
 		super(option);
 		this.option.maxExp = this.calcMaxExp();
-	}
-	get skills() {return this.option.skills; }
-	set skills(skills: number[]) {
-		this.option.skills = skills;
 	}
 	private calcMaxExp() {
 		return Math.floor(CONST.USER.BASE_EXP * Math.pow(CONST.USER.EXP_BAIRITU, this.lv - 1));
@@ -49,22 +45,26 @@ export class MyUserModel extends SimpleUserModel {
 
 /** 自分が操作する機能をもつエビルアイ */
 export class MyUser extends SimpleUser {
-	private static MAX_ATACK_LENGTH = 3;
 	private jumpF: number;
 	private isJumping: boolean;
 	private rebirthButton: HTMLButtonElement;
-	private jumpValue: number;
-	private speed: number;
 	private rebornTimeCount: number;
+	private skills: BaseSkill[];
 	constructor(protected ctx: CanvasRenderingContext2D,
 				protected effect: EffectService,
 				private ws: WSClient,
-				public model: MyUserModel) {
+				public model: MyUserModel,
+				private cooltimes: IsEndCoolTimeModel) {
 		super(ctx, effect, model);
 		this.initButtons();
 		this.ws.addOnReceiveMsgListener(SocketType.userData, (user: DbUserData) => {
 			this.onReceivePersonalData(user);
 		});
+		this.skills = [
+			new HealSkill(model, cooltimes),
+			new HestSkill(model, cooltimes),
+			new HbSkill(model, cooltimes)
+		];
 	}
 	public draw() {
 		super.draw();
@@ -72,7 +72,8 @@ export class MyUser extends SimpleUser {
 		if (!this.model.isDead) {
 			this.move();
 			this.jump();
-			this.checkAtk();
+			this.checkPad();
+			if (this.model.hp <= 0) this.model.isDead = true; 
 		} else {
 			this.drawRespawnCount();
 		}
@@ -91,6 +92,21 @@ export class MyUser extends SimpleUser {
 		this.myTrains[this.myTrains.length - 1].setOnAtked(() => {
 			this.ws.send(SocketType.gozzilaDamege);
 		});
+	}
+
+	protected heal() {
+		super.heal();
+		this.skills[SkillId.heal].execute();
+	}
+
+	protected hest() {
+		super.hest();
+		this.skills[SkillId.hest].execute();
+	}
+
+	protected hb() {
+		super.hb();
+		this.skills[SkillId.hb].execute();
 	}
 
 	private initButtons() {
@@ -117,11 +133,11 @@ export class MyUser extends SimpleUser {
 
 	private move() {
 		if (GamePadComponent.KeyEvent.hidari) {
-			this.model.x -= this.speed;
+			this.model.x -= this.model.speed;
 			this.model.isMigi = false;
 		}
 		if (GamePadComponent.KeyEvent.migi) {
-			this.model.y += this.speed;
+			this.model.x += this.model.speed;
 			this.model.isMigi = true;
 		}
 	}
@@ -133,7 +149,7 @@ export class MyUser extends SimpleUser {
 		}
 		if (this.isJumping) {
 			this.jumpF ++ ;
-			this.model.y = GameMain.Y0 + this.jumpValue * this.jumpF - 0.5 * 1 * Math.pow(this.jumpF, 2);
+			this.model.y = GameMain.Y0 + this.model.jump * this.jumpF - 0.54 * 1 * Math.pow(this.jumpF, 2);
 		}
 		if (this.isJumping && this.model.y < GameMain.Y0) {
 			this.model.y = GameMain.Y0;
@@ -141,20 +157,23 @@ export class MyUser extends SimpleUser {
 		}
 	}
 
-	private checkAtk() {
+	private checkPad() {
 		this.model.isAtk = false;
 		this.model.isHeal = false;
 		this.model.isHest = false;
 		this.model.isHb = false;
 		const pad = GamePadComponent.KeyEvent;
-		if (pad.atk && this.myTrains.length < MyUser.MAX_ATACK_LENGTH) {
+		if (pad.atk && this.myTrains.length < CONST.USER.MAX_ATK) {
 			pad.atk = false;
 			this.model.isAtk = true;
-		} else if (pad.skill_0) {
+		} else if (pad.skill_0 && this.cooltimes.get(0) && this.model.skills.includes(0)) {
+			pad.skill_0 = false;
 			this.model.isHeal = true;
-		} else if (pad.skill_1) {
+		} else if (pad.skill_1 && this.cooltimes.get(1) && this.model.skills.includes(1)) {
+			pad.skill_1 = false;
 			this.model.isHest = true;
-		} else if (pad.skill_2) {
+		} else if (pad.skill_2 && this.cooltimes.get(2) && this.model.skills.includes(2)) {
+			pad.skill_2 = false;
 			this.model.isHb = true;
 		}
 	}

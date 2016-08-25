@@ -1,6 +1,7 @@
 import {DbUserData, MasterEvilData, CONST} from "../share/share";
 import {UserRepository} from "../repository/UserRepository";
 import * as shortid from "shortid";
+import * as _ from "lodash";
 
 export class UserService {
 	private static INIT_USERDATA = <DbUserData> {
@@ -50,7 +51,7 @@ export class UserService {
 			this.userRepository.updateUser(user);
 			console.log("メモリーからユーザーを削除", user.name, user._id);
 			if (removedUser[0]) console.log("snapshotからユーザーを削除", removedUser[0].name, removedUser[0].pid);
-			console.log("現在のアクティブユーザー", Object.keys(this.userData), this.snapShotUserData);
+			console.log("現在のアクティブユーザー", Object.keys(this.userData),  Object.keys(this.snapShotUserData));
 		} else {
 			console.warn("切断されたユーザーがメモリ上に存在せず dbId=>", dbId);
 		}

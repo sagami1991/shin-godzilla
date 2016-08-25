@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import {WSServer} from "./WebSocketServer";
-import {SocketType, SkillId, DbUserData} from "../share/share";
+import {SocketType, SkillId, DbUserData, CONST} from "../share/share";
 import {UserService} from "../service/UserService";
 
 export class SkillController {
@@ -24,6 +24,6 @@ export class SkillController {
 		return (
 			typeof req === "number" &&
 			!user.skills.includes(req)) &&
-			user.lv >= (user.skills.length + 1) * 10;
+			user.lv >= (user.skills.length + 1) * CONST.SKILL.SP;
 	}
 }

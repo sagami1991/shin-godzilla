@@ -52,7 +52,7 @@ export class WSServer {
 
 	public getPersonId(ws: WebSocket): string {
 		const pid = ws.upgradeReq.headers["person-id"];
-		if (!pid) console.warn("pidとれていない");
+		if (!pid) console.trace("pidとれていない");
 		return pid;
 	}
 

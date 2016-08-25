@@ -7,21 +7,18 @@ import {GamePadComponent} from "./component/GamePadComponent";
 import {FieldComponent} from "./component/FieldComponent";
 import {FuncButtonComponent} from "./component/FuncButtonComponent";
 import {SkillComponent} from "./component/SkillComponent";
-import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData} from "../../../../server/share/share";
+import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData, CONST} from "../../../../server/share/share";
 import {DiffExtract} from "../../../../server/share/util";
 import {EffectService} from "./service/EffectService";
 import {IsEndCoolTimeModel} from "./skill/SkillModel";
-import {SkillAction} from "./skill/SkillAction";
+import {StatusBarComponent} from "./component/StatusBarComponent";
 
 /** ゲーム機能の総合操作クラス */
 export class GameMain {
 	public static MOJI_COLOR = "#fff";
 	public static FRAME = 30;
-	public static HEIGHT = 500;
-	public static WIDTH = 800;
 	public static Y0 = 150;
 	public static GOZZILA: GodzillaMob;
-	public static CTX: CanvasRenderingContext2D;
 	private static intervalActions: {
 		delay: number, //一回の処理のフレーム数
 		roopCount: number, //何回ループさせるか
@@ -31,18 +28,14 @@ export class GameMain {
 
 	private canvasElm: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
-	private timer: number;
-	private myEvil: MyUser;
+	private myUser: MyUser;
 	private godzilla: GodzillaMob;
-	private otherPersonsInfo: MasterEvilData[];
-	private otherPersons: SimpleUser[];
+	private otherUsers: SimpleUser[];
 	private effect: EffectService;
-	private myUserModel: MyUserModel;
 	private befSnapshot: ReqEvilData;
-	private localSnapShot: ReqEvilData = <any>{};
 	/** 下からのY座標を上からのY座標に変更 */
 	public static convY(y: number, height: number) {
-		return GameMain.HEIGHT - y - height;
+		return CONST.CANVAS.HEIGHT - y - height;
 	}
 
 	public static addIntervalAction(cb: (count: number) => void, delay: number = 1, roopCount: number = Infinity) {
@@ -66,47 +59,42 @@ export class GameMain {
 			});
 		});
 		this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
-		this.canvasElm.width = GameMain.WIDTH;
-		this.canvasElm.height = GameMain.HEIGHT;
+		this.canvasElm.width = CONST.CANVAS.WIDTH;
+		this.canvasElm.height = CONST.CANVAS.HEIGHT;
 		this.ctx = this.canvasElm.getContext('2d');
 		this.effect = new EffectService(this.ctx);
-		GameMain.CTX = this.ctx;
 		GamePadComponent.setKeyAndButton();
 		FuncButtonComponent.init();
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
 		localStorage.setItem("dbId", resData.user._id);
-		this.initUserModel(resData);
-		// this.myUserModel.addChangeListener("isAtk", (isAtk) => isAtk ? this.localSnapShot.isAtk = true : null);
-		// this.myUserModel.addChangeListener("isHeal", (isHeal) => isHeal ? this.localSnapShot.isHeal = true : null);
-		// this.myUserModel.addChangeListener("isHest", (isHest) => isHest ? this.localSnapShot.isHest = true : null);
-		// this.myUserModel.addChangeListener("isHb", (isHb) => isHb ? this.localSnapShot.isHb = true : null);
-		const cooltimes = new IsEndCoolTimeModel({});
+		const userBody = this.initUserModel(resData);
+		const cooltimes = new IsEndCoolTimeModel({0: true, 1: true, 2: true});
 		new FieldComponent(this.wsClient).init(resData.bg);
-		new SkillComponent(this.wsClient, this.myUserModel, cooltimes).init();
-		new SkillAction(this.myUserModel, cooltimes);
-		this.godzilla = new GodzillaMob(this.ctx, {}, this.myUserModel);
+		new StatusBarComponent(this.wsClient, userBody).init();
+		new SkillComponent(this.wsClient, userBody, cooltimes).init();
+		this.godzilla = new GodzillaMob(this.ctx, {}, userBody);
 		this.godzilla.setGodzilaInfo(resData.gozdilla);
 		GameMain.GOZZILA = this.godzilla;
-		this.myEvil = new MyUser(
+		this.myUser = new MyUser(
 			this.ctx,
 			this.effect,
 			this.wsClient,
-			this.myUserModel
+			userBody,
+			cooltimes
 		);
-		this.otherPersonsInfo = resData.users;
-		this.otherPersons = resData.users.map((info) => {
+		this.otherUsers = resData.users.map((info) => {
 			return new SimpleUser(this.ctx, this.effect, new SimpleUserModel(info));
 		});
 
-		this.timer = window.setInterval(() => this.draw(), 1000 / GameMain.FRAME);
+		const timer = window.setInterval(() => this.draw(), 1000 / GameMain.FRAME);
 		this.wsClient.addOnReceiveMsgListener(SocketType.snapshot, (value) => this.onReceiveIntervalData(value));
-		this.wsClient.addOnCloseListener(() => window.clearInterval(this.timer));
+		this.wsClient.addOnCloseListener(() => window.clearInterval(timer));
 	}
 
 	private initUserModel(resData: InitialUserData) {
-		this.myUserModel = new MyUserModel({
+		return new MyUserModel({
 			pid: resData.pid,
 			name: resData.user.name,
 			lv: resData.user.lv,
@@ -125,8 +113,8 @@ export class GameMain {
 			exp: resData.user.exp,
 			maxExp: 0,
 			skills: resData.user.skills,
-			jump: 10,
-			speed: 5,
+			jump: CONST.USER.BASE_JUMP,
+			speed: CONST.USER.BASE_SPEED,
 		});
 	}
 
@@ -136,16 +124,16 @@ export class GameMain {
 		}
 		if (snapshot.evils) {
 			snapshot.evils.forEach(info => {
-				const existEvil = this.otherPersons.find(existEvil => existEvil.model.pid === info.pid);
+				const existEvil = this.otherUsers.find(existEvil => existEvil.model.pid === info.pid);
 				if (existEvil) {
 					existEvil.model.setProperties(info);
 				} else {
-					this.otherPersons.push(new SimpleUser(this.ctx, this.effect, new SimpleUserModel(info)));
+					this.otherUsers.push(new SimpleUser(this.ctx, this.effect, new SimpleUserModel(info)));
 				}
 			});
 		}
 		if (snapshot.cids) {
-			this.otherPersons = this.otherPersons.filter(
+			this.otherUsers = this.otherUsers.filter(
 				evil => snapshot.cids.find(pid => pid !== evil.model.pid)
 			);
 		}
@@ -153,10 +141,10 @@ export class GameMain {
 
 	/** 描写 */
 	private draw() {
-		this.ctx.clearRect(0, 0, GameMain.WIDTH, GameMain.HEIGHT);
+		this.ctx.clearRect(0, 0, CONST.CANVAS.WIDTH, CONST.CANVAS.WIDTH);
 		this.godzilla.draw();
-		this.otherPersons.forEach(evil => { if (evil.model.pid !== this.myUserModel.pid) evil.draw(); });
-		this.myEvil.draw();
+		this.otherUsers.forEach(evil => { if (evil.model.pid !== this.myUser.model.pid) evil.draw(); });
+		this.myUser.draw();
 
 		for (let i = GameMain.intervalActions.length - 1; i >= 0; i--) {
 			const roopInfo = GameMain.intervalActions[i];
@@ -175,26 +163,24 @@ export class GameMain {
 	private drawNowPersonCount() {
 		this.ctx.fillStyle = GameMain.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
-		this.ctx.fillText(`接続数:${this.otherPersons.length}`, 736, 18);
+		this.ctx.fillText(`接続数:${this.otherUsers.length}`, 736, 18);
 	}
 
 	private sendServer() {
-		Object.assign(this.localSnapShot, {
-			isMigi: this.myEvil.model.isMigi,
-			x: this.myEvil.model.x,
-			y: this.myEvil.model.y,
-			isDead: this.myEvil.model.isDead,
-		});
-		const sendSnapshot = DiffExtract.diff(this.befSnapshot, this.localSnapShot);
+		const localSnapShot = {
+			isMigi: this.myUser.model.isMigi,
+			x: this.myUser.model.x,
+			y: this.myUser.model.y,
+			isDead: this.myUser.model.isDead,
+			isAtk: this.myUser.model.isAtk,
+			isHeal: this.myUser.model.isHeal,
+			isHest: this.myUser.model.isHest,
+			isHb: this.myUser.model.isHb
+		};
+		const sendSnapshot = DiffExtract.diff(this.befSnapshot, localSnapShot);
 		if (sendSnapshot) {
 			this.wsClient.send(SocketType.snapshot, sendSnapshot);
 		}
-		this.befSnapshot = Object.assign({}, this.localSnapShot);
-		Object.assign(this.localSnapShot, {
-			isAtk: false,
-			isHeal: false,
-			isHest: false,
-			isHb: false
-		});
+		this.befSnapshot = Object.assign({}, <ReqEvilData>localSnapShot);
 	}
 }

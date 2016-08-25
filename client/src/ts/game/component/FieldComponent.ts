@@ -3,8 +3,8 @@ import {GameMain} from "../main";
 import {ImageLoader} from "../ImageLoader";
 import {WSClient} from "../../WebSocketClient";
 import * as Handlebars from "handlebars";
-import {SocketType, FieldType} from "../../../../../server/share/share";
-require("../../scss/filed-dropdown.scss");
+import {SocketType, FieldType, CONST} from "../../../../../server/share/share";
+require("../../../scss/filed-dropdown.scss");
 
 export class FieldComponent {
 	public static FIELD_LIST = [
@@ -60,12 +60,12 @@ export class FieldComponent {
 		const asiba = ImageLoader.FIELD_IMAGE.asiba;
 		const y0 = GameMain.Y0 - asiba.height / 2;
 		const jimen = ImageLoader.FIELD_IMAGE.sita;
-		for (let i = 0; i < GameMain.WIDTH / jimen.width; i++) {
+		for (let i = 0; i < CONST.CANVAS.WIDTH / jimen.width; i++) {
 			for (let j = 0; j < y0 / jimen.height + 1; j++) {
-				ctx.drawImage(jimen, i * jimen.width , GameMain.HEIGHT - y0 + j * jimen.height);
+				ctx.drawImage(jimen, i * jimen.width , CONST.CANVAS.HEIGHT - y0 + j * jimen.height);
 			}
 		}
-		for (let i = 0; i < GameMain.WIDTH / asiba.width; i++) {
+		for (let i = 0; i < CONST.CANVAS.WIDTH / asiba.width; i++) {
 			ctx.drawImage(asiba, i * asiba.width , GameMain.convY(y0, asiba.height));
 		}
 	}

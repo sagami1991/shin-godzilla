@@ -29,8 +29,8 @@ export class GamePadComponent {
 		{keycode: [32, 87, 67], eventName: "jump"},
 		{keycode: [88], eventName: "atk"},
 		{keycode: [17], eventName: "skill_0"},
-		{keycode: [18], eventName: "skill_1"},
-		{keycode: [19], eventName: "skill_2"},
+		{keycode: [86], eventName: "skill_1"},
+		{keycode: [70], eventName: "skill_2"},
 	];
 
 	/** ボタンやキーを設定 */

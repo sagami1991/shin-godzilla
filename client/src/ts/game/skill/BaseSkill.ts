@@ -1,15 +1,21 @@
-import {MyUser, MyUserModel} from "../mob/MyUser";
+import {MyUserModel} from "../mob/MyUser";
 import {IsEndCoolTimeModel} from "./SkillModel";
 export class BaseSkill {
 	protected excusionTime: Date;
 	protected coolTime: number;
 	protected type: number;
-	constructor(protected userBody: MyUserModel,
+	constructor(protected body: MyUserModel,
 				protected cooltimes: IsEndCoolTimeModel) {}
 
 	public execute(): void {};
 
 	protected setEnableTimer() {
-		window.setTimeout(() => this.cooltimes.set(this.type, true), this.coolTime);
+		this.cooltimes.set(this.type, false);
+		window.setTimeout(() => {
+			this.cooltimes.set(this.type, true);
+			this.onEndCoolTime();
+		}, this.coolTime);
 	}
+
+	protected onEndCoolTime(): void {}
 }

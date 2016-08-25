@@ -1,7 +1,7 @@
 import {WSClient} from "../WebSocketClient";
 import * as Handlebars from "handlebars";
 import {SocketType, CONST} from "../../../../server/share/share";
-require("./scss/chat.scss");
+require("../../scss/chat.scss");
 
 interface ChatMsg {
 	msg: string;

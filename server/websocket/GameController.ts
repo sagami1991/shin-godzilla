@@ -44,11 +44,13 @@ export class GameController {
 				lv: dbUserData.lv,
 				isLvUp: false,
 				isHeal: false,
+				isHest: false,
+				isHb: false,
 				name: dbUserData.name
 			};
 
 			const isSendSuccess = this.wsWrapper.send(ws, SocketType.init, <InitialUserData> {
-				pid: this.wsWrapper.getPersonId(ws),
+				pid: dbUserData.pid,
 				user: Object.assign({}, dbUserData, sendUserData),
 				users: this.userService.getAllSnapShotUser(),
 				gozdilla: this.godzillaService.godzilla,
@@ -65,8 +67,10 @@ export class GameController {
 
 	private onClose(ws: WebSocket) {
 		const pid = this.wsWrapper.getPersonId(ws);
-		this.closeIds.push(pid);
-		this.userService.deleteAndSaveUser(this.wsWrapper.getDbId(ws));
+		if (pid) {
+			this.closeIds.push(pid);
+			this.userService.deleteAndSaveUser(this.wsWrapper.getDbId(ws));
+		}
 	}
 
 	private atkToGodzilla(ws: WebSocket, damage: number) {
@@ -105,6 +109,7 @@ export class GameController {
 		if (!user) {
 			this.wsWrapper.close(ws, 1001, "予期せぬエラー UserMemoryに存在しないユーザー");
 		} else if (!this.validateReqData(reqData)) {
+			console.warn("処理できないsnapShotデータを受信", reqData);
 			this.wsWrapper.close(ws, 1001, "予期せぬエラー 処理できないsnapShotデータを受信");
 		} else {
 			user.date = new Date();
@@ -122,7 +127,9 @@ export class GameController {
 			y: reqData.y,
 			isAtk: reqData.isAtk,
 			isDead: reqData.isDead,
-			isHeal: reqData.isHeal
+			isHeal: reqData.isHeal,
+			isHest: reqData.isHest,
+			isHb: reqData.isHb
 		};
 	}
 

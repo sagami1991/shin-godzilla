@@ -1,16 +1,16 @@
 import {WSClient} from "../../WebSocketClient";
 import * as Handlebars from "handlebars";
-import {SocketType, DbUserData, SkillId} from "../../../../../server/share/share";
+import {SocketType, DbUserData, SkillId, CONST} from "../../../../../server/share/share";
 import {Notify} from "../../util";
 import {MyUserModel} from "../mob/MyUser";
 import {IsEndCoolTimeModel} from "../skill/SkillModel";
-require("../../scss/skill-panel.scss");
+require("../../../scss/skill-panel.scss");
 
 export class SkillComponent {
 	private static skills = [
 		{name: "ヒール", description: "回復できる", isGet: false, id: SkillId.heal},
-		{name: "hest", description: "kari", isGet: false, id: SkillId.hest},
-		{name: "hb", description: "kari", isGet: false, id: SkillId.hb}
+		{name: "スピード", description: "120秒間の間、速度とジャンプ力が上昇する", isGet: false, id: SkillId.hest},
+		{name: "スーパーボディ", description: "120秒間の間、HPが1.5倍になる", isGet: false, id: SkillId.hb}
 	];
 	private static HTML = `
 		<h2 class="h2"><i class="material-icons">lightbulb_outline</i>スキル一覧</h2>
@@ -59,6 +59,7 @@ export class SkillComponent {
 				private cooltimes: IsEndCoolTimeModel) {}
 
 	public init() {
+		this.userBody.addChangeListener("lv", () => this.refreshSkillPanel());
 		this.skillButtons = Array.from(new Array(3)).map( (val, i) => <HTMLButtonElement> document.querySelector(`.skill_${i}`));
 		this.skillButtons.forEach((button, i) => {
 			this.cooltimes.addChangeListener(i, (isCoolTimeEnd) => isCoolTimeEnd ? this.enablePad(i) : this.disablePad(i) );
@@ -76,19 +77,19 @@ export class SkillComponent {
 			this.isOpen = !this.isOpen;
 			this.skillPanel.classList.toggle("disabled");
 		});
-		this.refreshSkillPanel(this.userBody.lv, this.userBody.skills);
+		this.refreshSkillPanel();
 		this.parseSkills();
 	}
 
 
-	private refreshSkillPanel(lv: number, skills: number[]) {
-		skills.forEach(i => {
+	private refreshSkillPanel() {
+		this.userBody.skills.forEach(i => {
 			SkillComponent.skills[i].isGet = true;
 			this.skillButtons[i].classList.remove("disabled");
 		});
-		const hituyouSP = (skills.length + 1) * 10;
-		this.hasSp = lv >= hituyouSP;
-		this.nokoriSp = hituyouSP - lv;
+		const hituyouSP = (this.userBody.skills.length + 1) * CONST.SKILL.SP;
+		this.hasSp = this.userBody.lv >= hituyouSP;
+		this.nokoriSp = hituyouSP - this.userBody.lv;
 		if (this.isOpen) this.parseSkills();
 	}
 
@@ -117,8 +118,8 @@ export class SkillComponent {
 		this.wsService.sendPromise<DbUserData>(SocketType.getSkill, id)
 		.then(user => {
 			this.isLock = false;
-			this.refreshSkillPanel(user.lv, user.skills);
 			this.userBody.skills = user.skills;
+			this.refreshSkillPanel();
 		});
 	}
 }

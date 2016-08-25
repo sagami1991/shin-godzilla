@@ -12,9 +12,7 @@ export class GodzillaService {
 	private _godzilla: GodzillaInfo;
 	private actionFrameCount: number;
 	private isDecidedTarget: boolean;
-	get godzilla() {
-		return this._godzilla;
-	}
+	get godzilla() { return this._godzilla; }
 
 	constructor(private userService: UserService) {
 	}
