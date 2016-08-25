@@ -56,7 +56,10 @@ export interface ReqEvilData {
 	isAtk: boolean;
 	isDead: boolean;
 	isHeal: boolean;
+	isHest: boolean;
+	isHb: boolean;
 }
+
 
 // サーバーで持つ
 export interface MasterEvilData extends ReqEvilData {
@@ -107,5 +110,16 @@ export const CONST = {
 	CHAT: {
 		MAX_LINE: 30,
 		MAX_LENGTH: 50
+	},
+	SKILL: {
+		HEAL: {
+			COOL_TIME: 1400
+		},
+		HEST: {
+			COOL_TIME: 120 * 1000
+		},
+		HB: {
+			COOL_TIME: 120 * 1000
+		}
 	}
 };

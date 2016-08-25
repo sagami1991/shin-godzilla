@@ -2,6 +2,7 @@ import {GameMain} from "../main";
 import {BaseMob, BaseMobOption} from "./BaseMob";
 import {ImageLoader} from "../ImageLoader";
 import {GodzillaMode, GodzillaInfo, CONST} from "../../../../../server/share/share";
+import {MyUserModel} from "./MyUser";
 
 export class GodzillaMob extends BaseMob {
 	private static WIDTH = 64;
@@ -21,7 +22,7 @@ export class GodzillaMob extends BaseMob {
 	/** ビームが発射される座標*/
 	private begin: {x: number, y: number}[];
 	private beamFrame = 0;
-	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {
+	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption, private userModel: MyUserModel) {
 		super(ctx, option);
 		this.image = ImageLoader.IMAGES.gozzila;
 		this.x = 550;
@@ -60,7 +61,7 @@ export class GodzillaMob extends BaseMob {
 	}
 
 	/** ビームによるダメージ計算 */
-	public calcBeamDmg(x0: number, x1: number,  y0: number, y1: number) {
+	private calcBeamDmg(x0: number, x1: number,  y0: number, y1: number) {
 		if (this.mode !== GodzillaMode.atk) return 0;
 		let count = 0;
 		this.target.forEach((target, i) => {
@@ -76,7 +77,7 @@ export class GodzillaMob extends BaseMob {
 	}
 
 	/** 接触ダメージ */
-	public calcSessyokuDmg(x: number, y: number): number {
+	private calcSessyokuDmg(x: number, y: number): number {
 		return this.mode !== GodzillaMode.dead && this.x + 5 <= x ? GodzillaMob.SESSYOKU_DMG : 0;
 	}
 
@@ -111,6 +112,7 @@ export class GodzillaMob extends BaseMob {
 	}
 
 	private action() {
+		let dmg = 0;
 		switch (this.mode) {
 		case GodzillaMode.init:
 			this.image = ImageLoader.IMAGES.gozzila;
@@ -121,9 +123,12 @@ export class GodzillaMob extends BaseMob {
 		case GodzillaMode.atk:
 			this.image = ImageLoader.IMAGES.gozzila_atk;
 			this.drawBeam();
+			dmg += this.calcBeamDmg(this.userModel.x, this.userModel.x + MyUserModel.WIDTH, this.userModel.y, this.userModel.y + MyUserModel.HEIGHT);
 			break;
 		default:
 			break;
 		}
+		dmg += this.calcSessyokuDmg(this.userModel.x, this.userModel.y);
+		this.userModel.hp -= this.userModel.hp - dmg > 0 ? dmg : this.userModel.hp;
 	}
 }

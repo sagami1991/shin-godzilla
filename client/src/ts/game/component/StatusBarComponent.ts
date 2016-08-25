@@ -1,3 +1,6 @@
+import {MyUserModel} from "../mob/MyUser";
+import {WSClient} from "../../WebSocketClient";
+import {SocketType, DbUserData} from "../../../../../server/share/share";
 
 export class StatusBarComponent {
 	private static HTML = `
@@ -26,8 +29,8 @@ export class StatusBarComponent {
 	private nameEditElem: HTMLElement;
 	private nameInputElem: HTMLInputElement;
 	private expBarElm: HTMLElement;
-	private onNameEditeds: Array<(name: string) => void> = [];
-	constructor() {
+	constructor(private ws: WSClient,
+				private userModel: MyUserModel) {
 		this.statusBarElem = <HTMLElement> document.querySelector(".status-bar");
 		this.statusBarElem.innerHTML = StatusBarComponent.HTML;
 		this.lvElem = <HTMLElement> this.statusBarElem.querySelector(".lv-panel .value");
@@ -47,24 +50,28 @@ export class StatusBarComponent {
 			this.nameElem.style.display = "flex";
 			this.nameInputElem.style.display = "none";
 			this.nameDisplayElem.innerText = name;
-			this.onNameEditeds.forEach(cb => cb(name));
+			this.userModel.name = name;
+			this.ws.send(SocketType.changeName, {name: name});
 		});
 	}
 	public init() {
+		this.userModel.addChangeListener("lv", (lv: number) => this.setLv(lv));
+		this.userModel.addChangeListener("exp", (exp: number) => this.setExp(exp, this.userModel.maxExp));
+
+		this.setName(this.userModel.name);
+		this.setLv(this.userModel.lv);
+		this.setExp(this.userModel.exp, this.userModel.maxExp);
 	}
 
-	public addOnNameEditListner(cb: (name: string) => void) {
-		this.onNameEditeds.push(cb);
-	}
-	public setLv(lv: number) {
+	private setLv(lv: number) {
 		this.lvElem.innerText = `${lv}`;
 	}
 
-	public setExp(exp: number, maxExp: number) {
+	private setExp(exp: number, maxExp: number) {
 		this.expBarElm.style.width = `${Math.floor(100 * exp / maxExp)}px`;
 	}
 
-	public setName(name: string) {
+	private setName(name: string) {
 		this.nameDisplayElem.innerText = name;
 		this.nameInputElem.value = name;
 	}

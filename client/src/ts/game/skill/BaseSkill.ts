@@ -1,21 +1,15 @@
-import {SkillComponent} from "../component/SkillComponent";
-import {MyUser, MyUserOption} from "../mob/MyUser";
+import {MyUser, MyUserModel} from "../mob/MyUser";
+import {IsEndCoolTimeModel} from "./SkillModel";
 export class BaseSkill {
 	protected excusionTime: Date;
-	
-	constructor(protected userBody: MyUserOption,
-				protected skillComponent: SkillComponent,
-				protected coolTime: number) {}
+	protected coolTime: number;
+	protected type: number;
+	constructor(protected userBody: MyUserModel,
+				protected cooltimes: IsEndCoolTimeModel) {}
 
 	public execute(): void {};
 
 	protected setEnableTimer() {
-		window.setTimeout(() => {
-
-		}, this.coolTime);
-	}
-
-	protected isWaitedCoolTime() {
-		return new Date().getTime() - this.excusionTime.getTime() > this.coolTime;
+		window.setTimeout(() => this.cooltimes.set(this.type, true), this.coolTime);
 	}
 }

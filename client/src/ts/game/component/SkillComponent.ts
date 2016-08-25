@@ -2,6 +2,8 @@ import {WSClient} from "../../WebSocketClient";
 import * as Handlebars from "handlebars";
 import {SocketType, DbUserData, SkillId} from "../../../../../server/share/share";
 import {Notify} from "../../util";
+import {MyUserModel} from "../mob/MyUser";
+import {IsEndCoolTimeModel} from "../skill/SkillModel";
 require("../../scss/skill-panel.scss");
 
 export class SkillComponent {
@@ -45,7 +47,6 @@ export class SkillComponent {
 			</tr>
 		{{/skills}}
 	`);
-	public onGetSkill: (skills: SkillId[]) => void;
 	private skillButtons: HTMLButtonElement[];
 	private skillPanel: HTMLElement;
 	private skillTbody: HTMLElement;
@@ -53,10 +54,15 @@ export class SkillComponent {
 	private hasSp: boolean;
 	private nokoriSp: number;
 	private isOpen: boolean;
-	constructor(private wsService: WSClient) {}
+	constructor(private wsService: WSClient,
+				private userBody: MyUserModel,
+				private cooltimes: IsEndCoolTimeModel) {}
 
-	public init(lv: number, skills: number[]) {
+	public init() {
 		this.skillButtons = Array.from(new Array(3)).map( (val, i) => <HTMLButtonElement> document.querySelector(`.skill_${i}`));
+		this.skillButtons.forEach((button, i) => {
+			this.cooltimes.addChangeListener(i, (isCoolTimeEnd) => isCoolTimeEnd ? this.enablePad(i) : this.disablePad(i) );
+		});
 		this.skillPanel = <HTMLElement> document.querySelector(".skills-area");
 		this.skillPanel.innerHTML = SkillComponent.HTML;
 		this.skillTbody = <HTMLElement> document.querySelector(".skills-tbody");
@@ -70,13 +76,12 @@ export class SkillComponent {
 			this.isOpen = !this.isOpen;
 			this.skillPanel.classList.toggle("disabled");
 		});
-		this.refreshSkillPanel(lv, skills);
+		this.refreshSkillPanel(this.userBody.lv, this.userBody.skills);
 		this.parseSkills();
 	}
 
 
 	private refreshSkillPanel(lv: number, skills: number[]) {
-		this.isLock = false;
 		skills.forEach(i => {
 			SkillComponent.skills[i].isGet = true;
 			this.skillButtons[i].classList.remove("disabled");
@@ -87,11 +92,11 @@ export class SkillComponent {
 		if (this.isOpen) this.parseSkills();
 	}
 
-	public disableSkillButton(skillType: SkillId) {
+	private disablePad(skillType: SkillId) {
 		this.skillButtons[skillType].classList.add("disabled");
 	}
 
-	public enableSkillButton(skillType: SkillId) {
+	private enablePad(skillType: SkillId) {
 		this.skillButtons[skillType].classList.remove("disabled");
 	}
 
@@ -111,8 +116,9 @@ export class SkillComponent {
 		this.isLock = true;
 		this.wsService.sendPromise<DbUserData>(SocketType.getSkill, id)
 		.then(user => {
+			this.isLock = false;
 			this.refreshSkillPanel(user.lv, user.skills);
-			this.onGetSkill(user.skills);
+			this.userBody.skills = user.skills;
 		});
 	}
 }

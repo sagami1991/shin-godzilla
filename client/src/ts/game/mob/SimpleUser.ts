@@ -1,120 +1,134 @@
 import {GameMain} from "../main";
 import {Train} from "./train";
-import {BaseMob, BaseMobOption} from "./BaseMob";
 import {ImageLoader} from "../ImageLoader";
 import {EffectService, EffectType} from "../service/EffectService";
 import {MasterEvilData} from "../../../../../server/share/share";
+import {Observable} from "../model/Observable";
 
-export interface SimpleUserOption {
-	pid: string;
-	name: string;
-	lv: number;
-	x: number;
-	y: number;
-	isMigi: boolean;
-	isAtk: boolean;
-	isDead: boolean;
-	isLvUp: boolean;
-	isHeal: boolean;
-	isHest: boolean;
-	isHb: boolean;
-}
-
-export class SimpleUserModel {
-	private changeListeners: {[prop: string]: Array<(value: any) => void>};
-
-	constructor(protected option: SimpleUserOption) {
-
+export class SimpleUserModel extends Observable<MasterEvilData>{
+	public static WIDTH = 103;
+	public static HEIGHT = 63;
+	get pid() { return this.option.pid; }
+	get name() { return this.option.name; }
+	set name(name: string) {
+		this.option.name = name;
 	}
-	get isMigi() {
-		return this.option.isMigi;
+	get lv() { return this.option.lv; }
+	set lv(lv: number) {
+		const old = this.option.lv;
+		this.option.lv = lv;
+		this.onChange("lv", old, lv);
 	}
-	public setProperties(info: MasterEvilData) {
-		Object.keys(info).forEach(key => {
-			if ((<any>this.option)[key] !== (<any>info)[key]) {
-				(<any>this.option)[key] = (<any>info)[key];
-				if (this.changeListeners[key]) {
-					this.changeListeners[key].forEach(cb => cb((<any>info)[key]));
-				}
-			}
-		});
+	get x() { return this.option.x; }
+	set x(x: number) {
+		this.option.x = x;
 	}
-
-	public addChangeListener(pName: string, cb: (value: any) => void) {
-		if (!this.changeListeners[pName]) {
-			this.changeListeners[pName] = [];
-		}
-		this.changeListeners[pName].push(cb);
+	get y() { return this.option.y; }
+	set y(y: number) {
+		this.option.y = y;
+	}
+	get isMigi() { return this.option.isMigi; }
+	set isMigi(isMigi: boolean) {
+		this.option.isMigi = isMigi;
+	}
+	set isAtk(isAtk: boolean) {
+		const old = this.option.isAtk;
+		this.option.isAtk = isAtk;
+		this.onChange("isAtk", old, isAtk);
+	}
+	get isDead() {return this.option.isDead; }
+	set isDead(isDead: boolean) {
+		const old = this.option.isDead;
+		this.option.isDead = isDead;
+		this.onChange("isDead", old, isDead);
+	}
+	set isLvUp(isLvUp: boolean) {this.option.isLvUp = isLvUp; }
+	set isHeal(isHeal: boolean) {
+		const old = this.option.isHeal;
+		this.option.isHeal = isHeal;
+		this.onChange("isHeal", old, isHeal);
+	}
+	set isHest(isHest: boolean) {
+		const old = this.option.isHest;
+		this.option.isHest = isHest;
+		this.onChange("isHest", old, isHest);
+	}
+	set isHb(isHb: boolean) {
+		const old = this.option.isHb;
+		this.option.isHb = isHb;
+		this.onChange("isHb", old, isHb);
 	}
 }
 
 /** 人間が操作する機能の入っていないエビルアイ */
 export class SimpleUser {
-	public static WIDTH = 103;
-	public static HEIGHT = 63;
 	protected myTrains: Train[] = [];
 	protected image: HTMLImageElement;
 	constructor(
 		protected ctx: CanvasRenderingContext2D,
 		protected effect: EffectService,
-		protected model: SimpleUserModel) {
+		public model: SimpleUserModel) {
 		this.image = ImageLoader.IMAGES.evilHidari;
-		this.model.addChangeListener("isMigi", (isMigi: boolean) => this.changeImage(isMigi));
-		this.model.addChangeListener("isDead", (isDead: boolean) => this.changeAlive(isDead));
+		this.model.addChangeListener("isMigi", (isMigi: boolean) => this.changeDirection(isMigi));
+		this.model.addChangeListener("isDead", (isDead: boolean) => isDead ? this.dead() : this.changeDirection(this.model.isMigi));
+		this.model.addChangeListener("isAtk", (isAtk: boolean) => isAtk ? this.atk() : null);
+		this.model.addChangeListener("isLvUp", (isLvUp: boolean) => isLvUp ? this.lvUp() : null);
+		this.model.addChangeListener("isHeal", (isHeal: boolean) => isHeal ? this.heal() : null);
+		this.model.addChangeListener("isHest", (isHest: boolean) => isHest ? this.hest() : null);
+		this.model.addChangeListener("isHb", (isHb: boolean) => isHb ? this.hb() : null);
 	}
 
 	public draw() {
-		this.action();
-		this.image = this.isDead ? 	ImageLoader.IMAGES.evilSinda :
-					 this.isMigi ? 	ImageLoader.IMAGES.evilmigi :
-									ImageLoader.IMAGES.evilHidari;
-		this.ctx.drawImage(this.image , this.x, GameMain.convY(this.y, SimpleUser.HEIGHT));
-		this.trainDraw();
+		this.ctx.drawImage(this.image , this.model.x, GameMain.convY(this.model.y, SimpleUserModel.HEIGHT));
+		this.drawTrain();
 		this.drawLv();
 	}
 
-	private changeImage(isMigi: boolean) {
+	protected dead() {
+		this.image = ImageLoader.IMAGES.evilSinda;
+	}
+
+	protected atk() {
+		this.model.isAtk = false;
+		const train = new Train(this.ctx, {
+			x: this.model.x,
+			y: this.model.y,
+			isMigi: this.model.isMigi,
+		});
+		this.myTrains.push(train);
+	}
+
+	private changeDirection(isMigi: boolean) {
 		this.image = isMigi ? ImageLoader.IMAGES.evilmigi : ImageLoader.IMAGES.evilHidari;
 	}
 
-	private changeAlive(isDead: boolean) {
-		if (isDead) {
-			this.image = ImageLoader.IMAGES.evilSinda;
-		} else {
-			this.changeImage(this.model.isMigi);
-		}
+	private lvUp() {
+		this.model.isLvUp = false;
+		this.effect.draw(this.model, EffectType.lvup);
 	}
 
-	protected action() {
-		if (this.isAtk) {
-			this.atk();
-		}
-		if (this.isLvUp) {
-			this.effect.draw(this, EffectType.lvup);
-			this.isLvUp = false;
-		}
-
-		if (this.isHeal) {
-			this.effect.draw(this, EffectType.heal);
-			this.isHeal = false;
-		}
+	private heal() {
+		this.model.isHeal = false;
+		this.effect.draw(this.model, EffectType.heal);
 	}
-	protected atk() {
-		this.isAtk = false;
-		const train = new Train(this.ctx, {
-			x: this.x,
-			y: this.y,
-			isMigi: this.isMigi,
-		});
-		this.myTrains.push(train);
+
+	private hest() {
+		this.model.isHest = false;
+		this.effect.draw(this.model, EffectType.heal);
+	}
+
+	private hb() {
+		this.model.isHb = false;
+		this.effect.draw(this.model, EffectType.heal);
 	}
 
 	private drawLv() {
 		this.ctx.fillStyle = GameMain.MOJI_COLOR;
 		this.ctx.font = "14px 'ＭＳ Ｐゴシック'";
-		this.ctx.fillText(`${this.name} Lv ${this.lv}`, this.x + 34, GameMain.convY(this.y - 10, 0));
+		this.ctx.fillText(`${this.model.name} Lv ${this.model.lv}`, this.model.x + 34, GameMain.convY(this.model.y - 10, 0));
 	}
-	private trainDraw() {
+
+	private drawTrain() {
 		this.myTrains = this.myTrains.filter(train => !train.isDead);
 		this.myTrains.forEach(train => train.draw());
 	}

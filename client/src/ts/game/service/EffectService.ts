@@ -1,6 +1,6 @@
 import {GameMain} from "../main";
 import {ImageLoader} from "../ImageLoader";
-import {BaseMob} from "../mob/BaseMob";
+import {SimpleUserModel} from "../mob/SimpleUser";
 export enum EffectType {
 	lvup,
 	heal
@@ -20,7 +20,7 @@ export class EffectService {
 			{images: ImageLoader.ANIME_IMAGE.heal, positions: require("./effect/heal.json")},
 		];
 	}
-	public draw(mob: BaseMob, type: EffectType) {
+	public draw(mob: SimpleUserModel, type: EffectType) {
 		GameMain.addIntervalAction((i) => {
 			const position = this.effects[type].positions;
 			const image = this.effects[type].images;
