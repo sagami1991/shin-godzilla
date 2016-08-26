@@ -58,7 +58,7 @@ export class UserService {
 			this.userRepository.updateUser(user);
 			console.log("メモリーからユーザーを削除", user.name, user._id);
 			if (removedUser[0]) console.log("snapshotからユーザーを削除", removedUser[0].name, removedUser[0].pid);
-			console.log("現在のアクティブユーザー", Object.keys(this.userData),  Object.keys(this.snapShotUserData));
+			console.log("現在のアクティブユーザー", Object.keys(this.userData),  this.snapShotUserData.map(user => user.name));
 		} else {
 			console.warn("切断されたユーザーがメモリ上に存在せず dbId=>", dbId);
 		}

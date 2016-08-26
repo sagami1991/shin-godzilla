@@ -41,7 +41,6 @@ export class SimpleUser {
 		protected ctx: CanvasRenderingContext2D,
 		protected effect: EffectService,
 		public model: SimpleUserModel) {
-		this.image = ImageLoader.MOB.evilHidari;
 		this.model.addChangeListener("isMigi", (isMigi: boolean) => this.changeDirection(isMigi));
 		this.model.addChangeListener("isDead", (isDead: boolean) => isDead ? this.dead() : this.changeDirection(this.model.isMigi));
 		this.model.addChangeListener("isAtk", (isAtk: boolean) => isAtk ? this.atk() : null);
@@ -49,6 +48,7 @@ export class SimpleUser {
 		this.model.addChangeListener("isHeal", (isHeal: boolean) => isHeal ? this.heal() : null);
 		this.model.addChangeListener("isHest", (isHest: boolean) => isHest ? this.hest() : null);
 		this.model.addChangeListener("isHb", (isHb: boolean) => isHb ? this.hb() : null);
+		this.changeDirection(this.model.isMigi);
 	}
 
 	public draw() {
