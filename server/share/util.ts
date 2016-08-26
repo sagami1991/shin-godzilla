@@ -59,3 +59,7 @@ export class DiffExtract {
 		}
 	}
 }
+
+export function getRandom<T>(arr: T[]): T  {
+	return arr ? arr[Math.floor(Math.random() * arr.length)] : null;
+}

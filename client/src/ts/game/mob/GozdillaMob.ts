@@ -8,7 +8,6 @@ export class GodzillaMob extends BaseMob {
 	private static WIDTH = 64;
 	private static HEIGHT = 64;
 	private static BAIRITU = 5;
-	private static MAX_HP = 4000;
 	private static HP_BAR = {
 		X: 30,
 		Y: 10,
@@ -24,14 +23,14 @@ export class GodzillaMob extends BaseMob {
 	private beamFrame = 0;
 	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption, private userModel: MyUserModel) {
 		super(ctx, option);
-		this.image = ImageLoader.IMAGES.gozzila;
-		this.x = 550;
+		this.image = ImageLoader.MOB.gozzila;
+		this.x = CONST.GODZILLA.X;
 		this.y = CONST.CANVAS.Y0;
 		this.begin = [
 			{x: this.x + 14 * GodzillaMob.BAIRITU, y: this.y + 50 * GodzillaMob.BAIRITU},
 			{x: this.x + 34 * GodzillaMob.BAIRITU, y: this.y + 61 * GodzillaMob.BAIRITU},
 		];
-		this.maxHp = GodzillaMob.MAX_HP;
+		this.maxHp = CONST.GODZILLA.HP;
 		this.target = [];
 	}
 
@@ -84,7 +83,7 @@ export class GodzillaMob extends BaseMob {
 	private drawBeam() {
 		this.beamFrame += 1 / 4;
 		this.target.forEach((target, i) => {
-			const beamImg = ImageLoader.ANIME_IMAGE.beam[Math.floor(this.beamFrame)];
+			const beamImg = ImageLoader.EFFECT.beam[Math.floor(this.beamFrame)];
 			const begin = this.begin[i];
 			const angle = Math.PI / 2 + Math.atan2(begin.x - target.x , begin.y - target.y);
 
@@ -106,7 +105,7 @@ export class GodzillaMob extends BaseMob {
 		this.ctx.fillRect(GodzillaMob.HP_BAR.X + 1, GodzillaMob.HP_BAR.Y + 1, GodzillaMob.HP_BAR.WIDTH, GodzillaMob.HP_BAR.HEIGHT );
 		this.ctx.fillStyle = "#4f1ae8";
 		this.ctx.fillRect(GodzillaMob.HP_BAR.X + 1, GodzillaMob.HP_BAR.Y + 1, GodzillaMob.HP_BAR.WIDTH * this.hp / this.maxHp , GodzillaMob.HP_BAR.HEIGHT );
-		this.ctx.fillStyle = GameMain.MOJI_COLOR;
+		this.ctx.fillStyle = CONST.CANVAS.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`${this.hp} / ${this.maxHp}`, this.x + 30, 40);
 	}
@@ -115,13 +114,13 @@ export class GodzillaMob extends BaseMob {
 		let dmg = 0;
 		switch (this.mode) {
 		case GodzillaMode.init:
-			this.image = ImageLoader.IMAGES.gozzila;
+			this.image = ImageLoader.MOB.gozzila;
 			break;
 		case GodzillaMode.beforeAtk:
-			this.image = ImageLoader.IMAGES.gozzilaBefAtk;
+			this.image = ImageLoader.MOB.gozzilaBefAtk;
 			break;
 		case GodzillaMode.atk:
-			this.image = ImageLoader.IMAGES.gozzila_atk;
+			this.image = ImageLoader.MOB.gozzila_atk;
 			this.drawBeam();
 			dmg += this.calcBeamDmg(this.userModel.x, this.userModel.x + MyUserModel.WIDTH, this.userModel.y, this.userModel.y + MyUserModel.HEIGHT);
 			break;

@@ -9,7 +9,7 @@ export class RankingController {
 
 	public init() {
 		this.wsServer.addConnectListner(ws => this.sendRanking(ws));
-		this.wsServer.addMsgListner(SocketType.ranking, ws => this.sendRanking(ws));
+		this.wsServer.addMsgListener(SocketType.ranking, ws => this.sendRanking(ws));
 	}
 
 	private sendRanking(ws: WebSocket) {

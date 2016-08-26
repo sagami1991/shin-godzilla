@@ -1,6 +1,9 @@
+import {ITEM_DATA, SkinType} from "../../../../server/share/item-data";
+
+
 
 export class ImageLoader {
-	public static IMAGES: {
+	public static MOB: {
 		densya: HTMLImageElement;
 		bakuhatu: HTMLImageElement;
 		evilmigi: HTMLImageElement;
@@ -10,7 +13,8 @@ export class ImageLoader {
 		evilSinda: HTMLImageElement;
 		gozzilaBefAtk: HTMLImageElement;
 	};
-	public static ANIME_IMAGE: {
+
+	public static EFFECT: {
 		lvup: HTMLImageElement[];
 		beam: HTMLImageElement[];
 		heal: HTMLImageElement[];
@@ -18,19 +22,23 @@ export class ImageLoader {
 		hb: HTMLImageElement[];
 	} = <any>{};
 
-	public static FIELD_IMAGE: {
+	public static FIELD: {
 		bg: HTMLImageElement;
 		asiba: HTMLImageElement;
 		sita: HTMLImageElement;
 	};
 
-
+	public static ITEM: {[key: number]: HTMLImageElement} = {};
+	public static SKIN: {[key: number]: {
+		head: HTMLImageElement,
+		body: HTMLImageElement
+	}} = {};
+	private static PREFIX_PATH = "./assets";
 	private static FIELD_PATH = [
 		"back.0.png",
 		"enH0.0.png",
 		"bsc.0.png"
 	];
-	private static PREFIX_PATH = "./assets/";
 	private static IMAGE_PATHS = [
 		"ebiruai.png",
 		"ebiruai_.png",
@@ -50,16 +58,19 @@ export class ImageLoader {
 	];
 
 	public static load(): Promise<any> {
-		return Promise.all([this.commonImageLoad(), this.animeImageLoad()]);
+		return Promise.all([
+			this.loadMob(),
+			this.loadEffect(),
+			// this.loadItem(),
+			// this.loadSkin()
+		]);
 	}
 
-	public static fieldImageLoad(type: string) {
-		return Promise.all(ImageLoader.FIELD_PATH.map((src) => {
-			return new Promise<HTMLImageElement>(reslve => {
-				return ImageLoader.imageLoad(`${ImageLoader.PREFIX_PATH}bg/${type}/${src}`, reslve);
-			});
+	public static loadField(type: string) {
+		return Promise.all(ImageLoader.FIELD_PATH.map((fileName) => {
+			return ImageLoader.loadPromise(`${ImageLoader.PREFIX_PATH}/bg/${type}/${fileName}`);
 		})).then((imageElms) => {
-			ImageLoader.FIELD_IMAGE = {
+			ImageLoader.FIELD = {
 				bg : imageElms[0],
 				asiba : imageElms[1],
 				sita : imageElms[2],
@@ -67,27 +78,43 @@ export class ImageLoader {
 		});
 	}
 
-	private static animeImageLoad() {
+	private static loadItem() {
+		return Promise.all(ITEM_DATA.map(item => {
+			return ImageLoader.loadPromise(`${ImageLoader.PREFIX_PATH}/item/${item.id}.png`)
+			.then(image => ImageLoader.ITEM[item.id] = image);
+		}));
+	}
+
+	private static loadSkin() {
+		return Promise.all([SkinType.normal, SkinType.white, SkinType.black].map(id => {
+			return Promise.all(["head", "body"].map(part => {
+				return ImageLoader.loadPromise(`${ImageLoader.PREFIX_PATH}/skin/${SkinType[id]}/${part}.png`);
+			})).then(images => {
+				ImageLoader.SKIN[id] = {
+					head: images[0],
+					body: images[1]
+				};
+			});
+		}));
+	}
+
+	private static loadEffect() {
 		return Promise.all(
 			ImageLoader.AnimationPath.map((pathInfo) => {
 				return Promise.all(Array.from(new Array(pathInfo.length)).map((val, i) => {
-					return new Promise<HTMLImageElement>(reslve => {
-						return ImageLoader.imageLoad(`${ImageLoader.PREFIX_PATH}${pathInfo.pathName}${i}.png`, reslve);
-					});
+					return ImageLoader.loadPromise(`${ImageLoader.PREFIX_PATH}/${pathInfo.pathName}${i}.png`);
 				})).then((imageElms) => {
-					(<any>ImageLoader.ANIME_IMAGE)[pathInfo.name] = imageElms;
+					(<any>ImageLoader.EFFECT)[pathInfo.name] = imageElms;
 				});
 			})
 		);
 	}
 
-	private static commonImageLoad() {
-		return Promise.all(ImageLoader.IMAGE_PATHS.map((src) => {
-			return new Promise<HTMLImageElement>(reslve => {
-				return ImageLoader.imageLoad(`${ImageLoader.PREFIX_PATH}${src}`, reslve);
-			});
+	private static loadMob() {
+		return Promise.all(ImageLoader.IMAGE_PATHS.map((fileName) => {
+			return ImageLoader.loadPromise(`${ImageLoader.PREFIX_PATH}/${fileName}`);
 		})).then((imageElms) => {
-			ImageLoader.IMAGES = {
+			ImageLoader.MOB = {
 				evilHidari : imageElms[0],
 				evilmigi : imageElms[1],
 				densya : imageElms[2],
@@ -100,9 +127,11 @@ export class ImageLoader {
 		});
 	}
 
-	private static imageLoad(path: string, resolve: (value: HTMLImageElement) => void ) {
-		const image = new Image();
-		image.addEventListener("load", () => resolve(image));
-		image.src = path;
+	private static loadPromise(path: string) {
+		return new Promise<HTMLImageElement>(resolve => {
+			const image = new Image();
+			image.addEventListener("load", () => resolve(image));
+			image.src = path;
+		});
 	}
 }

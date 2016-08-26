@@ -5,7 +5,7 @@ export interface BaseMobOption {
 	isMigi?: boolean;
 }
 
-/** ゴジラやエビルアイ、電車などの基底クラス */
+/** ゴジラ,電車などの基底クラス */
 export class BaseMob {
 	public isDead: boolean;
 	public x: number;

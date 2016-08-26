@@ -2,23 +2,13 @@ import {SimpleUser, SimpleUserModel} from "./SimpleUser";
 import {GamePadComponent} from "../component/GamePadComponent";
 import {GameMain} from "../main";
 import {WSClient} from "../../WebSocketClient";
-import {SocketType, DbUserData, CONST, SkillId, MasterEvilData} from "../../../../../server/share/share";
-import {EffectService, EffectType} from "../service/EffectService";
+import {SocketType, DbUserData, CONST, SkillId, MyUserOption} from "../../../../../server/share/share";
+import {EffectService} from "../service/EffectService";
 import {BaseSkill} from "../skill/BaseSkill";
 import {IsEndCoolTimeModel} from "../skill/SkillModel";
 import {HealSkill} from "../skill/HealSkill";
 import {HestSkill} from "../skill/HestSkill";
 import {HbSkill} from "../skill/HbSkill";
-export interface MyUserOption extends MasterEvilData {
-	dbId: string;
-	hp: number;
-	maxHp: number;
-	exp: number;
-	maxExp: number;
-	skills: number[];
-	jump: number;
-	speed: number;
-}
 
 export class MyUserModel extends SimpleUserModel {
 	get hp() { return this.option.hp; }
@@ -84,7 +74,7 @@ export class MyUser extends SimpleUser {
 	protected dead() {
 		super.dead();
 		this.model.hp = 0;
-		this.rebornTimeCount = GameMain.FRAME * 8;
+		this.rebornTimeCount = CONST.GAME.FPS * 8;
 		setTimeout(() => this.rebirthButton.classList.remove("disabled"), 8000);
 		this.ws.send(SocketType.dead);
 	}
@@ -151,10 +141,10 @@ export class MyUser extends SimpleUser {
 		}
 		if (this.isJumping) {
 			this.jumpF ++ ;
-			this.model.y = GameMain.Y0 + this.model.jump * this.jumpF - 0.54 * 1 * Math.pow(this.jumpF, 2);
+			this.model.y = CONST.CANVAS.Y0 + this.model.jump * this.jumpF - 0.54 * 1 * Math.pow(this.jumpF, 2);
 		}
-		if (this.isJumping && this.model.y < GameMain.Y0) {
-			this.model.y = GameMain.Y0;
+		if (this.isJumping && this.model.y < CONST.CANVAS.Y0) {
+			this.model.y = CONST.CANVAS.Y0;
 			this.isJumping = false;
 		}
 	}
@@ -182,7 +172,7 @@ export class MyUser extends SimpleUser {
 
 	private drawRespawnCount() {
 		if (this.rebornTimeCount >= 0) this.rebornTimeCount--;
-		this.ctx.fillStyle = GameMain.MOJI_COLOR;
+		this.ctx.fillStyle = CONST.CANVAS.MOJI_COLOR;
 		this.ctx.font = "20px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`死にました。${Math.ceil(this.rebornTimeCount / 30)}秒後に復活ボタンが使用可能になります`, 80, 180);
 	}

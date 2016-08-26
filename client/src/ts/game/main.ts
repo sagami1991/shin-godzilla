@@ -7,7 +7,7 @@ import {GamePadComponent} from "./component/GamePadComponent";
 import {FieldComponent} from "./component/FieldComponent";
 import {FuncButtonComponent} from "./component/FuncButtonComponent";
 import {SkillComponent} from "./component/SkillComponent";
-import {SocketType, InitialUserData, ReqEvilData, GameData, MasterEvilData, CONST} from "../../../../server/share/share";
+import {SocketType, InitialUserData, ReqEvilData, GameData, SnapShotUserData, CONST, DbUserData, SkillId} from "../../../../server/share/share";
 import {DiffExtract} from "../../../../server/share/util";
 import {EffectService} from "./service/EffectService";
 import {IsEndCoolTimeModel} from "./skill/SkillModel";
@@ -15,22 +15,18 @@ import {StatusBarComponent} from "./component/StatusBarComponent";
 
 /** ゲーム機能の総合操作クラス */
 export class GameMain {
-	public static MOJI_COLOR = "#fff";
-	public static FRAME = 30;
-	public static Y0 = 150;
 	public static GOZZILA: GodzillaMob;
-	private static intervalActions: {
+	private static roopActions: {
 		delay: number, //一回の処理のフレーム数
 		roopCount: number, //何回ループさせるか
 		count: number
 		cb: (count: number) => void;
 	}[] = [];
 
-	private canvasElm: HTMLCanvasElement;
 	private ctx: CanvasRenderingContext2D;
 	private myUser: MyUser;
-	private godzilla: GodzillaMob;
 	private otherUsers: SimpleUser[];
+	private godzilla: GodzillaMob;
 	private effect: EffectService;
 	private befSnapshot: ReqEvilData;
 	/** 下からのY座標を上からのY座標に変更 */
@@ -39,7 +35,7 @@ export class GameMain {
 	}
 
 	public static addIntervalAction(cb: (count: number) => void, delay: number = 1, roopCount: number = Infinity) {
-		this.intervalActions.push({
+		this.roopActions.push({
 			delay: delay,
 			roopCount: roopCount,
 			count: 0,
@@ -58,18 +54,18 @@ export class GameMain {
 				.then((resData) => this.onReceiveInitData(resData));
 			});
 		});
-		this.canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
-		this.canvasElm.width = CONST.CANVAS.WIDTH;
-		this.canvasElm.height = CONST.CANVAS.HEIGHT;
-		this.ctx = this.canvasElm.getContext('2d');
+		const canvasElm = <HTMLCanvasElement> document.querySelector("#canvas");
+		canvasElm.width = CONST.CANVAS.WIDTH;
+		canvasElm.height = CONST.CANVAS.HEIGHT;
+		this.ctx = canvasElm.getContext('2d');
 		this.effect = new EffectService(this.ctx);
 		GamePadComponent.setKeyAndButton();
 		FuncButtonComponent.init();
 	}
 
 	private onReceiveInitData(resData: InitialUserData) {
-		localStorage.setItem("dbId", resData.user._id);
-		const userBody = this.initUserModel(resData);
+		localStorage.setItem("dbId", resData.user.dbId);
+		const userBody = new MyUserModel(resData.user);
 		const cooltimes = new IsEndCoolTimeModel({0: true, 1: true, 2: true});
 		new FieldComponent(this.wsClient).init(resData.bg);
 		new StatusBarComponent(this.wsClient, userBody).init();
@@ -88,34 +84,9 @@ export class GameMain {
 			return new SimpleUser(this.ctx, this.effect, new SimpleUserModel(info));
 		});
 
-		const timer = window.setInterval(() => this.draw(), 1000 / GameMain.FRAME);
+		const timer = window.setInterval(() => this.draw(), 1000 / CONST.GAME.FPS);
 		this.wsClient.addOnReceiveMsgListener(SocketType.snapshot, (value) => this.onReceiveIntervalData(value));
 		this.wsClient.addOnCloseListener(() => window.clearInterval(timer));
-	}
-
-	private initUserModel(resData: InitialUserData) {
-		return new MyUserModel({
-			pid: resData.pid,
-			name: resData.user.name,
-			lv: resData.user.lv,
-			x: resData.user.x,
-			y: resData.user.y,
-			isMigi: resData.user.isMigi,
-			isAtk: false,
-			isDead: false,
-			isLvUp: false,
-			isHeal: false,
-			isHest: false,
-			isHb: false,
-			dbId: resData.user._id,
-			hp: 100,
-			maxHp: 100,
-			exp: resData.user.exp,
-			maxExp: 0,
-			skills: resData.user.skills,
-			jump: CONST.USER.BASE_JUMP,
-			speed: CONST.USER.BASE_SPEED,
-		});
 	}
 
 	private onReceiveIntervalData(snapshot: GameData) {
@@ -143,25 +114,28 @@ export class GameMain {
 	private draw() {
 		this.ctx.clearRect(0, 0, CONST.CANVAS.WIDTH, CONST.CANVAS.WIDTH);
 		this.godzilla.draw();
-		this.otherUsers.forEach(evil => { if (evil.model.pid !== this.myUser.model.pid) evil.draw(); });
+		this.otherUsers.filter(user => user.model.pid !== this.myUser.model.pid)
+		.forEach(user => user.draw());
 		this.myUser.draw();
-
-		for (let i = GameMain.intervalActions.length - 1; i >= 0; i--) {
-			const roopInfo = GameMain.intervalActions[i];
-			roopInfo.count += 1 / roopInfo.delay;
-			if (roopInfo.count >= roopInfo.roopCount) {
-				GameMain.intervalActions.splice( i, 1 ) ;
-				break;
-			}
-			roopInfo.cb(Math.floor(roopInfo.count));
-		}
-
+		this.executeRegistedRoopActions();
 		this.drawNowPersonCount();
 		this.sendServer();
 	}
 
+	private executeRegistedRoopActions() {
+		for (let i = GameMain.roopActions.length - 1; i >= 0; i--) {
+			const roopInfo = GameMain.roopActions[i];
+			roopInfo.count += 1 / roopInfo.delay;
+			if (roopInfo.count >= roopInfo.roopCount) {
+				GameMain.roopActions.splice( i, 1 ) ;
+				break;
+			}
+			roopInfo.cb(Math.floor(roopInfo.count));
+		}
+	}
+
 	private drawNowPersonCount() {
-		this.ctx.fillStyle = GameMain.MOJI_COLOR;
+		this.ctx.fillStyle = CONST.CANVAS.MOJI_COLOR;
 		this.ctx.font = "12px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`接続数:${this.otherUsers.length}`, 736, 18);
 	}

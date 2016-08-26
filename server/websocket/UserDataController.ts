@@ -11,9 +11,9 @@ export class UserDataController {
 				) {}
 
 	public init() {
-		this.wsWrapper.addMsgListner(SocketType.changeName, (ws, reqData) => this.onChangeName(ws, reqData));
-		this.wsWrapper.addMsgListner(SocketType.dead, (ws) => this.dead(ws));
-		this.wsWrapper.addMsgListner(SocketType.resetLv, (ws) => this.resetLv(ws));
+		this.wsWrapper.addMsgListener(SocketType.changeName, (ws, reqData) => this.onChangeName(ws, reqData));
+		this.wsWrapper.addMsgListener(SocketType.dead, (ws) => this.dead(ws));
+		this.wsWrapper.addMsgListener(SocketType.resetLv, (ws) => this.resetLv(ws));
 		setInterval(() => {
 			this.userService.getHoutiUser().forEach(user => {
 				const timeoutWs = this.wsWrapper.getClients().find(ws => this.wsWrapper.getDbId(ws) === user._id);

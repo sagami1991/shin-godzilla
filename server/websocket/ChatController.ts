@@ -10,7 +10,7 @@ export class ChatController {
 
 	public init() {
 		this.wsServer.addConnectListner(ws => this.sendInitLog(ws));
-		this.wsServer.addMsgListner(SocketType.chatLog, (ws, reqData) => this.onReceiveMsg(ws, reqData));
+		this.wsServer.addMsgListener(SocketType.chatLog, (ws, reqData) => this.onReceiveMsg(ws, reqData));
 	}
 
 	private onReceiveMsg(ws: WebSocket, reqData: string) {

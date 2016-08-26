@@ -2,10 +2,10 @@ import {GameMain} from "../main";
 import {Train} from "./Train";
 import {ImageLoader} from "../ImageLoader";
 import {EffectService, EffectType} from "../service/EffectService";
-import {MasterEvilData} from "../../../../../server/share/share";
-import {Observable} from "../model/Observable";
+import {SnapShotUserData, CONST} from "../../../../../server/share/share";
+import {Observable} from "../../../../../server/share/Observable";
 
-export class SimpleUserModel extends Observable<MasterEvilData>{
+export class SimpleUserModel extends Observable<SnapShotUserData> {
 	public static WIDTH = 103;
 	public static HEIGHT = 63;
 	get pid() { return this.option.pid; }
@@ -41,7 +41,7 @@ export class SimpleUser {
 		protected ctx: CanvasRenderingContext2D,
 		protected effect: EffectService,
 		public model: SimpleUserModel) {
-		this.image = ImageLoader.IMAGES.evilHidari;
+		this.image = ImageLoader.MOB.evilHidari;
 		this.model.addChangeListener("isMigi", (isMigi: boolean) => this.changeDirection(isMigi));
 		this.model.addChangeListener("isDead", (isDead: boolean) => isDead ? this.dead() : this.changeDirection(this.model.isMigi));
 		this.model.addChangeListener("isAtk", (isAtk: boolean) => isAtk ? this.atk() : null);
@@ -58,7 +58,7 @@ export class SimpleUser {
 	}
 
 	protected dead() {
-		this.image = ImageLoader.IMAGES.evilSinda;
+		this.image = ImageLoader.MOB.evilSinda;
 	}
 
 	protected atk() {
@@ -83,7 +83,7 @@ export class SimpleUser {
 	}
 
 	private changeDirection(isMigi: boolean) {
-		this.image = isMigi ? ImageLoader.IMAGES.evilmigi : ImageLoader.IMAGES.evilHidari;
+		this.image = isMigi ? ImageLoader.MOB.evilmigi : ImageLoader.MOB.evilHidari;
 	}
 
 	private lvUp() {
@@ -92,7 +92,7 @@ export class SimpleUser {
 	}
 
 	private drawLv() {
-		this.ctx.fillStyle = GameMain.MOJI_COLOR;
+		this.ctx.fillStyle = CONST.CANVAS.MOJI_COLOR;
 		this.ctx.font = "14px 'ＭＳ Ｐゴシック'";
 		this.ctx.fillText(`${this.model.name} Lv ${this.model.lv}`, this.model.x + 20, GameMain.convY(this.model.y - 10, 0));
 	}

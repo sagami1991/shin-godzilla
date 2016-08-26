@@ -31,11 +31,11 @@ export class WSServer {
 		this.onConnectListners.push(cb);
 	}
 
-	public addMsgListner(type: SocketType, cb: (ws: WebSocket, data: any) => void) {
+	public addMsgListener(type: SocketType, cb: (ws: WebSocket, data: any) => void) {
 		this.onMsgListners.push({type: type, cb: cb});
 	}
 
-	public addCloseListner(cb: (ws: WebSocket) => void) {
+	public addCloseListener(cb: (ws: WebSocket) => void) {
 		this.onCloseListners.push(cb);
 	}
 
@@ -131,7 +131,11 @@ export class WSServer {
 			console.warn(`不正なデータ検出 ${this.getIpAddr(ws)}`);
 			return;
 		}
-		this.onMsgListners.forEach(msgLister => {reqObj.type === msgLister.type ? msgLister.cb(ws, reqObj.value) : null; });
+		try {
+			this.onMsgListners.forEach(msgLister => {reqObj.type === msgLister.type ? msgLister.cb(ws, reqObj.value) : null; });
+		} catch (err) {
+			console.trace(err);
+		}
 	}
 
 	private validateReqData(resData: ReqData) {

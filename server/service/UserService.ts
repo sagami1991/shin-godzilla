@@ -1,4 +1,4 @@
-import {DbUserData, MasterEvilData, CONST} from "../share/share";
+import {DbUserData, SnapShotUserData, CONST, MyUserOption} from "../share/share";
 import {UserRepository} from "../repository/UserRepository";
 import * as shortid from "shortid";
 import * as _ from "lodash";
@@ -8,10 +8,17 @@ export class UserService {
 		exp: 0,
 		lv: 1,
 		name: "名前",
-		skills: []
+		skills: [],
+		items: [],
+		avator: {
+			face: 0,
+			hair: 0,
+			skin: 0,
+			wear: 0
+		}
 	};
 	private userData: {[dbId: string]: DbUserData} = {};
-	private snapShotUserData: MasterEvilData[] = [];
+	private snapShotUserData: SnapShotUserData[] = [];
 	constructor(private userRepository: UserRepository) {}
 
 	public getUser(dbId: string) {
@@ -32,7 +39,7 @@ export class UserService {
 		this.userData[user._id] = user;
 	}
 
-	public pushSnapShotUser(snapShotUser: MasterEvilData) {
+	public pushSnapShotUser(snapShotUser: SnapShotUserData) {
 		this.snapShotUserData.push(snapShotUser);
 	}
 
@@ -103,7 +110,7 @@ export class UserService {
 			if (user.exp > this.calcMaxExp(user.lv)) {
 				user.exp = 0;
 				user.lv ++;
-				snapUser.lv += 1;
+				snapUser.lv ++;
 				snapUser.isLvUp = true;
 			}
 			return user;
@@ -117,6 +124,24 @@ export class UserService {
 			user.exp = user.exp < 0 ? 0 : user.exp;
 			return user;
 		}
+	}
+
+	public myUserToSnapShot(myUser: MyUserOption): SnapShotUserData {
+		return {
+			pid: myUser.pid,
+			name: myUser.name,
+			lv: myUser.lv,
+			x: myUser.x,
+			y: myUser.y,
+			isMigi: myUser.isMigi,
+			isAtk: myUser.isAtk,
+			isDead: myUser.isDead,
+			isLvUp: myUser.isLvUp,
+			isHeal: myUser.isHeal,
+			isHest: myUser.isHest,
+			isHb: myUser.isHb,
+			avator: myUser.avator,
+		};
 	}
 
 	private setInfoToUser(user: DbUserData, ipAddr: string) {

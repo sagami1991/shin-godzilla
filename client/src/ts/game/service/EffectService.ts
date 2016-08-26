@@ -18,10 +18,10 @@ export class EffectService {
 	constructor(private ctx: CanvasRenderingContext2D) {}
 	public init() {
 		this.effects = [
-			{images: ImageLoader.ANIME_IMAGE.lvup, positions: require("./effect/lvup.json")},
-			{images: ImageLoader.ANIME_IMAGE.heal, positions: require("./effect/heal.json")},
-			{images: ImageLoader.ANIME_IMAGE.hest, positions: require("./effect/hest.json")},
-			{images: ImageLoader.ANIME_IMAGE.hb, positions: require("./effect/hb.json")},
+			{images: ImageLoader.EFFECT.lvup, positions: require("./effect/lvup.json")},
+			{images: ImageLoader.EFFECT.heal, positions: require("./effect/heal.json")},
+			{images: ImageLoader.EFFECT.hest, positions: require("./effect/hest.json")},
+			{images: ImageLoader.EFFECT.hb, positions: require("./effect/hb.json")},
 		];
 	}
 	public draw(mob: SimpleUserModel, type: EffectType) {

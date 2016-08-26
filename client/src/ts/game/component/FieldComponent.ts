@@ -30,7 +30,7 @@ export class FieldComponent {
 			dropDown.classList.toggle("hide");
 		});
 		document.addEventListener("click", e => {
-			const target = <HTMLElement>e.target;
+			const target = <HTMLElement> e.target;
 			if (target.className === "field-select") {
 				const targetType = target.getAttribute("data-field");
 				const targetNum = FieldComponent.FIELD_LIST.findIndex(field => field.type === targetType);
@@ -40,12 +40,12 @@ export class FieldComponent {
 				dropDown.classList.add("hide");
 			}
 		});
-		ImageLoader.fieldImageLoad(FieldComponent.FIELD_LIST[type].type).then(() => {
+		ImageLoader.loadField(FieldComponent.FIELD_LIST[type].type).then(() => {
 			this.draw();
 		});
 
 		this.wsService.addOnReceiveMsgListener(SocketType.field, (typeNum: FieldType) => {
-			ImageLoader.fieldImageLoad(FieldComponent.FIELD_LIST[typeNum].type).then(() => {
+			ImageLoader.loadField(FieldComponent.FIELD_LIST[typeNum].type).then(() => {
 				this.draw();
 			});
 		});
@@ -53,13 +53,13 @@ export class FieldComponent {
 	private draw() {
 		const canvas = <HTMLCanvasElement>document.querySelector("#bg-canvas");
 		const ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        ctx.fillStyle = ctx.createPattern(ImageLoader.FIELD_IMAGE.bg, 'repeat');
-        ctx.rect(0, 0, 800, 500);
+		ctx.beginPath();
+		ctx.fillStyle = ctx.createPattern(ImageLoader.FIELD.bg, 'repeat');
+		ctx.rect(0, 0, 800, 500);
 		ctx.fill();
-		const asiba = ImageLoader.FIELD_IMAGE.asiba;
-		const y0 = GameMain.Y0 - asiba.height / 2;
-		const jimen = ImageLoader.FIELD_IMAGE.sita;
+		const asiba = ImageLoader.FIELD.asiba;
+		const y0 = CONST.CANVAS.Y0 - asiba.height / 2;
+		const jimen = ImageLoader.FIELD.sita;
 		for (let i = 0; i < CONST.CANVAS.WIDTH / jimen.width; i++) {
 			for (let j = 0; j < y0 / jimen.height + 1; j++) {
 				ctx.drawImage(jimen, i * jimen.width , CONST.CANVAS.HEIGHT - y0 + j * jimen.height);

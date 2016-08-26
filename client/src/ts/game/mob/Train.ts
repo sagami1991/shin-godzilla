@@ -1,6 +1,7 @@
 import {GameMain} from "../main";
 import {BaseMob, BaseMobOption} from "./BaseMob";
 import {ImageLoader} from "../ImageLoader";
+import {CONST} from "../../../../../server/share/share";
 
 enum TrainMode {
 	ikiteru,
@@ -19,7 +20,7 @@ export class Train extends BaseMob {
 	private onBakuhatu: Array<() => void> = [];
 	constructor(ctx: CanvasRenderingContext2D, option: BaseMobOption) {
 		super(ctx, option);
-		this.image = ImageLoader.IMAGES.densya,
+		this.image = ImageLoader.MOB.densya,
 		this.mode = TrainMode.ikiteru;
 		this.beginX = this.x;
 	}
@@ -42,8 +43,8 @@ export class Train extends BaseMob {
 			}
 			if ( GameMain.GOZZILA.x + 100 < this.x ) {
 				this.mode = TrainMode.bakuhatu;
-				this.image = ImageLoader.IMAGES.bakuhatu;
-				this.bakuhatuCount = GameMain.FRAME * Train.BAKUHATU_SEC;
+				this.image = ImageLoader.MOB.bakuhatu;
+				this.bakuhatuCount = CONST.GAME.FPS * Train.BAKUHATU_SEC;
 				this.onBakuhatu.forEach(cb => cb());
 			}
 			break;

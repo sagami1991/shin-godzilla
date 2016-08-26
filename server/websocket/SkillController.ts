@@ -9,7 +9,7 @@ export class SkillController {
 	}
 
 	public init() {
-		this.wsServer.addMsgListner(SocketType.getSkill, (ws, req) => this.onGetSkill(ws, req));
+		this.wsServer.addMsgListener(SocketType.getSkill, (ws, req) => this.onGetSkill(ws, req));
 	}
 
 	private onGetSkill(ws: WebSocket, req: SkillId) {
