@@ -53,7 +53,7 @@ export class WSServer {
 	public getPersonId(ws: WebSocket): string {
 		const pid = ws.upgradeReq.headers["person-id"];
 		if (!pid) console.trace("pidとれていない");
-		return pid;
+		return <string> pid;
 	}
 
 	public setPersonIdToWs(ws: WebSocket, pId: string) {
@@ -63,7 +63,7 @@ export class WSServer {
 	public getDbId(ws: WebSocket) {
 		const dbID = ws.upgradeReq.headers["db-id"];
 		if (!dbID) console.trace("dbIDとれていない");
-		return dbID;
+		return <string> dbID;
 	}
 
 	public setDbIdToWs(ws: WebSocket, dbId: string) {

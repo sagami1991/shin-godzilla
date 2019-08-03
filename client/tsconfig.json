@@ -5,13 +5,12 @@
         "noImplicitAny": true,
         "sourceMap": true,
         "types": [
-            "node",
-            "handlebars",
             "core-js"
-        ]
+        ],
+        "lib": ["dom", "es2015", "es2016", "es2017"]
     },
-    "files": [
-        "src/ts/app.ts"
+    "include": [
+        "./src/**/*.ts"
     ],
     "exclude": [
         "node_modules"
