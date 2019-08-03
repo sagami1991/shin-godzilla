@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "preinstall": "cd ./client && npm i && npm run build:prod",
-    "postinstall": "npm run build:prod",
     "start": "node server/server.js",
     "build:client": "webpack --progress --colors --watch --config ./webpack.config.dev.js",
-    "build": "gulp watch",
+    "build:dev": "gulp watch",
+    "build": "npm run build:prod",
     "build:prod": "gulp ",
     "localserver": "set MONGODB_URI=mongodb://localhost:27017 && node server/server.js"
   },
